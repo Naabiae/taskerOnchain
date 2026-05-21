@@ -109,7 +109,7 @@ contract RecurringTransferAdapter is IStrategyAdapter {
      * @inheritdoc IStrategyAdapter
      * @notice Check if execution conditions are met
      */
-    function canExecute(bytes calldata params)
+    function canExecute(address /*vault*/, bytes calldata params)
         external
         view
         override
@@ -173,7 +173,7 @@ contract RecurringTransferAdapter is IStrategyAdapter {
         returns (bool success, bytes memory result)
     {
         // Step 1: Validate conditions
-        (bool canExec, string memory reason) = this.canExecute(params);
+        (bool canExec, string memory reason) = this.canExecute(vault, params);
         if (!canExec) {
             return (false, bytes(reason));
         }

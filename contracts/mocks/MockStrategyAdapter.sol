@@ -41,9 +41,10 @@ contract MockStrategyAdapter is IStrategyAdapter {
     }
 
     /// @notice Configurable condition check
-    function canExecute(bytes calldata)
+    function canExecute(address /*vault*/, bytes calldata)
         external
         view
+        override
         returns (bool canExec, string memory reason)
     {
         return (canExecuteResult, canExecuteReason);

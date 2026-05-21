@@ -22,4 +22,10 @@ contract MockERC20 is ERC20 {
     function burn(address from, uint256 amount) external {
         _burn(from, amount);
     }
+
+    // Allow external callers (e.g. vaults) to set allowance on behalf of themselves.
+    // When a vault calls forceApprove(spender, amount), this sets allowance[vault][spender] = amount.
+    function forceApprove(address spender, uint256 amount) external {
+        _approve(msg.sender, spender, amount);
+    }
 }

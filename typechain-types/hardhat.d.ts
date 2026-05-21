@@ -150,9 +150,17 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ExecutorHub__factory>;
     getContractFactory(
+      name: "IRewardManager",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IRewardManager__factory>;
+    getContractFactory(
       name: "IVault",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IVault__factory>;
+    getContractFactory(
+      name: "RewardManager",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.RewardManager__factory>;
     getContractFactory(
       name: "StrategyRegistry",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -182,6 +190,14 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IUserVault__factory>;
     getContractFactory(
+      name: "CompoundStrategyAdapter",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.CompoundStrategyAdapter__factory>;
+    getContractFactory(
+      name: "LendingProtocolAdapter",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.LendingProtocolAdapter__factory>;
+    getContractFactory(
       name: "MockCurvePool",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.MockCurvePool__factory>;
@@ -198,6 +214,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.MockStorkOracle__factory>;
     getContractFactory(
+      name: "MockStrategy",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.MockStrategy__factory>;
+    getContractFactory(
       name: "MockStrategyAdapter",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.MockStrategyAdapter__factory>;
@@ -206,6 +226,14 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.MockTokenMessenger__factory>;
     getContractFactory(
+      name: "SimpleSwapAdapter",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.SimpleSwapAdapter__factory>;
+    getContractFactory(
+      name: "TimeBasedTransferStrategy",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.TimeBasedTransferStrategy__factory>;
+    getContractFactory(
       name: "AccessControlModule",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.AccessControlModule__factory>;
@@ -213,6 +241,10 @@ declare module "hardhat/types/runtime" {
       name: "ShareAccountingModule",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ShareAccountingModule__factory>;
+    getContractFactory(
+      name: "ShareAccountingModuleV2",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ShareAccountingModuleV2__factory>;
     getContractFactory(
       name: "SharedAccountModule",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -405,10 +437,20 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.ExecutorHub>;
     getContractAt(
+      name: "IRewardManager",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IRewardManager>;
+    getContractAt(
       name: "IVault",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
     ): Promise<Contracts.IVault>;
+    getContractAt(
+      name: "RewardManager",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.RewardManager>;
     getContractAt(
       name: "StrategyRegistry",
       address: string | ethers.Addressable,
@@ -445,6 +487,16 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.IUserVault>;
     getContractAt(
+      name: "CompoundStrategyAdapter",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.CompoundStrategyAdapter>;
+    getContractAt(
+      name: "LendingProtocolAdapter",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.LendingProtocolAdapter>;
+    getContractAt(
       name: "MockCurvePool",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
@@ -465,6 +517,11 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.MockStorkOracle>;
     getContractAt(
+      name: "MockStrategy",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.MockStrategy>;
+    getContractAt(
       name: "MockStrategyAdapter",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
@@ -475,6 +532,16 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.MockTokenMessenger>;
     getContractAt(
+      name: "SimpleSwapAdapter",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.SimpleSwapAdapter>;
+    getContractAt(
+      name: "TimeBasedTransferStrategy",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.TimeBasedTransferStrategy>;
+    getContractAt(
       name: "AccessControlModule",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
@@ -484,6 +551,11 @@ declare module "hardhat/types/runtime" {
       address: string | ethers.Addressable,
       signer?: ethers.Signer
     ): Promise<Contracts.ShareAccountingModule>;
+    getContractAt(
+      name: "ShareAccountingModuleV2",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ShareAccountingModuleV2>;
     getContractAt(
       name: "SharedAccountModule",
       address: string | ethers.Addressable,
@@ -647,9 +719,17 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.ExecutorHub>;
     deployContract(
+      name: "IRewardManager",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IRewardManager>;
+    deployContract(
       name: "IVault",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IVault>;
+    deployContract(
+      name: "RewardManager",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.RewardManager>;
     deployContract(
       name: "StrategyRegistry",
       signerOrOptions?: ethers.Signer | DeployContractOptions
@@ -679,6 +759,14 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IUserVault>;
     deployContract(
+      name: "CompoundStrategyAdapter",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.CompoundStrategyAdapter>;
+    deployContract(
+      name: "LendingProtocolAdapter",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.LendingProtocolAdapter>;
+    deployContract(
       name: "MockCurvePool",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.MockCurvePool>;
@@ -695,6 +783,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.MockStorkOracle>;
     deployContract(
+      name: "MockStrategy",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.MockStrategy>;
+    deployContract(
       name: "MockStrategyAdapter",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.MockStrategyAdapter>;
@@ -703,6 +795,14 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.MockTokenMessenger>;
     deployContract(
+      name: "SimpleSwapAdapter",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.SimpleSwapAdapter>;
+    deployContract(
+      name: "TimeBasedTransferStrategy",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.TimeBasedTransferStrategy>;
+    deployContract(
       name: "AccessControlModule",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.AccessControlModule>;
@@ -710,6 +810,10 @@ declare module "hardhat/types/runtime" {
       name: "ShareAccountingModule",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.ShareAccountingModule>;
+    deployContract(
+      name: "ShareAccountingModuleV2",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.ShareAccountingModuleV2>;
     deployContract(
       name: "SharedAccountModule",
       signerOrOptions?: ethers.Signer | DeployContractOptions
@@ -902,10 +1006,20 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.ExecutorHub>;
     deployContract(
+      name: "IRewardManager",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IRewardManager>;
+    deployContract(
       name: "IVault",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IVault>;
+    deployContract(
+      name: "RewardManager",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.RewardManager>;
     deployContract(
       name: "StrategyRegistry",
       args: any[],
@@ -942,6 +1056,16 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IUserVault>;
     deployContract(
+      name: "CompoundStrategyAdapter",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.CompoundStrategyAdapter>;
+    deployContract(
+      name: "LendingProtocolAdapter",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.LendingProtocolAdapter>;
+    deployContract(
       name: "MockCurvePool",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
@@ -962,6 +1086,11 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.MockStorkOracle>;
     deployContract(
+      name: "MockStrategy",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.MockStrategy>;
+    deployContract(
       name: "MockStrategyAdapter",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
@@ -972,6 +1101,16 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.MockTokenMessenger>;
     deployContract(
+      name: "SimpleSwapAdapter",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.SimpleSwapAdapter>;
+    deployContract(
+      name: "TimeBasedTransferStrategy",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.TimeBasedTransferStrategy>;
+    deployContract(
       name: "AccessControlModule",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
@@ -981,6 +1120,11 @@ declare module "hardhat/types/runtime" {
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.ShareAccountingModule>;
+    deployContract(
+      name: "ShareAccountingModuleV2",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.ShareAccountingModuleV2>;
     deployContract(
       name: "SharedAccountModule",
       args: any[],

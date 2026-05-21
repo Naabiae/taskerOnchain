@@ -103,7 +103,11 @@ contract UniswapV3SwapAdapter is IStrategyAdapter {
 
         // Execute swap
         uint256 amountOut = ISwapRouter(swapRouter).exactInputSingle(swapParams);
-        IERC20(tokenIn).forceApprove(swapRouter, 0);
+        // clear allowance (best-effort)
+        (bool okClear,) = address(IERC20(tokenIn)).call(abi.encodeWithSignature("approve(address,uint256)", swapRouter, 0));
+        if (!okClear) {
+            // ignore - some tokens don't return bool
+        }
 
         require(amountOut >= amountOutMin, "Slippage exceeded");
 
@@ -116,7 +120,7 @@ contract UniswapV3SwapAdapter is IStrategyAdapter {
      * @notice Check if swap can be executed
      * @dev Always returns true for immediate swaps (no time/price conditions)
      */
-    function canExecute(bytes calldata params) external view override returns (bool, string memory) {
+    function canExecute(address /*vault*/, bytes calldata params) external view override returns (bool, string memory) {
         (,,,,,, uint256 deadline) = abi.decode(params, (address, address, uint24, uint256, uint256, address, uint256));
 
         if (deadline > 0 && block.timestamp > deadline) {

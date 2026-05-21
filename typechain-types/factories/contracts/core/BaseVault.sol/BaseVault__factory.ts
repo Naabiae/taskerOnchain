@@ -12,6 +12,27 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "spender",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "AllowanceFailed",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
         internalType: "uint256",
         name: "id",
         type: "uint256",
@@ -49,18 +70,12 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "ReentrancyGuardReentrantCall",
+    name: "NotExecutorHub",
     type: "error",
   },
   {
-    inputs: [
-      {
-        internalType: "address",
-        name: "token",
-        type: "address",
-      },
-    ],
-    name: "SafeERC20FailedOperation",
+    inputs: [],
+    name: "ReentrancyGuardReentrantCall",
     type: "error",
   },
   {

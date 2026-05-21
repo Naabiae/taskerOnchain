@@ -38,7 +38,7 @@ export interface MockStrategyAdapterInterface extends Interface {
 
   encodeFunctionData(
     functionFragment: "canExecute",
-    values: [BytesLike]
+    values: [AddressLike, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "canExecuteReason",
@@ -158,7 +158,7 @@ export interface MockStrategyAdapter extends BaseContract {
   ): Promise<this>;
 
   canExecute: TypedContractMethod<
-    [arg0: BytesLike],
+    [arg0: AddressLike, arg1: BytesLike],
     [[boolean, string] & { canExec: boolean; reason: string }],
     "view"
   >;
@@ -198,7 +198,7 @@ export interface MockStrategyAdapter extends BaseContract {
   getFunction(
     nameOrSignature: "canExecute"
   ): TypedContractMethod<
-    [arg0: BytesLike],
+    [arg0: AddressLike, arg1: BytesLike],
     [[boolean, string] & { canExec: boolean; reason: string }],
     "view"
   >;

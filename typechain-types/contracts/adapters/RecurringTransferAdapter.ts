@@ -82,7 +82,7 @@ export interface RecurringTransferAdapterInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "canExecute",
-    values: [BytesLike]
+    values: [AddressLike, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "decodeParams",
@@ -264,7 +264,7 @@ export interface RecurringTransferAdapter extends BaseContract {
   >;
 
   canExecute: TypedContractMethod<
-    [params: BytesLike],
+    [arg0: AddressLike, params: BytesLike],
     [[boolean, string] & { canExec: boolean; reason: string }],
     "view"
   >;
@@ -338,7 +338,7 @@ export interface RecurringTransferAdapter extends BaseContract {
   getFunction(
     nameOrSignature: "canExecute"
   ): TypedContractMethod<
-    [params: BytesLike],
+    [arg0: AddressLike, params: BytesLike],
     [[boolean, string] & { canExec: boolean; reason: string }],
     "view"
   >;

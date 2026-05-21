@@ -88,6 +88,7 @@ export interface ExecutorHubInterface extends Interface {
       | "removeTask"
       | "renounceOwnership"
       | "rewardManager"
+      | "setRewardManager"
       | "transferOwnership"
   ): FunctionFragment;
 
@@ -160,6 +161,10 @@ export interface ExecutorHubInterface extends Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "setRewardManager",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
     functionFragment: "transferOwnership",
     values: [AddressLike]
   ): string;
@@ -211,6 +216,10 @@ export interface ExecutorHubInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "rewardManager",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setRewardManager",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -427,6 +436,12 @@ export interface ExecutorHub extends BaseContract {
 
   rewardManager: TypedContractMethod<[], [string], "view">;
 
+  setRewardManager: TypedContractMethod<
+    [_rewardManager: AddressLike],
+    [void],
+    "nonpayable"
+  >;
+
   transferOwnership: TypedContractMethod<
     [newOwner: AddressLike],
     [void],
@@ -509,6 +524,9 @@ export interface ExecutorHub extends BaseContract {
   getFunction(
     nameOrSignature: "rewardManager"
   ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "setRewardManager"
+  ): TypedContractMethod<[_rewardManager: AddressLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "transferOwnership"
   ): TypedContractMethod<[newOwner: AddressLike], [void], "nonpayable">;

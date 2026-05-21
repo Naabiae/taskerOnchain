@@ -59,11 +59,13 @@ contract UserAccount is BaseVault, SingleOwnerModule {
         view
         returns (address[] memory tokens, uint256[] memory amounts)
     {
-        bytes memory callData = abi.encodeWithSignature(
-            "getTokenRequirements(bytes)",
-            params
-        );
-        (bool success, bytes memory result) = strategy.staticcall(callData);
+        // call getTokenRequirements(address vault, bytes params) if available; fallback to older signature
+        bytes memory callDataNew = abi.encodeWithSignature("getTokenRequirements(address,bytes)", address(this), params);
+        (bool success, bytes memory result) = strategy.staticcall(callDataNew);
+        if (!success) {
+            bytes memory callData = abi.encodeWithSignature("getTokenRequirements(bytes)", params);
+            (success, result) = strategy.staticcall(callData);
+        }
         if (success) {
             (tokens, amounts) = abi.decode(result, (address[], uint256[]));
         } else {

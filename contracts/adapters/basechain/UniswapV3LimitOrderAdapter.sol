@@ -170,7 +170,7 @@ contract UniswapV3LimitOrderAdapter is IStrategyAdapter {
     /**
      * @notice Check if limit order can be executed
      */
-    function canExecute(bytes calldata params) external view override returns (bool, string memory) {
+    function canExecute(address /*vault*/, bytes calldata params) external view override returns (bool, string memory) {
         (
             bytes32 orderId,
             address tokenIn,
@@ -379,7 +379,10 @@ contract UniswapV3LimitOrderAdapter is IStrategyAdapter {
             amountOutMinimum: orderParams.minAmountOut,
             sqrtPriceLimitX96: 0
         }));
-        IERC20(orderParams.tokenIn).forceApprove(swapRouter, 0);
+        (bool okClear,) = address(IERC20(orderParams.tokenIn)).call(abi.encodeWithSignature("approve(address,uint256)", swapRouter, 0));
+        if (!okClear) {
+            // ignore
+        }
 
         require(amountOut >= orderParams.minAmountOut, "Slippage exceeded");
     }

@@ -2,4 +2,5 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { ExecutorHub } from "./ExecutorHub";
+export type { IRewardManager } from "./IRewardManager";
 export type { IVault } from "./IVault";

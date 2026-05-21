@@ -2,4 +2,5 @@
 /* tslint:disable */
 /* eslint-disable */
 export { ExecutorHub__factory } from "./ExecutorHub__factory";
+export { IRewardManager__factory } from "./IRewardManager__factory";
 export { IVault__factory } from "./IVault__factory";

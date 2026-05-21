@@ -5,6 +5,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "../interfaces/IStrategyAdapter.sol";
+import "../interfaces/IStrategyRegistry.sol";
 
 abstract contract BaseVault is ReentrancyGuard {
     using SafeERC20 for IERC20;
@@ -61,13 +62,15 @@ abstract contract BaseVault is ReentrancyGuard {
     error InvalidParams(string reason);
     error InsufficientBalance(address token, uint256 needed);
     error TransferFailed();
+    error AllowanceFailed(address token, address spender, uint256 amount);
+    error NotExecutorHub();
 
     // ─────────────────────────────────────────────────────────────────────────
     // Modifiers
     // ─────────────────────────────────────────────────────────────────────────
 
     modifier onlyExecutorHub() {
-        if (msg.sender != executorHub) revert("Not executor hub");
+        if (msg.sender != executorHub) revert NotExecutorHub();
         _;
     }
 
@@ -106,7 +109,8 @@ abstract contract BaseVault is ReentrancyGuard {
             if (tokens[i] != address(0) && amounts[i] > 0) {
                 uint256 balance = IERC20(tokens[i]).balanceOf(address(this));
                 if (balance < amounts[i]) revert InsufficientBalance(tokens[i], amounts[i]);
-                IERC20(tokens[i]).forceApprove(strategy, amounts[i]);
+                // ensure allowance to the strategy in a safe way
+                _ensureAllowance(tokens[i], strategy, amounts[i]);
             }
         }
 
@@ -116,7 +120,11 @@ abstract contract BaseVault is ReentrancyGuard {
 
         for (uint256 i = 0; i < tokens.length; i++) {
             if (tokens[i] != address(0) && amounts[i] > 0) {
-                IERC20(tokens[i]).forceApprove(strategy, 0);
+                // clear allowance (best-effort)
+                (bool okClear,) = address(IERC20(tokens[i])).call(abi.encodeWithSignature("approve(address,uint256)", strategy, 0));
+                if (!okClear) {
+                    // ignore - not all tokens return bool
+                }
             }
         }
 
@@ -125,6 +133,31 @@ abstract contract BaseVault is ReentrancyGuard {
         }
 
         return (success, result);
+    }
+
+    // Helper to set allowance safely for non-standard tokens.
+    function _ensureAllowance(address tokenAddr, address spender, uint256 amount) internal {
+        if (tokenAddr == address(0)) return;
+        IERC20 token = IERC20(tokenAddr);
+        uint256 current = token.allowance(address(this), spender);
+        if (current < amount) {
+            if (current != 0) {
+                // safe pattern: set to 0 then set desired amount
+                (bool ok0,) = address(token).call(abi.encodeWithSignature("approve(address,uint256)", spender, 0));
+                if (!ok0) {
+                    // continue to try setting via low-level later
+                }
+            }
+            (bool ok1,) = address(token).call(abi.encodeWithSignature("approve(address,uint256)", spender, amount));
+            if (!ok1) {
+                // allowAfter check below will attempt forceApprove
+            }
+            // after safeApprove, verify
+            uint256 allowAfter = token.allowance(address(this), spender);
+            if (allowAfter < amount) {
+                revert AllowanceFailed(tokenAddr, spender, amount);
+            }
+        }
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -136,6 +169,14 @@ abstract contract BaseVault is ReentrancyGuard {
         bytes calldata params,
         uint256 maxExecutions
     ) internal returns (uint256 automationId) {
+        // Ensure strategy is registered and active when registry set
+        if (strategyRegistry != address(0)) {
+            try IStrategyRegistry(strategyRegistry).isStrategyActive(strategy) returns (bool active) {
+                if (!active) revert StrategyNotRegistered(strategy);
+            } catch {
+                revert StrategyNotRegistered(strategy);
+            }
+        }
         (bool valid, string memory err) = IStrategyAdapter(strategy).validateParams(params);
         if (!valid) revert InvalidParams(err);
 
@@ -170,13 +211,29 @@ abstract contract BaseVault is ReentrancyGuard {
             return false;
         }
 
-        (bool canExec, string memory reason) = IStrategyAdapter(auto_.strategy).canExecute(auto_.params);
+        bool canExec;
+        string memory reason;
+        // Try new signature canExecute(address, bytes) first; fallback to legacy canExecute(bytes)
+        try IStrategyAdapter(auto_.strategy).canExecute(address(this), auto_.params) returns (bool c, string memory r) {
+            canExec = c;
+            reason = r;
+        } catch {
+            // fallback to legacy signature
+            (bool ok, bytes memory res) = auto_.strategy.staticcall(abi.encodeWithSignature("canExecute(bytes)", auto_.params));
+            if (!ok) revert InvalidParams("canExecute failed");
+            (canExec, reason) = abi.decode(res, (bool, string));
+        }
+
         if (!canExec) revert InvalidParams(reason);
 
         (success,) = _executeStrategy(auto_.strategy, 0, auto_.params);
 
         auto_.executionCount++;
-        auto_.lastExecutionTime = block.timestamp;
+        
+        // Only update lastExecutionTime on successful execution
+        if (success) {
+            auto_.lastExecutionTime = block.timestamp;
+        }
 
         if (auto_.maxExecutions > 0 && auto_.executionCount >= auto_.maxExecutions) {
             auto_.status = AutomationStatus.COMPLETED;
@@ -204,13 +261,13 @@ abstract contract BaseVault is ReentrancyGuard {
         bytes calldata params,
         uint256 maxExecutions
     ) external returns (uint256 id) {
-        require(_canExecute(msg.sender), "Not authorized");
+        if (!_canExecute(msg.sender)) revert InvalidParams("Not authorized");
         _beforeExecution(msg.sender, strategy, params);
         return _createAutomation(strategy, params, maxExecutions);
     }
 
     function cancelAutomation(uint256 automationId) external {
-        require(_canExecute(msg.sender), "Not authorized");
+        if (!_canExecute(msg.sender)) revert InvalidParams("Not authorized");
         _cancelAutomation(automationId);
     }
 

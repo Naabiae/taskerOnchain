@@ -60,7 +60,7 @@ export interface TimeBasedTransferAdapterInterface extends Interface {
 
   encodeFunctionData(
     functionFragment: "canExecute",
-    values: [BytesLike]
+    values: [AddressLike, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "decodeParams",
@@ -174,7 +174,7 @@ export interface TimeBasedTransferAdapter extends BaseContract {
   ): Promise<this>;
 
   canExecute: TypedContractMethod<
-    [params: BytesLike],
+    [arg0: AddressLike, params: BytesLike],
     [[boolean, string] & { canExec: boolean; reason: string }],
     "view"
   >;
@@ -218,7 +218,7 @@ export interface TimeBasedTransferAdapter extends BaseContract {
   getFunction(
     nameOrSignature: "canExecute"
   ): TypedContractMethod<
-    [params: BytesLike],
+    [arg0: AddressLike, params: BytesLike],
     [[boolean, string] & { canExec: boolean; reason: string }],
     "view"
   >;

@@ -59,7 +59,7 @@ export interface UniswapV3LimitOrderAdapterInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "canExecute",
-    values: [BytesLike]
+    values: [AddressLike, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "execute",
@@ -245,7 +245,7 @@ export interface UniswapV3LimitOrderAdapter extends BaseContract {
   PRICE_PRECISION: TypedContractMethod<[], [bigint], "view">;
 
   canExecute: TypedContractMethod<
-    [params: BytesLike],
+    [arg0: AddressLike, params: BytesLike],
     [[boolean, string]],
     "view"
   >;
@@ -308,7 +308,11 @@ export interface UniswapV3LimitOrderAdapter extends BaseContract {
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "canExecute"
-  ): TypedContractMethod<[params: BytesLike], [[boolean, string]], "view">;
+  ): TypedContractMethod<
+    [arg0: AddressLike, params: BytesLike],
+    [[boolean, string]],
+    "view"
+  >;
   getFunction(
     nameOrSignature: "execute"
   ): TypedContractMethod<

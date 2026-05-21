@@ -37,7 +37,7 @@ export interface CCTPTransferAdapterInterface extends Interface {
 
   encodeFunctionData(
     functionFragment: "canExecute",
-    values: [BytesLike]
+    values: [AddressLike, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "execute",
@@ -143,7 +143,7 @@ export interface CCTPTransferAdapter extends BaseContract {
   ): Promise<this>;
 
   canExecute: TypedContractMethod<
-    [params: BytesLike],
+    [arg0: AddressLike, params: BytesLike],
     [[boolean, string]],
     "view"
   >;
@@ -180,7 +180,11 @@ export interface CCTPTransferAdapter extends BaseContract {
 
   getFunction(
     nameOrSignature: "canExecute"
-  ): TypedContractMethod<[params: BytesLike], [[boolean, string]], "view">;
+  ): TypedContractMethod<
+    [arg0: AddressLike, params: BytesLike],
+    [[boolean, string]],
+    "view"
+  >;
   getFunction(
     nameOrSignature: "execute"
   ): TypedContractMethod<

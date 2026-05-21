@@ -204,33 +204,8 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "baseReward",
-        type: "uint256",
-      },
-    ],
-    name: "getMaxRewardCost",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "executor",
-        type: "address",
-      },
-    ],
-    name: "getReputationMultiplier",
+    inputs: [],
+    name: "getMaxGasReimbursement",
     outputs: [
       {
         internalType: "uint256",
@@ -243,20 +218,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "maxGasReimbursement",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "platformFeePercentage",
+    name: "getPlatformFeePercentage",
     outputs: [
       {
         internalType: "uint256",

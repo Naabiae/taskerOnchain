@@ -65,7 +65,7 @@ contract StorkPriceTransferAdapter is IStrategyAdapter {
         return (true, abi.encode(amount));
     }
 
-    function canExecute(bytes calldata params) external view override returns (bool, string memory) {
+    function canExecute(address /*vault*/, bytes calldata params) external view override returns (bool, string memory) {
         (address storkOracle, , , int256 targetPrice, bool isBelow, ) = abi.decode(params, (address, address, uint256, int256, bool, address));
 
         (, int256 currentPrice, , , ) = IStorkOracle(storkOracle).latestRoundData();

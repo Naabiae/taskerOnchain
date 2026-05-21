@@ -60,11 +60,13 @@ contract ExecutorHub is Ownable, ReentrancyGuard {
     // Errors
     // ─────────────────────────────────────────────────────────────────────────
 
+    error InvalidExecutor();
     error NotExecutor();
     error AlreadyExecutor();
     error NotActiveExecutor();
     error TaskAlreadyRegistered();
     error TaskNotFound();
+    error InvalidVault();
 
     // ─────────────────────────────────────────────────────────────────────────
     // Modifiers
@@ -86,7 +88,7 @@ contract ExecutorHub is Ownable, ReentrancyGuard {
     // ─────────────────────────────────────────────────────────────────────────
 
     function addExecutor(address executor) external onlyOwner {
-        if (executor == address(0)) revert("Invalid executor");
+        if (executor == address(0)) revert InvalidExecutor();
         if (executors[executor].isActive) revert AlreadyExecutor();
 
         executors[executor] = Executor({
@@ -119,6 +121,11 @@ contract ExecutorHub is Ownable, ReentrancyGuard {
         delete executorIndex[executor];
 
         emit ExecutorRemoved(executor);
+    }
+
+    function setRewardManager(address _rewardManager) external onlyOwner {
+        if (_rewardManager == address(0)) revert("Invalid reward manager");
+        rewardManager = _rewardManager;
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -176,7 +183,7 @@ contract ExecutorHub is Ownable, ReentrancyGuard {
         onlyExecutor
         nonReentrant
     {
-        require(vault != address(0), "Invalid vault");
+        if (vault == address(0)) revert InvalidVault();
 
         Executor storage executor = executors[msg.sender];
         executor.totalExecutions++;
@@ -187,6 +194,16 @@ contract ExecutorHub is Ownable, ReentrancyGuard {
             executor.successfulExecutions++;
         } else {
             executor.failedExecutions++;
+        }
+
+        // Notify reward manager about execution
+        if (rewardManager != address(0)) {
+            try IRewardManager(rewardManager).distributeReward(
+                vault,
+                msg.sender,
+                baseRewardPerExecution,
+                0 // gasUsed - can be enhanced to track actual gas
+            ) {} catch {}
         }
 
         emit AutomationExecuted(vault, automationId, msg.sender, success);
@@ -220,4 +237,13 @@ contract ExecutorHub is Ownable, ReentrancyGuard {
 
 interface IVault {
     function triggerAutomation(uint256 id) external returns (bool);
+}
+
+interface IRewardManager {
+    function distributeReward(
+        address vault,
+        address executor,
+        uint256 baseReward,
+        uint256 gasUsed
+    ) external returns (uint256);
 }

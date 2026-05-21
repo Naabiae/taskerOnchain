@@ -58,14 +58,17 @@ contract CCTPTransferAdapter is IStrategyAdapter {
             token
         );
 
-        IERC20(token).forceApprove(cctpMessenger, 0);
+        (bool okClear,) = address(IERC20(token)).call(abi.encodeWithSignature("approve(address,uint256)", cctpMessenger, 0));
+        if (!okClear) {
+            // ignore
+        }
 
         emit ActionExecuted(vault, cctpMessenger, true, abi.encode(nonce));
 
         return (true, abi.encode(nonce));
     }
 
-    function canExecute(bytes calldata params) external view override returns (bool, string memory) {
+    function canExecute(address /*vault*/, bytes calldata params) external view override returns (bool, string memory) {
         (,, , , , uint256 executeAfter) = abi.decode(params, (address, address, uint256, uint32, bytes32, uint256));
         if (block.timestamp < executeAfter) {
             return (false, "Time not reached");

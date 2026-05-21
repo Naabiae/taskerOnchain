@@ -3,5 +3,6 @@
 /* eslint-disable */
 export type { AccessControlModule } from "./AccessControlModule";
 export type { ShareAccountingModule } from "./ShareAccountingModule";
+export type { ShareAccountingModuleV2 } from "./ShareAccountingModuleV2";
 export type { SharedAccountModule } from "./SharedAccountModule";
 export type { SingleOwnerModule } from "./SingleOwnerModule";

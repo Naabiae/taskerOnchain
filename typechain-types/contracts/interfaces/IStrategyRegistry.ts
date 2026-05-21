@@ -3,7 +3,6 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumberish,
   BytesLike,
   FunctionFragment,
   Result,
@@ -21,116 +20,16 @@ import type {
   TypedContractMethod,
 } from "../../common";
 
-export declare namespace IStrategyRegistry {
-  export type StrategyInfoStruct = {
-    adapter: AddressLike;
-    isActive: boolean;
-    gasLimit: BigNumberish;
-    requiresTokens: boolean;
-    requiredInBatch: boolean;
-    automationOnly: boolean;
-    outputTokens: AddressLike[];
-  };
-
-  export type StrategyInfoStructOutput = [
-    adapter: string,
-    isActive: boolean,
-    gasLimit: bigint,
-    requiresTokens: boolean,
-    requiredInBatch: boolean,
-    automationOnly: boolean,
-    outputTokens: string[]
-  ] & {
-    adapter: string;
-    isActive: boolean;
-    gasLimit: bigint;
-    requiresTokens: boolean;
-    requiredInBatch: boolean;
-    automationOnly: boolean;
-    outputTokens: string[];
-  };
-}
-
 export interface IStrategyRegistryInterface extends Interface {
-  getFunction(
-    nameOrSignature:
-      | "activateStrategy"
-      | "deactivateStrategy"
-      | "getStrategyInfo"
-      | "getStrategyOutputTokens"
-      | "isAutomation"
-      | "isRequired"
-      | "isStrategyActive"
-      | "registerStrategy"
-  ): FunctionFragment;
+  getFunction(nameOrSignature: "isStrategyActive"): FunctionFragment;
 
-  encodeFunctionData(
-    functionFragment: "activateStrategy",
-    values: [AddressLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "deactivateStrategy",
-    values: [AddressLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getStrategyInfo",
-    values: [AddressLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getStrategyOutputTokens",
-    values: [AddressLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "isAutomation",
-    values: [AddressLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "isRequired",
-    values: [AddressLike]
-  ): string;
   encodeFunctionData(
     functionFragment: "isStrategyActive",
     values: [AddressLike]
   ): string;
-  encodeFunctionData(
-    functionFragment: "registerStrategy",
-    values: [
-      AddressLike,
-      BigNumberish,
-      boolean,
-      boolean,
-      boolean,
-      AddressLike[]
-    ]
-  ): string;
 
   decodeFunctionResult(
-    functionFragment: "activateStrategy",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "deactivateStrategy",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getStrategyInfo",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getStrategyOutputTokens",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "isAutomation",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "isRequired", data: BytesLike): Result;
-  decodeFunctionResult(
     functionFragment: "isStrategyActive",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "registerStrategy",
     data: BytesLike
   ): Result;
 }
@@ -178,51 +77,10 @@ export interface IStrategyRegistry extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
-  activateStrategy: TypedContractMethod<
-    [adapter: AddressLike],
-    [void],
-    "nonpayable"
-  >;
-
-  deactivateStrategy: TypedContractMethod<
-    [adapter: AddressLike],
-    [void],
-    "nonpayable"
-  >;
-
-  getStrategyInfo: TypedContractMethod<
-    [adapter: AddressLike],
-    [IStrategyRegistry.StrategyInfoStructOutput],
-    "view"
-  >;
-
-  getStrategyOutputTokens: TypedContractMethod<
-    [adapter: AddressLike],
-    [string[]],
-    "view"
-  >;
-
-  isAutomation: TypedContractMethod<[adapter: AddressLike], [boolean], "view">;
-
-  isRequired: TypedContractMethod<[adapter: AddressLike], [boolean], "view">;
-
   isStrategyActive: TypedContractMethod<
     [adapter: AddressLike],
     [boolean],
     "view"
-  >;
-
-  registerStrategy: TypedContractMethod<
-    [
-      adapter: AddressLike,
-      gasLimit: BigNumberish,
-      requiresTokens: boolean,
-      requiredInBatch: boolean,
-      automationOnly: boolean,
-      outputTokens: AddressLike[]
-    ],
-    [void],
-    "nonpayable"
   >;
 
   getFunction<T extends ContractMethod = ContractMethod>(
@@ -230,44 +88,8 @@ export interface IStrategyRegistry extends BaseContract {
   ): T;
 
   getFunction(
-    nameOrSignature: "activateStrategy"
-  ): TypedContractMethod<[adapter: AddressLike], [void], "nonpayable">;
-  getFunction(
-    nameOrSignature: "deactivateStrategy"
-  ): TypedContractMethod<[adapter: AddressLike], [void], "nonpayable">;
-  getFunction(
-    nameOrSignature: "getStrategyInfo"
-  ): TypedContractMethod<
-    [adapter: AddressLike],
-    [IStrategyRegistry.StrategyInfoStructOutput],
-    "view"
-  >;
-  getFunction(
-    nameOrSignature: "getStrategyOutputTokens"
-  ): TypedContractMethod<[adapter: AddressLike], [string[]], "view">;
-  getFunction(
-    nameOrSignature: "isAutomation"
-  ): TypedContractMethod<[adapter: AddressLike], [boolean], "view">;
-  getFunction(
-    nameOrSignature: "isRequired"
-  ): TypedContractMethod<[adapter: AddressLike], [boolean], "view">;
-  getFunction(
     nameOrSignature: "isStrategyActive"
   ): TypedContractMethod<[adapter: AddressLike], [boolean], "view">;
-  getFunction(
-    nameOrSignature: "registerStrategy"
-  ): TypedContractMethod<
-    [
-      adapter: AddressLike,
-      gasLimit: BigNumberish,
-      requiresTokens: boolean,
-      requiredInBatch: boolean,
-      automationOnly: boolean,
-      outputTokens: AddressLike[]
-    ],
-    [void],
-    "nonpayable"
-  >;
 
   filters: {};
 }

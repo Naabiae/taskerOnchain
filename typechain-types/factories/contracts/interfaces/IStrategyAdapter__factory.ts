@@ -43,6 +43,11 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "address",
+        name: "vault",
+        type: "address",
+      },
+      {
         internalType: "bytes",
         name: "params",
         type: "bytes",

@@ -120,7 +120,7 @@ contract UniswapV3DCAAdapter is IStrategyAdapter {
     /**
      * @notice Check if DCA swap can be executed
      */
-    function canExecute(bytes calldata params) external view override returns (bool, string memory) {
+    function canExecute(address /*vault*/, bytes calldata params) external view override returns (bool, string memory) {
         (
             bytes32 taskId,
             ,,,
@@ -239,7 +239,10 @@ contract UniswapV3DCAAdapter is IStrategyAdapter {
             amountOutMinimum: dcaParams.minAmountOut,
             sqrtPriceLimitX96: 0
         }));
-        IERC20(dcaParams.tokenIn).forceApprove(swapRouter, 0);
+        (bool okClear,) = address(IERC20(dcaParams.tokenIn)).call(abi.encodeWithSignature("approve(address,uint256)", swapRouter, 0));
+        if (!okClear) {
+            // ignore
+        }
 
         require(amountOut >= dcaParams.minAmountOut, "Slippage exceeded");
     }

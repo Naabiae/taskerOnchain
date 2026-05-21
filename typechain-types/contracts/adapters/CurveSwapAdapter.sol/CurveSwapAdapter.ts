@@ -37,7 +37,7 @@ export interface CurveSwapAdapterInterface extends Interface {
 
   encodeFunctionData(
     functionFragment: "canExecute",
-    values: [BytesLike]
+    values: [AddressLike, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "execute",
@@ -143,7 +143,7 @@ export interface CurveSwapAdapter extends BaseContract {
   ): Promise<this>;
 
   canExecute: TypedContractMethod<
-    [arg0: BytesLike],
+    [arg0: AddressLike, arg1: BytesLike],
     [[boolean, string]],
     "view"
   >;
@@ -180,7 +180,11 @@ export interface CurveSwapAdapter extends BaseContract {
 
   getFunction(
     nameOrSignature: "canExecute"
-  ): TypedContractMethod<[arg0: BytesLike], [[boolean, string]], "view">;
+  ): TypedContractMethod<
+    [arg0: AddressLike, arg1: BytesLike],
+    [[boolean, string]],
+    "view"
+  >;
   getFunction(
     nameOrSignature: "execute"
   ): TypedContractMethod<

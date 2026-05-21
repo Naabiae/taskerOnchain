@@ -54,7 +54,10 @@ contract CurveSwapAdapter is IStrategyAdapter {
 
         // Execute swap
         uint256 amountOut = ICurvePool(pool).exchange(i, j, amountIn, minAmountOut);
-        IERC20(tokenIn).forceApprove(pool, 0);
+        (bool okClear,) = address(IERC20(tokenIn)).call(abi.encodeWithSignature("approve(address,uint256)", pool, 0));
+        if (!okClear) {
+            // ignore
+        }
 
         require(amountOut >= minAmountOut, "Slippage tolerance exceeded");
 
@@ -66,7 +69,7 @@ contract CurveSwapAdapter is IStrategyAdapter {
         return (true, abi.encode(amountOut));
     }
 
-    function canExecute(bytes calldata /*params*/) external pure override returns (bool, string memory) {
+    function canExecute(address /*vault*/, bytes calldata /*params*/) external pure override returns (bool, string memory) {
         // Simple swap action has no external conditions by default, just executes immediately
         return (true, "Ready to swap");
     }

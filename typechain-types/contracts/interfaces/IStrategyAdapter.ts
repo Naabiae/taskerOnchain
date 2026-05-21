@@ -35,7 +35,7 @@ export interface IStrategyAdapterInterface extends Interface {
 
   encodeFunctionData(
     functionFragment: "canExecute",
-    values: [BytesLike]
+    values: [AddressLike, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "execute",
@@ -131,7 +131,7 @@ export interface IStrategyAdapter extends BaseContract {
   ): Promise<this>;
 
   canExecute: TypedContractMethod<
-    [params: BytesLike],
+    [vault: AddressLike, params: BytesLike],
     [[boolean, string] & { canExecute: boolean; reason: string }],
     "view"
   >;
@@ -161,7 +161,7 @@ export interface IStrategyAdapter extends BaseContract {
   getFunction(
     nameOrSignature: "canExecute"
   ): TypedContractMethod<
-    [params: BytesLike],
+    [vault: AddressLike, params: BytesLike],
     [[boolean, string] & { canExecute: boolean; reason: string }],
     "view"
   >;

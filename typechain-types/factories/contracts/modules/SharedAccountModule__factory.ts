@@ -15,8 +15,49 @@ const _abi = [
     type: "error",
   },
   {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "needed",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "provided",
+        type: "uint256",
+      },
+    ],
+    name: "FulfillAmountTooLow",
+    type: "error",
+  },
+  {
     inputs: [],
     name: "InsufficientShares",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "NotRequestOwner",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "ReentrancyGuardReentrantCall",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "RequestAlreadyClaimed",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "RequestNotFulfilled",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "RequestNotPending",
     type: "error",
   },
   {
@@ -55,6 +96,25 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
+        indexed: false,
+        internalType: "uint256",
+        name: "oldAmount",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "newAmount",
+        type: "uint256",
+      },
+    ],
+    name: "DeployedCapitalUpdated",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
         indexed: true,
         internalType: "address",
         name: "user",
@@ -63,13 +123,19 @@ const _abi = [
       {
         indexed: false,
         internalType: "uint256",
-        name: "amount",
+        name: "assets",
         type: "uint256",
       },
       {
         indexed: false,
         internalType: "uint256",
-        name: "sharesIssued",
+        name: "shares",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "sharePrice",
         type: "uint256",
       },
     ],
@@ -158,13 +224,13 @@ const _abi = [
       {
         indexed: false,
         internalType: "uint256",
-        name: "sharesBurned",
+        name: "shares",
         type: "uint256",
       },
       {
         indexed: false,
         internalType: "uint256",
-        name: "assetReturned",
+        name: "assets",
         type: "uint256",
       },
     ],
@@ -203,6 +269,87 @@ const _abi = [
     type: "event",
   },
   {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "uint256",
+        name: "id",
+        type: "uint256",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "user",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "assets",
+        type: "uint256",
+      },
+    ],
+    name: "WithdrawalClaimed",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "uint256",
+        name: "id",
+        type: "uint256",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "user",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "assets",
+        type: "uint256",
+      },
+    ],
+    name: "WithdrawalFulfilled",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "uint256",
+        name: "id",
+        type: "uint256",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "user",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "shares",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "lockedAssets",
+        type: "uint256",
+      },
+    ],
+    name: "WithdrawalQueued",
+    type: "event",
+  },
+  {
     inputs: [],
     name: "asset",
     outputs: [
@@ -237,6 +384,51 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "address",
+        name: "user",
+        type: "address",
+      },
+    ],
+    name: "balanceOfAssets",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "id",
+        type: "uint256",
+      },
+    ],
+    name: "claimWithdrawal",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "deployedCapital",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "uint256",
         name: "amount",
         type: "uint256",
@@ -250,6 +442,24 @@ const _abi = [
         type: "uint256",
       },
     ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "id",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "assetAmount",
+        type: "uint256",
+      },
+    ],
+    name: "fulfillWithdrawal",
+    outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
@@ -331,6 +541,132 @@ const _abi = [
     inputs: [
       {
         internalType: "uint256",
+        name: "id",
+        type: "uint256",
+      },
+    ],
+    name: "getRequest",
+    outputs: [
+      {
+        internalType: "address",
+        name: "user",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "shares",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "assetAmount",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "requestTime",
+        type: "uint256",
+      },
+      {
+        internalType: "enum SharedAccountModule.WithdrawalStatus",
+        name: "status",
+        type: "uint8",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "user",
+        type: "address",
+      },
+    ],
+    name: "getUserPosition",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "shares",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "currentValue",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "pendingClaims",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "user",
+        type: "address",
+      },
+    ],
+    name: "getUserRequests",
+    outputs: [
+      {
+        internalType: "uint256[]",
+        name: "",
+        type: "uint256[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "highWaterMark",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "liquidAssets",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "realizedGains",
+    outputs: [
+      {
+        internalType: "int256",
+        name: "",
+        type: "int256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
         name: "shares",
         type: "uint256",
       },
@@ -339,7 +675,7 @@ const _abi = [
     outputs: [
       {
         internalType: "uint256",
-        name: "assetAmount",
+        name: "assetsOut",
         type: "uint256",
       },
     ],
@@ -374,12 +710,90 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "totalCapitalDeposited",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "totalShares",
     outputs: [
       {
         internalType: "uint256",
         name: "",
         type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "newAmount",
+        type: "uint256",
+      },
+    ],
+    name: "updateDeployedCapital",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "withdrawalRequestCount",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    name: "withdrawalRequests",
+    outputs: [
+      {
+        internalType: "address",
+        name: "user",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "shares",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "assetAmount",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "requestTime",
+        type: "uint256",
+      },
+      {
+        internalType: "enum SharedAccountModule.WithdrawalStatus",
+        name: "status",
+        type: "uint8",
       },
     ],
     stateMutability: "view",

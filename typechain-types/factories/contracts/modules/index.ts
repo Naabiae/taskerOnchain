@@ -3,5 +3,6 @@
 /* eslint-disable */
 export { AccessControlModule__factory } from "./AccessControlModule__factory";
 export { ShareAccountingModule__factory } from "./ShareAccountingModule__factory";
+export { ShareAccountingModuleV2__factory } from "./ShareAccountingModuleV2__factory";
 export { SharedAccountModule__factory } from "./SharedAccountModule__factory";
 export { SingleOwnerModule__factory } from "./SingleOwnerModule__factory";

@@ -3,5 +3,6 @@
 /* eslint-disable */
 export * as baseVaultSol from "./BaseVault.sol";
 export * as executorHubSol from "./ExecutorHub.sol";
+export { RewardManager__factory } from "./RewardManager__factory";
 export { StrategyRegistry__factory } from "./StrategyRegistry__factory";
 export { VaultFactory__factory } from "./VaultFactory__factory";

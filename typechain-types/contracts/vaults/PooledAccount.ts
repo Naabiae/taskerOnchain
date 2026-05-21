@@ -94,25 +94,49 @@ export interface PooledAccountInterface extends Interface {
     nameOrSignature:
       | "asset"
       | "balanceOf"
+      | "balanceOfAssets"
       | "cancelAutomation"
+      | "circuitBreakerTripped"
+      | "claimWithdrawal"
       | "createAutomation"
+      | "deployedCapital"
       | "deposit"
       | "execute"
       | "executorHub"
+      | "extractPerformanceFee"
+      | "feePercentage"
+      | "feeRecipient"
+      | "fulfillWithdrawal"
       | "getAllExecutors"
       | "getAutomation"
       | "getAutomations"
       | "getExecutor"
+      | "getRequest"
+      | "getUserPosition"
+      | "getUserRequests"
+      | "highWaterMark"
+      | "lastFeeExtractionNAV"
+      | "liquidAssets"
       | "manager"
+      | "maxDrawdownBps"
       | "nextAutomationId"
       | "nonce"
+      | "realizedGains"
       | "redeem"
+      | "resetCircuitBreaker"
+      | "setFeePercentage"
+      | "setFeeRecipient"
       | "setManager"
+      | "setMaxDrawdown"
       | "sharePrice"
       | "strategyRegistry"
       | "totalAssets"
+      | "totalCapitalDeposited"
       | "totalShares"
       | "triggerAutomation"
+      | "updateDeployedCapital"
+      | "withdrawalRequestCount"
+      | "withdrawalRequests"
   ): FunctionFragment;
 
   getEvent(
@@ -121,14 +145,24 @@ export interface PooledAccountInterface extends Interface {
       | "AutomationCompleted"
       | "AutomationCreated"
       | "AutomationTriggered"
+      | "CircuitBreakerReset"
+      | "CircuitBreakerTripped"
+      | "DeployedCapitalUpdated"
       | "Deposit"
       | "ExecutorAdded"
       | "ExecutorRemoved"
       | "ExecutorRevoked"
+      | "FeePercentageUpdated"
+      | "FeeRecipientUpdated"
       | "ManagerSet"
+      | "MaxDrawdownUpdated"
+      | "PerformanceFeeExtracted"
       | "Redeem"
       | "SpendingLimitUpdated"
       | "StrategyExecuted"
+      | "WithdrawalClaimed"
+      | "WithdrawalFulfilled"
+      | "WithdrawalQueued"
   ): EventFragment;
 
   encodeFunctionData(functionFragment: "asset", values?: undefined): string;
@@ -137,12 +171,28 @@ export interface PooledAccountInterface extends Interface {
     values: [AddressLike]
   ): string;
   encodeFunctionData(
+    functionFragment: "balanceOfAssets",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
     functionFragment: "cancelAutomation",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "circuitBreakerTripped",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "claimWithdrawal",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "createAutomation",
     values: [AddressLike, BytesLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "deployedCapital",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "deposit",
@@ -157,6 +207,22 @@ export interface PooledAccountInterface extends Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "extractPerformanceFee",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "feePercentage",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "feeRecipient",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "fulfillWithdrawal",
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "getAllExecutors",
     values?: undefined
   ): string;
@@ -172,19 +238,67 @@ export interface PooledAccountInterface extends Interface {
     functionFragment: "getExecutor",
     values: [AddressLike]
   ): string;
+  encodeFunctionData(
+    functionFragment: "getRequest",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getUserPosition",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getUserRequests",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "highWaterMark",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "lastFeeExtractionNAV",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "liquidAssets",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "manager", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "maxDrawdownBps",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "nextAutomationId",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "nonce", values?: undefined): string;
   encodeFunctionData(
+    functionFragment: "realizedGains",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "redeem",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "resetCircuitBreaker",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setFeePercentage",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setFeeRecipient",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
     functionFragment: "setManager",
     values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setMaxDrawdown",
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "sharePrice",
@@ -199,6 +313,10 @@ export interface PooledAccountInterface extends Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "totalCapitalDeposited",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "totalShares",
     values?: undefined
   ): string;
@@ -206,21 +324,65 @@ export interface PooledAccountInterface extends Interface {
     functionFragment: "triggerAutomation",
     values: [BigNumberish]
   ): string;
+  encodeFunctionData(
+    functionFragment: "updateDeployedCapital",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "withdrawalRequestCount",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "withdrawalRequests",
+    values: [BigNumberish]
+  ): string;
 
   decodeFunctionResult(functionFragment: "asset", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "balanceOfAssets",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "cancelAutomation",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "circuitBreakerTripped",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "claimWithdrawal",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "createAutomation",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "deployedCapital",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "execute", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "executorHub",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "extractPerformanceFee",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "feePercentage",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "feeRecipient",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "fulfillWithdrawal",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -239,14 +401,59 @@ export interface PooledAccountInterface extends Interface {
     functionFragment: "getExecutor",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "getRequest", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getUserPosition",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getUserRequests",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "highWaterMark",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "lastFeeExtractionNAV",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "liquidAssets",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "manager", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "maxDrawdownBps",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "nextAutomationId",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "nonce", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "realizedGains",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "redeem", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "resetCircuitBreaker",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setFeePercentage",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setFeeRecipient",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "setManager", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setMaxDrawdown",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "sharePrice", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "strategyRegistry",
@@ -257,11 +464,27 @@ export interface PooledAccountInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "totalCapitalDeposited",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "totalShares",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "triggerAutomation",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "updateDeployedCapital",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawalRequestCount",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawalRequests",
     data: BytesLike
   ): Result;
 }
@@ -325,21 +548,71 @@ export namespace AutomationTriggeredEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
+export namespace CircuitBreakerResetEvent {
+  export type InputTuple = [currentNAV: BigNumberish];
+  export type OutputTuple = [currentNAV: bigint];
+  export interface OutputObject {
+    currentNAV: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace CircuitBreakerTrippedEvent {
+  export type InputTuple = [
+    currentNAV: BigNumberish,
+    hwm: BigNumberish,
+    drawdownBps: BigNumberish
+  ];
+  export type OutputTuple = [
+    currentNAV: bigint,
+    hwm: bigint,
+    drawdownBps: bigint
+  ];
+  export interface OutputObject {
+    currentNAV: bigint;
+    hwm: bigint;
+    drawdownBps: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace DeployedCapitalUpdatedEvent {
+  export type InputTuple = [oldAmount: BigNumberish, newAmount: BigNumberish];
+  export type OutputTuple = [oldAmount: bigint, newAmount: bigint];
+  export interface OutputObject {
+    oldAmount: bigint;
+    newAmount: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
 export namespace DepositEvent {
   export type InputTuple = [
     user: AddressLike,
-    amount: BigNumberish,
-    sharesIssued: BigNumberish
+    assets: BigNumberish,
+    shares: BigNumberish,
+    sharePrice: BigNumberish
   ];
   export type OutputTuple = [
     user: string,
-    amount: bigint,
-    sharesIssued: bigint
+    assets: bigint,
+    shares: bigint,
+    sharePrice: bigint
   ];
   export interface OutputObject {
     user: string;
-    amount: bigint;
-    sharesIssued: bigint;
+    assets: bigint;
+    shares: bigint;
+    sharePrice: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -396,6 +669,35 @@ export namespace ExecutorRevokedEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
+export namespace FeePercentageUpdatedEvent {
+  export type InputTuple = [oldFee: BigNumberish, newFee: BigNumberish];
+  export type OutputTuple = [oldFee: bigint, newFee: bigint];
+  export interface OutputObject {
+    oldFee: bigint;
+    newFee: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace FeeRecipientUpdatedEvent {
+  export type InputTuple = [
+    oldRecipient: AddressLike,
+    newRecipient: AddressLike
+  ];
+  export type OutputTuple = [oldRecipient: string, newRecipient: string];
+  export interface OutputObject {
+    oldRecipient: string;
+    newRecipient: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
 export namespace ManagerSetEvent {
   export type InputTuple = [manager: AddressLike];
   export type OutputTuple = [manager: string];
@@ -408,21 +710,52 @@ export namespace ManagerSetEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
+export namespace MaxDrawdownUpdatedEvent {
+  export type InputTuple = [oldBps: BigNumberish, newBps: BigNumberish];
+  export type OutputTuple = [oldBps: bigint, newBps: bigint];
+  export interface OutputObject {
+    oldBps: bigint;
+    newBps: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace PerformanceFeeExtractedEvent {
+  export type InputTuple = [
+    recipient: AddressLike,
+    assetAmount: BigNumberish,
+    navAtExtraction: BigNumberish
+  ];
+  export type OutputTuple = [
+    recipient: string,
+    assetAmount: bigint,
+    navAtExtraction: bigint
+  ];
+  export interface OutputObject {
+    recipient: string;
+    assetAmount: bigint;
+    navAtExtraction: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
 export namespace RedeemEvent {
   export type InputTuple = [
     user: AddressLike,
-    sharesBurned: BigNumberish,
-    assetReturned: BigNumberish
+    shares: BigNumberish,
+    assets: BigNumberish
   ];
-  export type OutputTuple = [
-    user: string,
-    sharesBurned: bigint,
-    assetReturned: bigint
-  ];
+  export type OutputTuple = [user: string, shares: bigint, assets: bigint];
   export interface OutputObject {
     user: string;
-    sharesBurned: bigint;
-    assetReturned: bigint;
+    shares: bigint;
+    assets: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -466,6 +799,67 @@ export namespace StrategyExecutedEvent {
     strategy: string;
     success: boolean;
     nonce: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace WithdrawalClaimedEvent {
+  export type InputTuple = [
+    id: BigNumberish,
+    user: AddressLike,
+    assets: BigNumberish
+  ];
+  export type OutputTuple = [id: bigint, user: string, assets: bigint];
+  export interface OutputObject {
+    id: bigint;
+    user: string;
+    assets: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace WithdrawalFulfilledEvent {
+  export type InputTuple = [
+    id: BigNumberish,
+    user: AddressLike,
+    assets: BigNumberish
+  ];
+  export type OutputTuple = [id: bigint, user: string, assets: bigint];
+  export interface OutputObject {
+    id: bigint;
+    user: string;
+    assets: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace WithdrawalQueuedEvent {
+  export type InputTuple = [
+    id: BigNumberish,
+    user: AddressLike,
+    shares: BigNumberish,
+    lockedAssets: BigNumberish
+  ];
+  export type OutputTuple = [
+    id: bigint,
+    user: string,
+    shares: bigint,
+    lockedAssets: bigint
+  ];
+  export interface OutputObject {
+    id: bigint;
+    user: string;
+    shares: bigint;
+    lockedAssets: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -520,8 +914,18 @@ export interface PooledAccount extends BaseContract {
 
   balanceOf: TypedContractMethod<[user: AddressLike], [bigint], "view">;
 
+  balanceOfAssets: TypedContractMethod<[user: AddressLike], [bigint], "view">;
+
   cancelAutomation: TypedContractMethod<
     [automationId: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+
+  circuitBreakerTripped: TypedContractMethod<[], [boolean], "view">;
+
+  claimWithdrawal: TypedContractMethod<
+    [id: BigNumberish],
     [void],
     "nonpayable"
   >;
@@ -532,6 +936,8 @@ export interface PooledAccount extends BaseContract {
     "nonpayable"
   >;
 
+  deployedCapital: TypedContractMethod<[], [bigint], "view">;
+
   deposit: TypedContractMethod<[amount: BigNumberish], [bigint], "nonpayable">;
 
   execute: TypedContractMethod<
@@ -541,6 +947,18 @@ export interface PooledAccount extends BaseContract {
   >;
 
   executorHub: TypedContractMethod<[], [string], "view">;
+
+  extractPerformanceFee: TypedContractMethod<[], [bigint], "nonpayable">;
+
+  feePercentage: TypedContractMethod<[], [bigint], "view">;
+
+  feeRecipient: TypedContractMethod<[], [string], "view">;
+
+  fulfillWithdrawal: TypedContractMethod<
+    [id: BigNumberish, assetAmount: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
 
   getAllExecutors: TypedContractMethod<[], [string[]], "view">;
 
@@ -562,16 +980,74 @@ export interface PooledAccount extends BaseContract {
     "view"
   >;
 
+  getRequest: TypedContractMethod<
+    [id: BigNumberish],
+    [
+      [string, bigint, bigint, bigint, bigint] & {
+        user: string;
+        shares: bigint;
+        assetAmount: bigint;
+        requestTime: bigint;
+        status: bigint;
+      }
+    ],
+    "view"
+  >;
+
+  getUserPosition: TypedContractMethod<
+    [user: AddressLike],
+    [
+      [bigint, bigint, bigint] & {
+        shares: bigint;
+        currentValue: bigint;
+        pendingClaims: bigint;
+      }
+    ],
+    "view"
+  >;
+
+  getUserRequests: TypedContractMethod<[user: AddressLike], [bigint[]], "view">;
+
+  highWaterMark: TypedContractMethod<[], [bigint], "view">;
+
+  lastFeeExtractionNAV: TypedContractMethod<[], [bigint], "view">;
+
+  liquidAssets: TypedContractMethod<[], [bigint], "view">;
+
   manager: TypedContractMethod<[], [string], "view">;
+
+  maxDrawdownBps: TypedContractMethod<[], [bigint], "view">;
 
   nextAutomationId: TypedContractMethod<[], [bigint], "view">;
 
   nonce: TypedContractMethod<[], [bigint], "view">;
 
+  realizedGains: TypedContractMethod<[], [bigint], "view">;
+
   redeem: TypedContractMethod<[shares: BigNumberish], [bigint], "nonpayable">;
+
+  resetCircuitBreaker: TypedContractMethod<[], [void], "nonpayable">;
+
+  setFeePercentage: TypedContractMethod<
+    [_feePercentage: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+
+  setFeeRecipient: TypedContractMethod<
+    [_feeRecipient: AddressLike],
+    [void],
+    "nonpayable"
+  >;
 
   setManager: TypedContractMethod<
     [_manager: AddressLike],
+    [void],
+    "nonpayable"
+  >;
+
+  setMaxDrawdown: TypedContractMethod<
+    [_maxDrawdownBps: BigNumberish],
     [void],
     "nonpayable"
   >;
@@ -582,12 +1058,36 @@ export interface PooledAccount extends BaseContract {
 
   totalAssets: TypedContractMethod<[], [bigint], "view">;
 
+  totalCapitalDeposited: TypedContractMethod<[], [bigint], "view">;
+
   totalShares: TypedContractMethod<[], [bigint], "view">;
 
   triggerAutomation: TypedContractMethod<
     [automationId: BigNumberish],
     [boolean],
     "nonpayable"
+  >;
+
+  updateDeployedCapital: TypedContractMethod<
+    [newAmount: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+
+  withdrawalRequestCount: TypedContractMethod<[], [bigint], "view">;
+
+  withdrawalRequests: TypedContractMethod<
+    [arg0: BigNumberish],
+    [
+      [string, bigint, bigint, bigint, bigint] & {
+        user: string;
+        shares: bigint;
+        assetAmount: bigint;
+        requestTime: bigint;
+        status: bigint;
+      }
+    ],
+    "view"
   >;
 
   getFunction<T extends ContractMethod = ContractMethod>(
@@ -601,8 +1101,17 @@ export interface PooledAccount extends BaseContract {
     nameOrSignature: "balanceOf"
   ): TypedContractMethod<[user: AddressLike], [bigint], "view">;
   getFunction(
+    nameOrSignature: "balanceOfAssets"
+  ): TypedContractMethod<[user: AddressLike], [bigint], "view">;
+  getFunction(
     nameOrSignature: "cancelAutomation"
   ): TypedContractMethod<[automationId: BigNumberish], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "circuitBreakerTripped"
+  ): TypedContractMethod<[], [boolean], "view">;
+  getFunction(
+    nameOrSignature: "claimWithdrawal"
+  ): TypedContractMethod<[id: BigNumberish], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "createAutomation"
   ): TypedContractMethod<
@@ -610,6 +1119,9 @@ export interface PooledAccount extends BaseContract {
     [bigint],
     "nonpayable"
   >;
+  getFunction(
+    nameOrSignature: "deployedCapital"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "deposit"
   ): TypedContractMethod<[amount: BigNumberish], [bigint], "nonpayable">;
@@ -623,6 +1135,22 @@ export interface PooledAccount extends BaseContract {
   getFunction(
     nameOrSignature: "executorHub"
   ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "extractPerformanceFee"
+  ): TypedContractMethod<[], [bigint], "nonpayable">;
+  getFunction(
+    nameOrSignature: "feePercentage"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "feeRecipient"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "fulfillWithdrawal"
+  ): TypedContractMethod<
+    [id: BigNumberish, assetAmount: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "getAllExecutors"
   ): TypedContractMethod<[], [string[]], "view">;
@@ -644,8 +1172,51 @@ export interface PooledAccount extends BaseContract {
     "view"
   >;
   getFunction(
+    nameOrSignature: "getRequest"
+  ): TypedContractMethod<
+    [id: BigNumberish],
+    [
+      [string, bigint, bigint, bigint, bigint] & {
+        user: string;
+        shares: bigint;
+        assetAmount: bigint;
+        requestTime: bigint;
+        status: bigint;
+      }
+    ],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "getUserPosition"
+  ): TypedContractMethod<
+    [user: AddressLike],
+    [
+      [bigint, bigint, bigint] & {
+        shares: bigint;
+        currentValue: bigint;
+        pendingClaims: bigint;
+      }
+    ],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "getUserRequests"
+  ): TypedContractMethod<[user: AddressLike], [bigint[]], "view">;
+  getFunction(
+    nameOrSignature: "highWaterMark"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "lastFeeExtractionNAV"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "liquidAssets"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
     nameOrSignature: "manager"
   ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "maxDrawdownBps"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "nextAutomationId"
   ): TypedContractMethod<[], [bigint], "view">;
@@ -653,11 +1224,26 @@ export interface PooledAccount extends BaseContract {
     nameOrSignature: "nonce"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
+    nameOrSignature: "realizedGains"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
     nameOrSignature: "redeem"
   ): TypedContractMethod<[shares: BigNumberish], [bigint], "nonpayable">;
   getFunction(
+    nameOrSignature: "resetCircuitBreaker"
+  ): TypedContractMethod<[], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "setFeePercentage"
+  ): TypedContractMethod<[_feePercentage: BigNumberish], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "setFeeRecipient"
+  ): TypedContractMethod<[_feeRecipient: AddressLike], [void], "nonpayable">;
+  getFunction(
     nameOrSignature: "setManager"
   ): TypedContractMethod<[_manager: AddressLike], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "setMaxDrawdown"
+  ): TypedContractMethod<[_maxDrawdownBps: BigNumberish], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "sharePrice"
   ): TypedContractMethod<[], [bigint], "view">;
@@ -668,11 +1254,35 @@ export interface PooledAccount extends BaseContract {
     nameOrSignature: "totalAssets"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
+    nameOrSignature: "totalCapitalDeposited"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
     nameOrSignature: "totalShares"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "triggerAutomation"
   ): TypedContractMethod<[automationId: BigNumberish], [boolean], "nonpayable">;
+  getFunction(
+    nameOrSignature: "updateDeployedCapital"
+  ): TypedContractMethod<[newAmount: BigNumberish], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "withdrawalRequestCount"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "withdrawalRequests"
+  ): TypedContractMethod<
+    [arg0: BigNumberish],
+    [
+      [string, bigint, bigint, bigint, bigint] & {
+        user: string;
+        shares: bigint;
+        assetAmount: bigint;
+        requestTime: bigint;
+        status: bigint;
+      }
+    ],
+    "view"
+  >;
 
   getEvent(
     key: "AutomationCancelled"
@@ -703,6 +1313,27 @@ export interface PooledAccount extends BaseContract {
     AutomationTriggeredEvent.OutputObject
   >;
   getEvent(
+    key: "CircuitBreakerReset"
+  ): TypedContractEvent<
+    CircuitBreakerResetEvent.InputTuple,
+    CircuitBreakerResetEvent.OutputTuple,
+    CircuitBreakerResetEvent.OutputObject
+  >;
+  getEvent(
+    key: "CircuitBreakerTripped"
+  ): TypedContractEvent<
+    CircuitBreakerTrippedEvent.InputTuple,
+    CircuitBreakerTrippedEvent.OutputTuple,
+    CircuitBreakerTrippedEvent.OutputObject
+  >;
+  getEvent(
+    key: "DeployedCapitalUpdated"
+  ): TypedContractEvent<
+    DeployedCapitalUpdatedEvent.InputTuple,
+    DeployedCapitalUpdatedEvent.OutputTuple,
+    DeployedCapitalUpdatedEvent.OutputObject
+  >;
+  getEvent(
     key: "Deposit"
   ): TypedContractEvent<
     DepositEvent.InputTuple,
@@ -731,11 +1362,39 @@ export interface PooledAccount extends BaseContract {
     ExecutorRevokedEvent.OutputObject
   >;
   getEvent(
+    key: "FeePercentageUpdated"
+  ): TypedContractEvent<
+    FeePercentageUpdatedEvent.InputTuple,
+    FeePercentageUpdatedEvent.OutputTuple,
+    FeePercentageUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: "FeeRecipientUpdated"
+  ): TypedContractEvent<
+    FeeRecipientUpdatedEvent.InputTuple,
+    FeeRecipientUpdatedEvent.OutputTuple,
+    FeeRecipientUpdatedEvent.OutputObject
+  >;
+  getEvent(
     key: "ManagerSet"
   ): TypedContractEvent<
     ManagerSetEvent.InputTuple,
     ManagerSetEvent.OutputTuple,
     ManagerSetEvent.OutputObject
+  >;
+  getEvent(
+    key: "MaxDrawdownUpdated"
+  ): TypedContractEvent<
+    MaxDrawdownUpdatedEvent.InputTuple,
+    MaxDrawdownUpdatedEvent.OutputTuple,
+    MaxDrawdownUpdatedEvent.OutputObject
+  >;
+  getEvent(
+    key: "PerformanceFeeExtracted"
+  ): TypedContractEvent<
+    PerformanceFeeExtractedEvent.InputTuple,
+    PerformanceFeeExtractedEvent.OutputTuple,
+    PerformanceFeeExtractedEvent.OutputObject
   >;
   getEvent(
     key: "Redeem"
@@ -757,6 +1416,27 @@ export interface PooledAccount extends BaseContract {
     StrategyExecutedEvent.InputTuple,
     StrategyExecutedEvent.OutputTuple,
     StrategyExecutedEvent.OutputObject
+  >;
+  getEvent(
+    key: "WithdrawalClaimed"
+  ): TypedContractEvent<
+    WithdrawalClaimedEvent.InputTuple,
+    WithdrawalClaimedEvent.OutputTuple,
+    WithdrawalClaimedEvent.OutputObject
+  >;
+  getEvent(
+    key: "WithdrawalFulfilled"
+  ): TypedContractEvent<
+    WithdrawalFulfilledEvent.InputTuple,
+    WithdrawalFulfilledEvent.OutputTuple,
+    WithdrawalFulfilledEvent.OutputObject
+  >;
+  getEvent(
+    key: "WithdrawalQueued"
+  ): TypedContractEvent<
+    WithdrawalQueuedEvent.InputTuple,
+    WithdrawalQueuedEvent.OutputTuple,
+    WithdrawalQueuedEvent.OutputObject
   >;
 
   filters: {
@@ -804,7 +1484,40 @@ export interface PooledAccount extends BaseContract {
       AutomationTriggeredEvent.OutputObject
     >;
 
-    "Deposit(address,uint256,uint256)": TypedContractEvent<
+    "CircuitBreakerReset(uint256)": TypedContractEvent<
+      CircuitBreakerResetEvent.InputTuple,
+      CircuitBreakerResetEvent.OutputTuple,
+      CircuitBreakerResetEvent.OutputObject
+    >;
+    CircuitBreakerReset: TypedContractEvent<
+      CircuitBreakerResetEvent.InputTuple,
+      CircuitBreakerResetEvent.OutputTuple,
+      CircuitBreakerResetEvent.OutputObject
+    >;
+
+    "CircuitBreakerTripped(uint256,uint256,uint256)": TypedContractEvent<
+      CircuitBreakerTrippedEvent.InputTuple,
+      CircuitBreakerTrippedEvent.OutputTuple,
+      CircuitBreakerTrippedEvent.OutputObject
+    >;
+    CircuitBreakerTripped: TypedContractEvent<
+      CircuitBreakerTrippedEvent.InputTuple,
+      CircuitBreakerTrippedEvent.OutputTuple,
+      CircuitBreakerTrippedEvent.OutputObject
+    >;
+
+    "DeployedCapitalUpdated(uint256,uint256)": TypedContractEvent<
+      DeployedCapitalUpdatedEvent.InputTuple,
+      DeployedCapitalUpdatedEvent.OutputTuple,
+      DeployedCapitalUpdatedEvent.OutputObject
+    >;
+    DeployedCapitalUpdated: TypedContractEvent<
+      DeployedCapitalUpdatedEvent.InputTuple,
+      DeployedCapitalUpdatedEvent.OutputTuple,
+      DeployedCapitalUpdatedEvent.OutputObject
+    >;
+
+    "Deposit(address,uint256,uint256,uint256)": TypedContractEvent<
       DepositEvent.InputTuple,
       DepositEvent.OutputTuple,
       DepositEvent.OutputObject
@@ -848,6 +1561,28 @@ export interface PooledAccount extends BaseContract {
       ExecutorRevokedEvent.OutputObject
     >;
 
+    "FeePercentageUpdated(uint256,uint256)": TypedContractEvent<
+      FeePercentageUpdatedEvent.InputTuple,
+      FeePercentageUpdatedEvent.OutputTuple,
+      FeePercentageUpdatedEvent.OutputObject
+    >;
+    FeePercentageUpdated: TypedContractEvent<
+      FeePercentageUpdatedEvent.InputTuple,
+      FeePercentageUpdatedEvent.OutputTuple,
+      FeePercentageUpdatedEvent.OutputObject
+    >;
+
+    "FeeRecipientUpdated(address,address)": TypedContractEvent<
+      FeeRecipientUpdatedEvent.InputTuple,
+      FeeRecipientUpdatedEvent.OutputTuple,
+      FeeRecipientUpdatedEvent.OutputObject
+    >;
+    FeeRecipientUpdated: TypedContractEvent<
+      FeeRecipientUpdatedEvent.InputTuple,
+      FeeRecipientUpdatedEvent.OutputTuple,
+      FeeRecipientUpdatedEvent.OutputObject
+    >;
+
     "ManagerSet(address)": TypedContractEvent<
       ManagerSetEvent.InputTuple,
       ManagerSetEvent.OutputTuple,
@@ -857,6 +1592,28 @@ export interface PooledAccount extends BaseContract {
       ManagerSetEvent.InputTuple,
       ManagerSetEvent.OutputTuple,
       ManagerSetEvent.OutputObject
+    >;
+
+    "MaxDrawdownUpdated(uint256,uint256)": TypedContractEvent<
+      MaxDrawdownUpdatedEvent.InputTuple,
+      MaxDrawdownUpdatedEvent.OutputTuple,
+      MaxDrawdownUpdatedEvent.OutputObject
+    >;
+    MaxDrawdownUpdated: TypedContractEvent<
+      MaxDrawdownUpdatedEvent.InputTuple,
+      MaxDrawdownUpdatedEvent.OutputTuple,
+      MaxDrawdownUpdatedEvent.OutputObject
+    >;
+
+    "PerformanceFeeExtracted(address,uint256,uint256)": TypedContractEvent<
+      PerformanceFeeExtractedEvent.InputTuple,
+      PerformanceFeeExtractedEvent.OutputTuple,
+      PerformanceFeeExtractedEvent.OutputObject
+    >;
+    PerformanceFeeExtracted: TypedContractEvent<
+      PerformanceFeeExtractedEvent.InputTuple,
+      PerformanceFeeExtractedEvent.OutputTuple,
+      PerformanceFeeExtractedEvent.OutputObject
     >;
 
     "Redeem(address,uint256,uint256)": TypedContractEvent<
@@ -890,6 +1647,39 @@ export interface PooledAccount extends BaseContract {
       StrategyExecutedEvent.InputTuple,
       StrategyExecutedEvent.OutputTuple,
       StrategyExecutedEvent.OutputObject
+    >;
+
+    "WithdrawalClaimed(uint256,address,uint256)": TypedContractEvent<
+      WithdrawalClaimedEvent.InputTuple,
+      WithdrawalClaimedEvent.OutputTuple,
+      WithdrawalClaimedEvent.OutputObject
+    >;
+    WithdrawalClaimed: TypedContractEvent<
+      WithdrawalClaimedEvent.InputTuple,
+      WithdrawalClaimedEvent.OutputTuple,
+      WithdrawalClaimedEvent.OutputObject
+    >;
+
+    "WithdrawalFulfilled(uint256,address,uint256)": TypedContractEvent<
+      WithdrawalFulfilledEvent.InputTuple,
+      WithdrawalFulfilledEvent.OutputTuple,
+      WithdrawalFulfilledEvent.OutputObject
+    >;
+    WithdrawalFulfilled: TypedContractEvent<
+      WithdrawalFulfilledEvent.InputTuple,
+      WithdrawalFulfilledEvent.OutputTuple,
+      WithdrawalFulfilledEvent.OutputObject
+    >;
+
+    "WithdrawalQueued(uint256,address,uint256,uint256)": TypedContractEvent<
+      WithdrawalQueuedEvent.InputTuple,
+      WithdrawalQueuedEvent.OutputTuple,
+      WithdrawalQueuedEvent.OutputObject
+    >;
+    WithdrawalQueued: TypedContractEvent<
+      WithdrawalQueuedEvent.InputTuple,
+      WithdrawalQueuedEvent.OutputTuple,
+      WithdrawalQueuedEvent.OutputObject
     >;
   };
 }

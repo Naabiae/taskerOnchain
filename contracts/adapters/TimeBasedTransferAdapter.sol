@@ -59,7 +59,7 @@ contract TimeBasedTransferAdapter is IStrategyAdapter {
      * @return canExec True if current time >= executeAfter
      * @return reason Human-readable reason
      */
-    function canExecute(bytes calldata params)
+    function canExecute(address /*vault*/, bytes calldata params)
         external
         view
         override
@@ -99,7 +99,7 @@ contract TimeBasedTransferAdapter is IStrategyAdapter {
         returns (bool success, bytes memory result)
     {
         // Step 1: Check time condition
-        (bool conditionMet, string memory reason) = this.canExecute(params);
+        (bool conditionMet, string memory reason) = this.canExecute(address(this), params);
         if (!conditionMet) {
             return (false, bytes(reason));
         }

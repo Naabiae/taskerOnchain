@@ -5,5 +5,6 @@ import type * as baseVaultSol from "./BaseVault.sol";
 export type { baseVaultSol };
 import type * as executorHubSol from "./ExecutorHub.sol";
 export type { executorHubSol };
+export type { RewardManager } from "./RewardManager";
 export type { StrategyRegistry } from "./StrategyRegistry";
 export type { VaultFactory } from "./VaultFactory";

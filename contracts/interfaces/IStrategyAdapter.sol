@@ -37,7 +37,8 @@ interface IStrategyAdapter {
      * @return canExecute  Whether conditions are met
      * @return reason      Human-readable reason if conditions not met
      */
-    function canExecute(bytes calldata params)
+    // NOTE: include vault address so strategies can reason about per-vault state
+    function canExecute(address vault, bytes calldata params)
         external view returns (bool canExecute, string memory reason);
 
     /**
