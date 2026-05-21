@@ -5,15 +5,28 @@ import "./BaseVault.sol";
 import "../modules/SingleOwnerModule.sol";
 
 /**
- * @title UserVault
- * @notice Single-owner vault with AI operator permissions.
+ * @title SingleUserAccount (UserVault)
+ * @notice AI-driven smart account for a single user with native automation.
  *
  * Composition:
- * - BaseVault: execution engine
- * - SingleOwnerModule: owner + operators + spending rules
+ * - SmartAccount (BaseVault): execution engine
+ * - OwnershipLayer (SingleOwnerModule): owner + AI execution roles + spending limits
  *
- * Owner: full control (create, execute, withdraw)
- * Operator: limited control (execute + create/update automations, subject to spending rules)
+ * Properties:
+ * - Owner: holds tokens, can withdraw, can grant/revoke AI access
+ * - AI Agent: can execute strategies and create automations, subject to spending limits
+ * - Native Automation: owner/AI can schedule automations, keepers execute them
+ * - Composable Strategies: any protocol bridge can be called in any combination
+ *
+ * Example Flow:
+ * 1. User deploys SingleUserAccount
+ * 2. User grants AI agent execution role with limits (max 10k USDC/day)
+ * 3. AI creates automation: "When ETH < $2000, swap USDC→ETH"
+ * 4. Keepers watch the automation
+ * 5. When ETH drops: keeper executes, AI earns reward from account balance
+ * 6. User always owns the funds. Can revoke AI anytime.
+ *
+ * This is: Smart Account + AI Agent Access + Native Automation
  */
 contract UserVault is BaseVault, SingleOwnerModule {
     

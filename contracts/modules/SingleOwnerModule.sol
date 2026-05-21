@@ -5,19 +5,28 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 /**
- * @title SingleOwnerModule
- * @notice Permission layer for single-owner vaults with AI operators.
+ * @title OwnershipLayer (SingleOwnerModule)
+ * @notice Access control layer for single-owner smart accounts with AI agent execution roles.
  *
  * Provides:
- * - Owner management
- * - Operator registry with granular permissions
- * - Spending rules (per-execution, per-day, per-total limits)
- * - Escape hatch (owner-only fund withdrawal)
+ * - Owner management (user who owns the account)
+ * - Execution role registry (AI agents with limited permissions)
+ * - Spending limits (rate-limit AI execution: per-tx, per-day, per-lifetime)
+ * - Escape hatch (owner-only fund withdrawal, AI cannot access)
  *
- * Composable with BaseVault via:
- * - _canExecute: owner + active operators
- * - _canWithdraw: owner only (operators never withdraw)
- * - _beforeExecution: enforce spending rules on operators
+ * Key Property:
+ * - Owner can always withdraw funds (escape hatch)
+ * - AI agents can NEVER transfer funds (no transferToken, no transferNative)
+ * - AI agents can execute strategies and create automations (subject to spending limits)
+ * - Owner can revoke AI access anytime (instant, no timelock)
+ *
+ * Composable with SmartAccount via:
+ * - _canExecute: owner + active AI agents
+ * - _canWithdraw: owner only
+ * - _beforeExecution: enforce spending limits on AI agents (not owner)
+ *
+ * This is NOT a permission system for fund transfers.
+ * This is an execution role system: AI can execute, not custody.
  */
 abstract contract SingleOwnerModule {
     using SafeERC20 for IERC20;

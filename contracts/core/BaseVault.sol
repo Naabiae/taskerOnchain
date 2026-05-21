@@ -8,24 +8,30 @@ import "../interfaces/IStrategyAdapter.sol";
 import "../interfaces/IExecutorHub.sol";
 
 /**
- * @title BaseVault
- * @notice Shared execution engine for all vault types.
+ * @title SmartAccount (BaseVault)
+ * @notice Shared execution engine for AI-driven accounts with native automation.
  *
- * BaseVault is abstract. It provides:
- * - Token tracking (which tokens vault holds)
- * - Strategy execution (approve → execute → revoke pattern)
- * - Automation state machine (create, trigger, cancel)
+ * THIS IS NOT A VAULT. It's a smart account that:
+ * - User owns the account (holds tokens)
+ * - AI agents get execution roles (can execute strategies, cannot withdraw)
+ * - Native automation (schedule strategy execution, keepers execute)
+ * - Composable protocol bridges (AI composes strategies, not code)
+ *
+ * Provides:
+ * - Token tracking (which tokens account holds)
+ * - Protocol bridge execution (approve → execute → revoke pattern)
+ * - Automation state machine (create, trigger, cancel automations)
  * - Reentrancy protection
  *
  * Subclasses (via modules) implement:
- * - Access control (_canExecute, _canWithdraw)
- * - Accounting (single-owner, pooled shares, DAO voting)
- * - Permission hooks (_beforeExecution for spending rules, etc.)
+ * - Access control (_canExecute for AI agents, _canWithdraw for owner only)
+ * - Accounting (single-owner, pooled capital, DAO governance)
+ * - Permission hooks (_beforeExecution for spending limits, etc.)
  *
  * Subclasses should override:
- * - _canExecute(caller): who can execute strategies?
- * - _canWithdraw(caller): who can withdraw funds?
- * - _beforeExecution(caller, strategy, params): permission checks
+ * - _canExecute(caller): who has execution role?
+ * - _canWithdraw(caller): who is the owner?
+ * - _beforeExecution(caller, strategy, params): permission checks before execution
  */
 abstract contract BaseVault is ReentrancyGuard {
     using SafeERC20 for IERC20;
