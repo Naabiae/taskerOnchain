@@ -5,4 +5,6 @@ export * as adapters from "./adapters";
 export * as core from "./core";
 export * as interfaces from "./interfaces";
 export * as mocks from "./mocks";
-export * as support from "./support";
+export * as modules from "./modules";
+export * as vaults from "./vaults";
+export { TestAccessControlVault__factory } from "./TestAccessControlVault__factory";

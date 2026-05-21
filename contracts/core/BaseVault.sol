@@ -56,20 +56,18 @@ abstract contract BaseVault is ReentrancyGuard {
     // Errors
     // ─────────────────────────────────────────────────────────────────────────
 
-    error NotExecutorHub();
     error AutomationNotActive(uint256 id);
     error StrategyNotRegistered(address strategy);
     error InvalidParams(string reason);
     error InsufficientBalance(address token, uint256 needed);
     error TransferFailed();
-    error ZeroAddress();
 
     // ─────────────────────────────────────────────────────────────────────────
     // Modifiers
     // ─────────────────────────────────────────────────────────────────────────
 
     modifier onlyExecutorHub() {
-        if (msg.sender != executorHub) revert NotExecutorHub();
+        if (msg.sender != executorHub) revert("Not executor hub");
         _;
     }
 

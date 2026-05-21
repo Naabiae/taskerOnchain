@@ -18,7 +18,6 @@ abstract contract SharedAccountModule is AccessControlModule {
 
     error ZeroAmount();
     error InsufficientShares();
-    error ZeroAddress();
 
     function _canExecute(address caller) internal view virtual returns (bool) {
         return _isExecutorActive(caller);

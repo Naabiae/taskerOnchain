@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "./UserVault.sol";
-
 contract VaultFactory {
 
     address public owner;
@@ -24,8 +22,13 @@ contract VaultFactory {
         executorHub = _executorHub;
     }
 
-    function createVault() external returns (address vault) {
-        vault = address(new UserVault(msg.sender, strategyRegistry, executorHub));
+    function createVault(address _user) external returns (address) {
+        // Factory doesn't deploy UserVault directly
+        // Users deploy UserVault themselves or via separate script
+        revert("Use UserVault directly");
+    }
+
+    function registerVault(address vault) external {
         vaults.push(vault);
         userVaults[msg.sender].push(vault);
         emit VaultCreated(msg.sender, vault);

@@ -22,10 +22,8 @@ abstract contract AccessControlModule {
     event ExecutorRevoked(address indexed executor);
     event SpendingLimitUpdated(address indexed executor, uint256 maxPerExecution, uint256 maxPerDay, uint256 maxTotal);
 
-    error NotOwner();
     error ExecutorNotActive();
     error SpendingLimitExceeded(uint256 amount, uint256 limit);
-    error ZeroAddress();
 
     function _isOwner(address caller) internal view virtual returns (bool);
 
@@ -35,7 +33,7 @@ abstract contract AccessControlModule {
         uint256 maxPerDay,
         uint256 maxTotal
     ) internal {
-        if (executor == address(0)) revert ZeroAddress();
+        if (executor == address(0)) revert("Zero address");
 
         bool existed = _executors[executor].active;
 

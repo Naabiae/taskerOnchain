@@ -1,17 +1,17 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "./BaseVault.sol";
+import "../core/BaseVault.sol";
 import "../modules/SingleOwnerModule.sol";
 
-contract UserVault is BaseVault, SingleOwnerModule {
+contract UserAccount is BaseVault, SingleOwnerModule {
 
     constructor(
         address _owner,
         address _strategyRegistry,
         address _executorHub
     ) {
-        if (_owner == address(0)) revert ZeroAddress();
+        if (_owner == address(0)) revert("Zero address");
         owner = _owner;
         strategyRegistry = _strategyRegistry;
         executorHub = _executorHub;
@@ -45,6 +45,14 @@ contract UserVault is BaseVault, SingleOwnerModule {
         address strategy,
         bytes memory params
     ) internal override {}
+
+    function _canExecute(address caller) internal view override(BaseVault, SingleOwnerModule) returns (bool) {
+        return caller == owner || _isExecutorActive(caller);
+    }
+
+    function _canWithdraw(address caller) internal view override(BaseVault, SingleOwnerModule) returns (bool) {
+        return caller == owner;
+    }
 
     function _getTokenRequirements(address strategy, bytes memory params)
         internal

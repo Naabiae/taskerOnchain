@@ -1,17 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import "./BaseVault.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "../core/BaseVault.sol";
 import "../modules/SharedAccountModule.sol";
 
 contract PooledAccount is BaseVault, SharedAccountModule {
 
     address public manager;
-
-    event ManagerSet(address indexed manager);
-
-    error NotManager();
-    error ZeroAddress();
 
     constructor(
         address _asset,
@@ -19,9 +15,9 @@ contract PooledAccount is BaseVault, SharedAccountModule {
         address _strategyRegistry,
         address _executorHub
     ) {
-        if (_asset == address(0)) revert ZeroAddress();
-        if (_strategyRegistry == address(0)) revert ZeroAddress();
-        if (_executorHub == address(0)) revert ZeroAddress();
+        if (_asset == address(0)) revert("Zero address");
+        if (_strategyRegistry == address(0)) revert("Zero address");
+        if (_executorHub == address(0)) revert("Zero address");
 
         asset = IERC20(_asset);
         manager = _manager;
@@ -31,9 +27,17 @@ contract PooledAccount is BaseVault, SharedAccountModule {
 
     function setManager(address _manager) external {
         require(msg.sender == manager || manager == address(0), "Not authorized");
-        if (_manager == address(0)) revert ZeroAddress();
+        if (_manager == address(0)) revert("Zero address");
         manager = _manager;
         emit ManagerSet(_manager);
+    }
+
+    function _canExecute(address caller) internal view override(BaseVault, SharedAccountModule) returns (bool) {
+        return caller == manager;
+    }
+
+    function _canWithdraw(address caller) internal view override(BaseVault, SharedAccountModule) returns (bool) {
+        return false;
     }
 
     function execute(

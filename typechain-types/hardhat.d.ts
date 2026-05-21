@@ -138,17 +138,29 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.TimeBasedTransferAdapter__factory>;
     getContractFactory(
+      name: "BaseVault",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.BaseVault__factory>;
+    getContractFactory(
+      name: "IExecutorHub",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IExecutorHub__factory>;
+    getContractFactory(
       name: "ExecutorHub",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ExecutorHub__factory>;
     getContractFactory(
-      name: "UserVault",
+      name: "IVault",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.UserVault__factory>;
+    ): Promise<Contracts.IVault__factory>;
     getContractFactory(
-      name: "UserVaultFactory",
+      name: "StrategyRegistry",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.UserVaultFactory__factory>;
+    ): Promise<Contracts.StrategyRegistry__factory>;
+    getContractFactory(
+      name: "VaultFactory",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.VaultFactory__factory>;
     getContractFactory(
       name: "IExecutorHub",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -194,13 +206,33 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.MockTokenMessenger__factory>;
     getContractFactory(
-      name: "RewardManager",
+      name: "AccessControlModule",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.RewardManager__factory>;
+    ): Promise<Contracts.AccessControlModule__factory>;
     getContractFactory(
-      name: "StrategyRegistry",
+      name: "ShareAccountingModule",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.StrategyRegistry__factory>;
+    ): Promise<Contracts.ShareAccountingModule__factory>;
+    getContractFactory(
+      name: "SharedAccountModule",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.SharedAccountModule__factory>;
+    getContractFactory(
+      name: "SingleOwnerModule",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.SingleOwnerModule__factory>;
+    getContractFactory(
+      name: "TestAccessControlVault",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.TestAccessControlVault__factory>;
+    getContractFactory(
+      name: "PooledAccount",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.PooledAccount__factory>;
+    getContractFactory(
+      name: "UserAccount",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.UserAccount__factory>;
 
     getContractAt(
       name: "Ownable",
@@ -358,20 +390,35 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.TimeBasedTransferAdapter>;
     getContractAt(
+      name: "BaseVault",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.BaseVault>;
+    getContractAt(
+      name: "IExecutorHub",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IExecutorHub>;
+    getContractAt(
       name: "ExecutorHub",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
     ): Promise<Contracts.ExecutorHub>;
     getContractAt(
-      name: "UserVault",
+      name: "IVault",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
-    ): Promise<Contracts.UserVault>;
+    ): Promise<Contracts.IVault>;
     getContractAt(
-      name: "UserVaultFactory",
+      name: "StrategyRegistry",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
-    ): Promise<Contracts.UserVaultFactory>;
+    ): Promise<Contracts.StrategyRegistry>;
+    getContractAt(
+      name: "VaultFactory",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.VaultFactory>;
     getContractAt(
       name: "IExecutorHub",
       address: string | ethers.Addressable,
@@ -428,15 +475,40 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.MockTokenMessenger>;
     getContractAt(
-      name: "RewardManager",
+      name: "AccessControlModule",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
-    ): Promise<Contracts.RewardManager>;
+    ): Promise<Contracts.AccessControlModule>;
     getContractAt(
-      name: "StrategyRegistry",
+      name: "ShareAccountingModule",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
-    ): Promise<Contracts.StrategyRegistry>;
+    ): Promise<Contracts.ShareAccountingModule>;
+    getContractAt(
+      name: "SharedAccountModule",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.SharedAccountModule>;
+    getContractAt(
+      name: "SingleOwnerModule",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.SingleOwnerModule>;
+    getContractAt(
+      name: "TestAccessControlVault",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.TestAccessControlVault>;
+    getContractAt(
+      name: "PooledAccount",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.PooledAccount>;
+    getContractAt(
+      name: "UserAccount",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.UserAccount>;
 
     deployContract(
       name: "Ownable",
@@ -563,17 +635,29 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.TimeBasedTransferAdapter>;
     deployContract(
+      name: "BaseVault",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.BaseVault>;
+    deployContract(
+      name: "IExecutorHub",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IExecutorHub>;
+    deployContract(
       name: "ExecutorHub",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.ExecutorHub>;
     deployContract(
-      name: "UserVault",
+      name: "IVault",
       signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.UserVault>;
+    ): Promise<Contracts.IVault>;
     deployContract(
-      name: "UserVaultFactory",
+      name: "StrategyRegistry",
       signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.UserVaultFactory>;
+    ): Promise<Contracts.StrategyRegistry>;
+    deployContract(
+      name: "VaultFactory",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.VaultFactory>;
     deployContract(
       name: "IExecutorHub",
       signerOrOptions?: ethers.Signer | DeployContractOptions
@@ -619,13 +703,33 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.MockTokenMessenger>;
     deployContract(
-      name: "RewardManager",
+      name: "AccessControlModule",
       signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.RewardManager>;
+    ): Promise<Contracts.AccessControlModule>;
     deployContract(
-      name: "StrategyRegistry",
+      name: "ShareAccountingModule",
       signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.StrategyRegistry>;
+    ): Promise<Contracts.ShareAccountingModule>;
+    deployContract(
+      name: "SharedAccountModule",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.SharedAccountModule>;
+    deployContract(
+      name: "SingleOwnerModule",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.SingleOwnerModule>;
+    deployContract(
+      name: "TestAccessControlVault",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.TestAccessControlVault>;
+    deployContract(
+      name: "PooledAccount",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.PooledAccount>;
+    deployContract(
+      name: "UserAccount",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.UserAccount>;
 
     deployContract(
       name: "Ownable",
@@ -783,20 +887,35 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.TimeBasedTransferAdapter>;
     deployContract(
+      name: "BaseVault",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.BaseVault>;
+    deployContract(
+      name: "IExecutorHub",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IExecutorHub>;
+    deployContract(
       name: "ExecutorHub",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.ExecutorHub>;
     deployContract(
-      name: "UserVault",
+      name: "IVault",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.UserVault>;
+    ): Promise<Contracts.IVault>;
     deployContract(
-      name: "UserVaultFactory",
+      name: "StrategyRegistry",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.UserVaultFactory>;
+    ): Promise<Contracts.StrategyRegistry>;
+    deployContract(
+      name: "VaultFactory",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.VaultFactory>;
     deployContract(
       name: "IExecutorHub",
       args: any[],
@@ -853,15 +972,40 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.MockTokenMessenger>;
     deployContract(
-      name: "RewardManager",
+      name: "AccessControlModule",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.RewardManager>;
+    ): Promise<Contracts.AccessControlModule>;
     deployContract(
-      name: "StrategyRegistry",
+      name: "ShareAccountingModule",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
-    ): Promise<Contracts.StrategyRegistry>;
+    ): Promise<Contracts.ShareAccountingModule>;
+    deployContract(
+      name: "SharedAccountModule",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.SharedAccountModule>;
+    deployContract(
+      name: "SingleOwnerModule",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.SingleOwnerModule>;
+    deployContract(
+      name: "TestAccessControlVault",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.TestAccessControlVault>;
+    deployContract(
+      name: "PooledAccount",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.PooledAccount>;
+    deployContract(
+      name: "UserAccount",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.UserAccount>;
 
     // default types
     getContractFactory(
