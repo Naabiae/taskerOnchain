@@ -376,6 +376,30 @@ abstract contract BaseVault is ReentrancyGuard {
         return result;
     }
 
+    /// @notice Check if automation can be executed (for keeper discovery)
+    function canExecuteAutomation(uint256 automationId)
+        external
+        view
+        returns (bool canExec, string memory reason)
+    {
+        Automation storage auto_ = _automations[automationId];
+        if (auto_.status != AutomationStatus.ACTIVE) return (false, "Automation not active");
+
+        // Check max executions
+        if (auto_.maxExecutions > 0 && auto_.executionCount >= auto_.maxExecutions) {
+            return (false, "Max executions reached");
+        }
+
+        // Check strategy conditions
+        try IStrategyAdapter(auto_.strategy).canExecute(auto_.params)
+            returns (bool result, string memory r)
+        {
+            return (result, r);
+        } catch {
+            return (false, "Strategy check failed");
+        }
+    }
+
     // ─────────────────────────────────────────────────────────────────────────
     // Receive ETH
     // ─────────────────────────────────────────────────────────────────────────
