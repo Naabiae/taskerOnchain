@@ -5,34 +5,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "../interfaces/IStrategyAdapter.sol";
-import "../interfaces/IExecutorHub.sol";
 
-/**
- * @title SmartAccount (BaseVault)
- * @notice Shared execution engine for AI-driven accounts with native automation.
- *
- * THIS IS NOT A VAULT. It's a smart account that:
- * - User owns the account (holds tokens)
- * - AI agents get execution roles (can execute strategies, cannot withdraw)
- * - Native automation (schedule strategy execution, keepers execute)
- * - Composable protocol bridges (AI composes strategies, not code)
- *
- * Provides:
- * - Token tracking (which tokens account holds)
- * - Protocol bridge execution (approve → execute → revoke pattern)
- * - Automation state machine (create, trigger, cancel automations)
- * - Reentrancy protection
- *
- * Subclasses (via modules) implement:
- * - Access control (_canExecute for AI agents, _canWithdraw for owner only)
- * - Accounting (single-owner, pooled capital, DAO governance)
- * - Permission hooks (_beforeExecution for spending limits, etc.)
- *
- * Subclasses should override:
- * - _canExecute(caller): who has execution role?
- * - _canWithdraw(caller): who is the owner?
- * - _beforeExecution(caller, strategy, params): permission checks before execution
- */
 abstract contract BaseVault is ReentrancyGuard {
     using SafeERC20 for IERC20;
 
@@ -51,7 +24,6 @@ abstract contract BaseVault is ReentrancyGuard {
         uint256 executionCount;
         uint256 lastExecutionTime;
         uint256 maxExecutions;
-        string label;
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -61,16 +33,13 @@ abstract contract BaseVault is ReentrancyGuard {
     address public strategyRegistry;
     address public executorHub;
 
-    // Token discovery
     address[] internal _heldTokens;
     mapping(address => bool) internal _isTracked;
 
-    // Automations
     mapping(uint256 => Automation) internal _automations;
     uint256[] internal _automationIds;
     uint256 public nextAutomationId;
 
-    // Replay protection
     uint256 public nonce;
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -78,11 +47,10 @@ abstract contract BaseVault is ReentrancyGuard {
     // ─────────────────────────────────────────────────────────────────────────
 
     event StrategyExecuted(address indexed strategy, bool success, uint256 nonce);
-    event AutomationCreated(uint256 indexed id, address indexed strategy, string label);
+    event AutomationCreated(uint256 indexed id, address indexed strategy);
     event AutomationTriggered(uint256 indexed id, bool success, uint256 executionCount);
     event AutomationCancelled(uint256 indexed id);
     event AutomationCompleted(uint256 indexed id);
-    event AutomationUpdated(uint256 indexed id, bytes newParams);
 
     // ─────────────────────────────────────────────────────────────────────────
     // Errors
@@ -95,7 +63,6 @@ abstract contract BaseVault is ReentrancyGuard {
     error InsufficientBalance(address token, uint256 needed);
     error TransferFailed();
     error ZeroAddress();
-    error ZeroAmount();
 
     // ─────────────────────────────────────────────────────────────────────────
     // Modifiers
@@ -106,85 +73,55 @@ abstract contract BaseVault is ReentrancyGuard {
         _;
     }
 
-    modifier onlyRegistered(address strategy) {
-        if (!IStrategyRegistry(strategyRegistry).isStrategyActive(strategy))
-            revert StrategyNotRegistered(strategy);
-        _;
-    }
-
     // ─────────────────────────────────────────────────────────────────────────
-    // Abstract Hooks — Subclasses Override
+    // Abstract Hooks
     // ─────────────────────────────────────────────────────────────────────────
 
-    /// @notice Subclass defines: who can execute strategies?
     function _canExecute(address caller) internal view virtual returns (bool);
-
-    /// @notice Subclass defines: who can withdraw funds?
     function _canWithdraw(address caller) internal view virtual returns (bool);
-
-    /// @notice Subclass defines: permission checks before execution
-    /// @dev Called before every strategy execution. Throw if caller not allowed.
-    function _beforeExecution(
-        address caller,
-        address strategy,
-        bytes memory params
-    ) internal virtual;
+    function _beforeExecution(address caller, address strategy, bytes memory params) internal virtual;
 
     // ─────────────────────────────────────────────────────────────────────────
     // Token Tracking
     // ─────────────────────────────────────────────────────────────────────────
 
-    /// @notice Track a token if not already tracked
     function _trackToken(address token) internal {
-        if (token == address(0)) return; // Skip ETH tracking
+        if (token == address(0)) return;
         if (_isTracked[token]) return;
-
         _isTracked[token] = true;
         _heldTokens.push(token);
     }
 
-    function getHeldTokens() external view returns (address[] memory) {
-        return _heldTokens;
-    }
-
     // ─────────────────────────────────────────────────────────────────────────
-    // Strategy Execution Core
+    // Strategy Execution
     // ─────────────────────────────────────────────────────────────────────────
 
-    /// @notice Execute a strategy immediately
-    /// @dev Only callable by authorized callers. Subclass defines via _canExecute.
     function _executeStrategy(
         address strategy,
         uint256 value,
         bytes memory params
     ) internal returns (bool success, bytes memory result) {
-        // Step 1: Get token requirements from adapter
         (address[] memory tokens, uint256[] memory amounts) =
             IStrategyAdapter(strategy).getTokenRequirements(params);
 
-        // Step 2: Check balances and approve adapter
         for (uint256 i = 0; i < tokens.length; i++) {
             if (tokens[i] != address(0) && amounts[i] > 0) {
                 uint256 balance = IERC20(tokens[i]).balanceOf(address(this));
                 if (balance < amounts[i]) revert InsufficientBalance(tokens[i], amounts[i]);
-
                 IERC20(tokens[i]).forceApprove(strategy, amounts[i]);
             }
         }
 
-        // Step 3: Execute strategy (forward value for native ETH strategies)
         (success, result) = strategy.call{value: value}(
             abi.encodeWithSelector(IStrategyAdapter.execute.selector, address(this), params)
         );
 
-        // Step 4: Revoke approvals
         for (uint256 i = 0; i < tokens.length; i++) {
             if (tokens[i] != address(0) && amounts[i] > 0) {
                 IERC20(tokens[i]).forceApprove(strategy, 0);
             }
         }
 
-        // Step 5: Track output tokens
         for (uint256 i = 0; i < tokens.length; i++) {
             _trackToken(tokens[i]);
         }
@@ -193,17 +130,14 @@ abstract contract BaseVault is ReentrancyGuard {
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // Automation Management (Internal Primitives)
+    // Automation Management
     // ─────────────────────────────────────────────────────────────────────────
 
-    /// @notice Internal: Create automation
     function _createAutomation(
         address strategy,
         bytes calldata params,
-        uint256 maxExecutions,
-        string calldata label
+        uint256 maxExecutions
     ) internal returns (uint256 automationId) {
-        // Validate params early
         (bool valid, string memory err) = IStrategyAdapter(strategy).validateParams(params);
         if (!valid) revert InvalidParams(err);
 
@@ -217,27 +151,20 @@ abstract contract BaseVault is ReentrancyGuard {
             createdAt: block.timestamp,
             executionCount: 0,
             lastExecutionTime: 0,
-            maxExecutions: maxExecutions,
-            label: label
+            maxExecutions: maxExecutions
         });
 
         _automationIds.push(automationId);
 
-        // Register with ExecutorHub (defensive try/catch)
         try IExecutorHub(executorHub).registerTask(automationId, strategy, params) {} catch {}
 
-        emit AutomationCreated(automationId, strategy, label);
+        emit AutomationCreated(automationId, strategy);
     }
 
-    /// @notice Internal: Trigger automation (called by ExecutorHub)
-    function _triggerAutomation(uint256 automationId)
-        internal
-        returns (bool success)
-    {
+    function _triggerAutomation(uint256 automationId) internal returns (bool success) {
         Automation storage auto_ = _automations[automationId];
         if (auto_.status != AutomationStatus.ACTIVE) revert AutomationNotActive(automationId);
 
-        // Check max executions
         if (auto_.maxExecutions > 0 && auto_.executionCount >= auto_.maxExecutions) {
             auto_.status = AutomationStatus.COMPLETED;
             try IExecutorHub(executorHub).removeTask(automationId) {} catch {}
@@ -245,14 +172,11 @@ abstract contract BaseVault is ReentrancyGuard {
             return false;
         }
 
-        // Check execution conditions
         (bool canExec, string memory reason) = IStrategyAdapter(auto_.strategy).canExecute(auto_.params);
         if (!canExec) revert InvalidParams(reason);
 
-        // Execute
         (success,) = _executeStrategy(auto_.strategy, 0, auto_.params);
 
-        // Update state
         auto_.executionCount++;
         auto_.lastExecutionTime = block.timestamp;
 
@@ -265,66 +189,33 @@ abstract contract BaseVault is ReentrancyGuard {
         emit AutomationTriggered(automationId, success, auto_.executionCount);
     }
 
-    /// @notice Internal: Cancel automation
     function _cancelAutomation(uint256 automationId) internal {
         Automation storage auto_ = _automations[automationId];
         if (auto_.status != AutomationStatus.ACTIVE) revert AutomationNotActive(automationId);
-
         auto_.status = AutomationStatus.CANCELLED;
         try IExecutorHub(executorHub).removeTask(automationId) {} catch {}
-
         emit AutomationCancelled(automationId);
     }
 
-    /// @notice Internal: Update automation params
-    function _updateAutomation(uint256 automationId, bytes calldata newParams) internal {
-        Automation storage auto_ = _automations[automationId];
-        if (auto_.status != AutomationStatus.ACTIVE) revert AutomationNotActive(automationId);
-
-        // Validate new params
-        (bool valid, string memory err) = IStrategyAdapter(auto_.strategy).validateParams(newParams);
-        if (!valid) revert InvalidParams(err);
-
-        auto_.params = newParams;
-        try IExecutorHub(executorHub).updateTaskParams(automationId, newParams) {} catch {}
-
-        emit AutomationUpdated(automationId, newParams);
-    }
-
     // ─────────────────────────────────────────────────────────────────────────
-    // Automation Management (Public Interface — Access Controlled)
+    // Public Interface
     // ─────────────────────────────────────────────────────────────────────────
 
-    /// @notice Create automation (subclass controls access via _canExecute)
     function createAutomation(
         address strategy,
         bytes calldata params,
-        uint256 maxExecutions,
-        string calldata label
-    )
-        external
-        onlyRegistered(strategy)
-        returns (uint256 id)
-    {
+        uint256 maxExecutions
+    ) external returns (uint256 id) {
         require(_canExecute(msg.sender), "Not authorized");
         _beforeExecution(msg.sender, strategy, params);
-        return _createAutomation(strategy, params, maxExecutions, label);
+        return _createAutomation(strategy, params, maxExecutions);
     }
 
-    /// @notice Cancel automation (subclass controls access)
     function cancelAutomation(uint256 automationId) external {
         require(_canExecute(msg.sender), "Not authorized");
         _cancelAutomation(automationId);
     }
 
-    /// @notice Update automation (subclass controls access)
-    function updateAutomation(uint256 automationId, bytes calldata newParams) external {
-        require(_canExecute(msg.sender), "Not authorized");
-        _beforeExecution(msg.sender, _automations[automationId].strategy, newParams);
-        _updateAutomation(automationId, newParams);
-    }
-
-    /// @notice Trigger automation (ExecutorHub only)
     function triggerAutomation(uint256 automationId)
         external
         onlyExecutorHub
@@ -335,7 +226,7 @@ abstract contract BaseVault is ReentrancyGuard {
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // View Functions
+    // Views
     // ─────────────────────────────────────────────────────────────────────────
 
     function getAutomation(uint256 id) external view returns (Automation memory) {
@@ -350,59 +241,10 @@ abstract contract BaseVault is ReentrancyGuard {
         return result;
     }
 
-    function getExecutableAutomations() external view returns (Automation[] memory) {
-        uint256 len = _automationIds.length;
-        Automation[] memory temp = new Automation[](len);
-        uint256 count = 0;
-
-        for (uint256 i = 0; i < len; i++) {
-            Automation storage auto_ = _automations[_automationIds[i]];
-            if (auto_.status != AutomationStatus.ACTIVE) continue;
-
-            try IStrategyAdapter(auto_.strategy).canExecute(auto_.params)
-                returns (bool canExec, string memory)
-            {
-                if (canExec) {
-                    temp[count] = auto_;
-                    count++;
-                }
-            } catch {}
-        }
-
-        Automation[] memory result = new Automation[](count);
-        for (uint256 i = 0; i < count; i++) {
-            result[i] = temp[i];
-        }
-        return result;
-    }
-
-    /// @notice Check if automation can be executed (for keeper discovery)
-    function canExecuteAutomation(uint256 automationId)
-        external
-        view
-        returns (bool canExec, string memory reason)
-    {
-        Automation storage auto_ = _automations[automationId];
-        if (auto_.status != AutomationStatus.ACTIVE) return (false, "Automation not active");
-
-        // Check max executions
-        if (auto_.maxExecutions > 0 && auto_.executionCount >= auto_.maxExecutions) {
-            return (false, "Max executions reached");
-        }
-
-        // Check strategy conditions
-        try IStrategyAdapter(auto_.strategy).canExecute(auto_.params)
-            returns (bool result, string memory r)
-        {
-            return (result, r);
-        } catch {
-            return (false, "Strategy check failed");
-        }
-    }
-
-    // ─────────────────────────────────────────────────────────────────────────
-    // Receive ETH
-    // ─────────────────────────────────────────────────────────────────────────
-
     receive() external payable {}
+}
+
+interface IExecutorHub {
+    function registerTask(uint256 id, address strategy, bytes calldata params) external;
+    function removeTask(uint256 id) external;
 }
