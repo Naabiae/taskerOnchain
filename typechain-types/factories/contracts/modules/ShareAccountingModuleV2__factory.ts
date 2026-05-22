@@ -4,21 +4,21 @@
 
 import { Contract, Interface, type ContractRunner } from "ethers";
 import type {
-  SharedAccountModule,
-  SharedAccountModuleInterface,
-} from "../../../contracts/modules/SharedAccountModule";
+  ShareAccountingModuleV2,
+  ShareAccountingModuleV2Interface,
+} from "../../../contracts/modules/ShareAccountingModuleV2";
 
 const _abi = [
   {
     inputs: [],
-    name: "ExecutorNotActive",
+    name: "DeployedCapitalUnderflow",
     type: "error",
   },
   {
     inputs: [
       {
         internalType: "uint256",
-        name: "fairValue",
+        name: "needed",
         type: "uint256",
       },
       {
@@ -27,12 +27,28 @@ const _abi = [
         type: "uint256",
       },
     ],
-    name: "FulfillBelowFairValue",
+    name: "FulfillAmountTooLow",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "needed",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "have",
+        type: "uint256",
+      },
+    ],
+    name: "InsufficientShares",
     type: "error",
   },
   {
     inputs: [],
-    name: "InsufficientShares",
+    name: "InvalidReservePercentage",
     type: "error",
   },
   {
@@ -56,11 +72,6 @@ const _abi = [
     type: "error",
   },
   {
-    inputs: [],
-    name: "RequestNotPending",
-    type: "error",
-  },
-  {
     inputs: [
       {
         internalType: "address",
@@ -69,22 +80,6 @@ const _abi = [
       },
     ],
     name: "SafeERC20FailedOperation",
-    type: "error",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "amount",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "limit",
-        type: "uint256",
-      },
-    ],
-    name: "SpendingLimitExceeded",
     type: "error",
   },
   {
@@ -98,17 +93,36 @@ const _abi = [
       {
         indexed: false,
         internalType: "uint256",
-        name: "oldAmount",
+        name: "amount",
         type: "uint256",
       },
       {
         indexed: false,
         internalType: "uint256",
-        name: "newAmount",
+        name: "totalDeployed",
         type: "uint256",
       },
     ],
-    name: "DeployedCapitalUpdated",
+    name: "CapitalDeployed",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "totalDeployed",
+        type: "uint256",
+      },
+    ],
+    name: "CapitalReturned",
     type: "event",
   },
   {
@@ -139,7 +153,7 @@ const _abi = [
         type: "uint256",
       },
     ],
-    name: "Deposit",
+    name: "Deposited",
     type: "event",
   },
   {
@@ -148,86 +162,29 @@ const _abi = [
       {
         indexed: true,
         internalType: "address",
-        name: "executor",
+        name: "user",
         type: "address",
       },
       {
         indexed: false,
         internalType: "uint256",
-        name: "maxPerExecution",
+        name: "shares",
         type: "uint256",
       },
       {
         indexed: false,
         internalType: "uint256",
-        name: "maxPerDay",
+        name: "assets",
         type: "uint256",
       },
       {
         indexed: false,
         internalType: "uint256",
-        name: "maxTotal",
+        name: "sharePrice",
         type: "uint256",
       },
     ],
-    name: "ExecutorAdded",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "address",
-        name: "executor",
-        type: "address",
-      },
-    ],
-    name: "ExecutorRemoved",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "address",
-        name: "executor",
-        type: "address",
-      },
-    ],
-    name: "ExecutorRevoked",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "address",
-        name: "executor",
-        type: "address",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "maxPerExecution",
-        type: "uint256",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "maxPerDay",
-        type: "uint256",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "maxTotal",
-        type: "uint256",
-      },
-    ],
-    name: "SpendingLimitUpdated",
+    name: "RedeemedInstant",
     type: "event",
   },
   {
@@ -301,8 +258,14 @@ const _abi = [
         name: "shares",
         type: "uint256",
       },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "lockedAssets",
+        type: "uint256",
+      },
     ],
-    name: "WithdrawalRequested",
+    name: "WithdrawalQueued",
     type: "event",
   },
   {
@@ -386,7 +349,7 @@ const _abi = [
     inputs: [
       {
         internalType: "uint256",
-        name: "amount",
+        name: "assets",
         type: "uint256",
       },
     ],
@@ -420,80 +383,6 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [],
-    name: "getAllExecutors",
-    outputs: [
-      {
-        internalType: "address[]",
-        name: "",
-        type: "address[]",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "executor",
-        type: "address",
-      },
-    ],
-    name: "getExecutor",
-    outputs: [
-      {
-        components: [
-          {
-            internalType: "address",
-            name: "executor",
-            type: "address",
-          },
-          {
-            internalType: "bool",
-            name: "active",
-            type: "bool",
-          },
-          {
-            internalType: "uint256",
-            name: "maxPerExecution",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "maxPerDay",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "maxTotal",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "spentToday",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "spentTotal",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "lastDayReset",
-            type: "uint256",
-          },
-        ],
-        internalType: "struct AccessControlModule.ExecutorRole",
-        name: "",
-        type: "tuple",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
     inputs: [
       {
         internalType: "uint256",
@@ -524,7 +413,7 @@ const _abi = [
         type: "uint256",
       },
       {
-        internalType: "enum SharedAccountModule.WithdrawalStatus",
+        internalType: "enum ShareAccountingModuleV2.WithdrawalStatus",
         name: "status",
         type: "uint8",
       },
@@ -554,7 +443,17 @@ const _abi = [
       },
       {
         internalType: "uint256",
-        name: "pendingRequests",
+        name: "capitalDeposited",
+        type: "uint256",
+      },
+      {
+        internalType: "int256",
+        name: "unrealizedPnL",
+        type: "int256",
+      },
+      {
+        internalType: "uint256",
+        name: "pendingClaims",
         type: "uint256",
       },
     ],
@@ -595,19 +494,6 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "initialPendingShares",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
     name: "liquidAssets",
     outputs: [
       {
@@ -621,25 +507,12 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "pendingWithdrawalNAV",
+    name: "manager",
     outputs: [
       {
-        internalType: "uint256",
+        internalType: "address",
         name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "pendingWithdrawalShares",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
+        type: "address",
       },
     ],
     stateMutability: "view",
@@ -666,11 +539,11 @@ const _abi = [
         type: "uint256",
       },
     ],
-    name: "requestWithdrawal",
+    name: "redeem",
     outputs: [
       {
         internalType: "uint256",
-        name: "id",
+        name: "assetsOut",
         type: "uint256",
       },
     ],
@@ -733,7 +606,7 @@ const _abi = [
     inputs: [
       {
         internalType: "uint256",
-        name: "newAmount",
+        name: "newDeployedCapital",
         type: "uint256",
       },
     ],
@@ -786,7 +659,7 @@ const _abi = [
         type: "uint256",
       },
       {
-        internalType: "enum SharedAccountModule.WithdrawalStatus",
+        internalType: "enum ShareAccountingModuleV2.WithdrawalStatus",
         name: "status",
         type: "uint8",
       },
@@ -796,19 +669,19 @@ const _abi = [
   },
 ] as const;
 
-export class SharedAccountModule__factory {
+export class ShareAccountingModuleV2__factory {
   static readonly abi = _abi;
-  static createInterface(): SharedAccountModuleInterface {
-    return new Interface(_abi) as SharedAccountModuleInterface;
+  static createInterface(): ShareAccountingModuleV2Interface {
+    return new Interface(_abi) as ShareAccountingModuleV2Interface;
   }
   static connect(
     address: string,
     runner?: ContractRunner | null
-  ): SharedAccountModule {
+  ): ShareAccountingModuleV2 {
     return new Contract(
       address,
       _abi,
       runner
-    ) as unknown as SharedAccountModule;
+    ) as unknown as ShareAccountingModuleV2;
   }
 }

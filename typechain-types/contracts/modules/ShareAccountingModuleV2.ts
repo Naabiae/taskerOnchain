@@ -23,40 +23,7 @@ import type {
   TypedContractMethod,
 } from "../../common";
 
-export declare namespace AccessControlModule {
-  export type ExecutorRoleStruct = {
-    executor: AddressLike;
-    active: boolean;
-    maxPerExecution: BigNumberish;
-    maxPerDay: BigNumberish;
-    maxTotal: BigNumberish;
-    spentToday: BigNumberish;
-    spentTotal: BigNumberish;
-    lastDayReset: BigNumberish;
-  };
-
-  export type ExecutorRoleStructOutput = [
-    executor: string,
-    active: boolean,
-    maxPerExecution: bigint,
-    maxPerDay: bigint,
-    maxTotal: bigint,
-    spentToday: bigint,
-    spentTotal: bigint,
-    lastDayReset: bigint
-  ] & {
-    executor: string;
-    active: boolean;
-    maxPerExecution: bigint;
-    maxPerDay: bigint;
-    maxTotal: bigint;
-    spentToday: bigint;
-    spentTotal: bigint;
-    lastDayReset: bigint;
-  };
-}
-
-export interface SharedAccountModuleInterface extends Interface {
+export interface ShareAccountingModuleV2Interface extends Interface {
   getFunction(
     nameOrSignature:
       | "asset"
@@ -66,18 +33,14 @@ export interface SharedAccountModuleInterface extends Interface {
       | "deployedCapital"
       | "deposit"
       | "fulfillWithdrawal"
-      | "getAllExecutors"
-      | "getExecutor"
       | "getRequest"
       | "getUserPosition"
       | "getUserRequests"
       | "highWaterMark"
-      | "initialPendingShares"
       | "liquidAssets"
-      | "pendingWithdrawalNAV"
-      | "pendingWithdrawalShares"
+      | "manager"
       | "realizedGains"
-      | "requestWithdrawal"
+      | "redeem"
       | "sharePrice"
       | "totalAssets"
       | "totalCapitalDeposited"
@@ -89,15 +52,13 @@ export interface SharedAccountModuleInterface extends Interface {
 
   getEvent(
     nameOrSignatureOrTopic:
-      | "DeployedCapitalUpdated"
-      | "Deposit"
-      | "ExecutorAdded"
-      | "ExecutorRemoved"
-      | "ExecutorRevoked"
-      | "SpendingLimitUpdated"
+      | "CapitalDeployed"
+      | "CapitalReturned"
+      | "Deposited"
+      | "RedeemedInstant"
       | "WithdrawalClaimed"
       | "WithdrawalFulfilled"
-      | "WithdrawalRequested"
+      | "WithdrawalQueued"
   ): EventFragment;
 
   encodeFunctionData(functionFragment: "asset", values?: undefined): string;
@@ -126,14 +87,6 @@ export interface SharedAccountModuleInterface extends Interface {
     values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "getAllExecutors",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getExecutor",
-    values: [AddressLike]
-  ): string;
-  encodeFunctionData(
     functionFragment: "getRequest",
     values: [BigNumberish]
   ): string;
@@ -150,27 +103,16 @@ export interface SharedAccountModuleInterface extends Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "initialPendingShares",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: "liquidAssets",
     values?: undefined
   ): string;
-  encodeFunctionData(
-    functionFragment: "pendingWithdrawalNAV",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "pendingWithdrawalShares",
-    values?: undefined
-  ): string;
+  encodeFunctionData(functionFragment: "manager", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "realizedGains",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "requestWithdrawal",
+    functionFragment: "redeem",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -221,14 +163,6 @@ export interface SharedAccountModuleInterface extends Interface {
     functionFragment: "fulfillWithdrawal",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "getAllExecutors",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getExecutor",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "getRequest", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getUserPosition",
@@ -243,29 +177,15 @@ export interface SharedAccountModuleInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "initialPendingShares",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "liquidAssets",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "pendingWithdrawalNAV",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "pendingWithdrawalShares",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "manager", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "realizedGains",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "requestWithdrawal",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "redeem", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "sharePrice", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "totalAssets",
@@ -293,12 +213,12 @@ export interface SharedAccountModuleInterface extends Interface {
   ): Result;
 }
 
-export namespace DeployedCapitalUpdatedEvent {
-  export type InputTuple = [oldAmount: BigNumberish, newAmount: BigNumberish];
-  export type OutputTuple = [oldAmount: bigint, newAmount: bigint];
+export namespace CapitalDeployedEvent {
+  export type InputTuple = [amount: BigNumberish, totalDeployed: BigNumberish];
+  export type OutputTuple = [amount: bigint, totalDeployed: bigint];
   export interface OutputObject {
-    oldAmount: bigint;
-    newAmount: bigint;
+    amount: bigint;
+    totalDeployed: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -306,7 +226,20 @@ export namespace DeployedCapitalUpdatedEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export namespace DepositEvent {
+export namespace CapitalReturnedEvent {
+  export type InputTuple = [amount: BigNumberish, totalDeployed: BigNumberish];
+  export type OutputTuple = [amount: bigint, totalDeployed: bigint];
+  export interface OutputObject {
+    amount: bigint;
+    totalDeployed: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace DepositedEvent {
   export type InputTuple = [
     user: AddressLike,
     assets: BigNumberish,
@@ -331,73 +264,24 @@ export namespace DepositEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export namespace ExecutorAddedEvent {
+export namespace RedeemedInstantEvent {
   export type InputTuple = [
-    executor: AddressLike,
-    maxPerExecution: BigNumberish,
-    maxPerDay: BigNumberish,
-    maxTotal: BigNumberish
+    user: AddressLike,
+    shares: BigNumberish,
+    assets: BigNumberish,
+    sharePrice: BigNumberish
   ];
   export type OutputTuple = [
-    executor: string,
-    maxPerExecution: bigint,
-    maxPerDay: bigint,
-    maxTotal: bigint
+    user: string,
+    shares: bigint,
+    assets: bigint,
+    sharePrice: bigint
   ];
   export interface OutputObject {
-    executor: string;
-    maxPerExecution: bigint;
-    maxPerDay: bigint;
-    maxTotal: bigint;
-  }
-  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
-  export type Filter = TypedDeferredTopicFilter<Event>;
-  export type Log = TypedEventLog<Event>;
-  export type LogDescription = TypedLogDescription<Event>;
-}
-
-export namespace ExecutorRemovedEvent {
-  export type InputTuple = [executor: AddressLike];
-  export type OutputTuple = [executor: string];
-  export interface OutputObject {
-    executor: string;
-  }
-  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
-  export type Filter = TypedDeferredTopicFilter<Event>;
-  export type Log = TypedEventLog<Event>;
-  export type LogDescription = TypedLogDescription<Event>;
-}
-
-export namespace ExecutorRevokedEvent {
-  export type InputTuple = [executor: AddressLike];
-  export type OutputTuple = [executor: string];
-  export interface OutputObject {
-    executor: string;
-  }
-  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
-  export type Filter = TypedDeferredTopicFilter<Event>;
-  export type Log = TypedEventLog<Event>;
-  export type LogDescription = TypedLogDescription<Event>;
-}
-
-export namespace SpendingLimitUpdatedEvent {
-  export type InputTuple = [
-    executor: AddressLike,
-    maxPerExecution: BigNumberish,
-    maxPerDay: BigNumberish,
-    maxTotal: BigNumberish
-  ];
-  export type OutputTuple = [
-    executor: string,
-    maxPerExecution: bigint,
-    maxPerDay: bigint,
-    maxTotal: bigint
-  ];
-  export interface OutputObject {
-    executor: string;
-    maxPerExecution: bigint;
-    maxPerDay: bigint;
-    maxTotal: bigint;
+    user: string;
+    shares: bigint;
+    assets: bigint;
+    sharePrice: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -441,17 +325,24 @@ export namespace WithdrawalFulfilledEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export namespace WithdrawalRequestedEvent {
+export namespace WithdrawalQueuedEvent {
   export type InputTuple = [
     id: BigNumberish,
     user: AddressLike,
-    shares: BigNumberish
+    shares: BigNumberish,
+    lockedAssets: BigNumberish
   ];
-  export type OutputTuple = [id: bigint, user: string, shares: bigint];
+  export type OutputTuple = [
+    id: bigint,
+    user: string,
+    shares: bigint,
+    lockedAssets: bigint
+  ];
   export interface OutputObject {
     id: bigint;
     user: string;
     shares: bigint;
+    lockedAssets: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -459,11 +350,11 @@ export namespace WithdrawalRequestedEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export interface SharedAccountModule extends BaseContract {
-  connect(runner?: ContractRunner | null): SharedAccountModule;
+export interface ShareAccountingModuleV2 extends BaseContract {
+  connect(runner?: ContractRunner | null): ShareAccountingModuleV2;
   waitForDeployment(): Promise<this>;
 
-  interface: SharedAccountModuleInterface;
+  interface: ShareAccountingModuleV2Interface;
 
   queryFilter<TCEvent extends TypedContractEvent>(
     event: TCEvent,
@@ -516,20 +407,12 @@ export interface SharedAccountModule extends BaseContract {
 
   deployedCapital: TypedContractMethod<[], [bigint], "view">;
 
-  deposit: TypedContractMethod<[amount: BigNumberish], [bigint], "nonpayable">;
+  deposit: TypedContractMethod<[assets: BigNumberish], [bigint], "nonpayable">;
 
   fulfillWithdrawal: TypedContractMethod<
     [id: BigNumberish, assetAmount: BigNumberish],
     [void],
     "nonpayable"
-  >;
-
-  getAllExecutors: TypedContractMethod<[], [string[]], "view">;
-
-  getExecutor: TypedContractMethod<
-    [executor: AddressLike],
-    [AccessControlModule.ExecutorRoleStructOutput],
-    "view"
   >;
 
   getRequest: TypedContractMethod<
@@ -549,10 +432,12 @@ export interface SharedAccountModule extends BaseContract {
   getUserPosition: TypedContractMethod<
     [user: AddressLike],
     [
-      [bigint, bigint, bigint] & {
+      [bigint, bigint, bigint, bigint, bigint] & {
         shares: bigint;
         currentValue: bigint;
-        pendingRequests: bigint;
+        capitalDeposited: bigint;
+        unrealizedPnL: bigint;
+        pendingClaims: bigint;
       }
     ],
     "view"
@@ -562,21 +447,13 @@ export interface SharedAccountModule extends BaseContract {
 
   highWaterMark: TypedContractMethod<[], [bigint], "view">;
 
-  initialPendingShares: TypedContractMethod<[], [bigint], "view">;
-
   liquidAssets: TypedContractMethod<[], [bigint], "view">;
 
-  pendingWithdrawalNAV: TypedContractMethod<[], [bigint], "view">;
-
-  pendingWithdrawalShares: TypedContractMethod<[], [bigint], "view">;
+  manager: TypedContractMethod<[], [string], "view">;
 
   realizedGains: TypedContractMethod<[], [bigint], "view">;
 
-  requestWithdrawal: TypedContractMethod<
-    [shares: BigNumberish],
-    [bigint],
-    "nonpayable"
-  >;
+  redeem: TypedContractMethod<[shares: BigNumberish], [bigint], "nonpayable">;
 
   sharePrice: TypedContractMethod<[], [bigint], "view">;
 
@@ -587,7 +464,7 @@ export interface SharedAccountModule extends BaseContract {
   totalShares: TypedContractMethod<[], [bigint], "view">;
 
   updateDeployedCapital: TypedContractMethod<
-    [newAmount: BigNumberish],
+    [newDeployedCapital: BigNumberish],
     [void],
     "nonpayable"
   >;
@@ -629,23 +506,13 @@ export interface SharedAccountModule extends BaseContract {
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "deposit"
-  ): TypedContractMethod<[amount: BigNumberish], [bigint], "nonpayable">;
+  ): TypedContractMethod<[assets: BigNumberish], [bigint], "nonpayable">;
   getFunction(
     nameOrSignature: "fulfillWithdrawal"
   ): TypedContractMethod<
     [id: BigNumberish, assetAmount: BigNumberish],
     [void],
     "nonpayable"
-  >;
-  getFunction(
-    nameOrSignature: "getAllExecutors"
-  ): TypedContractMethod<[], [string[]], "view">;
-  getFunction(
-    nameOrSignature: "getExecutor"
-  ): TypedContractMethod<
-    [executor: AddressLike],
-    [AccessControlModule.ExecutorRoleStructOutput],
-    "view"
   >;
   getFunction(
     nameOrSignature: "getRequest"
@@ -667,10 +534,12 @@ export interface SharedAccountModule extends BaseContract {
   ): TypedContractMethod<
     [user: AddressLike],
     [
-      [bigint, bigint, bigint] & {
+      [bigint, bigint, bigint, bigint, bigint] & {
         shares: bigint;
         currentValue: bigint;
-        pendingRequests: bigint;
+        capitalDeposited: bigint;
+        unrealizedPnL: bigint;
+        pendingClaims: bigint;
       }
     ],
     "view"
@@ -682,22 +551,16 @@ export interface SharedAccountModule extends BaseContract {
     nameOrSignature: "highWaterMark"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: "initialPendingShares"
-  ): TypedContractMethod<[], [bigint], "view">;
-  getFunction(
     nameOrSignature: "liquidAssets"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: "pendingWithdrawalNAV"
-  ): TypedContractMethod<[], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "pendingWithdrawalShares"
-  ): TypedContractMethod<[], [bigint], "view">;
+    nameOrSignature: "manager"
+  ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "realizedGains"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: "requestWithdrawal"
+    nameOrSignature: "redeem"
   ): TypedContractMethod<[shares: BigNumberish], [bigint], "nonpayable">;
   getFunction(
     nameOrSignature: "sharePrice"
@@ -713,7 +576,11 @@ export interface SharedAccountModule extends BaseContract {
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "updateDeployedCapital"
-  ): TypedContractMethod<[newAmount: BigNumberish], [void], "nonpayable">;
+  ): TypedContractMethod<
+    [newDeployedCapital: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "withdrawalRequestCount"
   ): TypedContractMethod<[], [bigint], "view">;
@@ -734,46 +601,32 @@ export interface SharedAccountModule extends BaseContract {
   >;
 
   getEvent(
-    key: "DeployedCapitalUpdated"
+    key: "CapitalDeployed"
   ): TypedContractEvent<
-    DeployedCapitalUpdatedEvent.InputTuple,
-    DeployedCapitalUpdatedEvent.OutputTuple,
-    DeployedCapitalUpdatedEvent.OutputObject
+    CapitalDeployedEvent.InputTuple,
+    CapitalDeployedEvent.OutputTuple,
+    CapitalDeployedEvent.OutputObject
   >;
   getEvent(
-    key: "Deposit"
+    key: "CapitalReturned"
   ): TypedContractEvent<
-    DepositEvent.InputTuple,
-    DepositEvent.OutputTuple,
-    DepositEvent.OutputObject
+    CapitalReturnedEvent.InputTuple,
+    CapitalReturnedEvent.OutputTuple,
+    CapitalReturnedEvent.OutputObject
   >;
   getEvent(
-    key: "ExecutorAdded"
+    key: "Deposited"
   ): TypedContractEvent<
-    ExecutorAddedEvent.InputTuple,
-    ExecutorAddedEvent.OutputTuple,
-    ExecutorAddedEvent.OutputObject
+    DepositedEvent.InputTuple,
+    DepositedEvent.OutputTuple,
+    DepositedEvent.OutputObject
   >;
   getEvent(
-    key: "ExecutorRemoved"
+    key: "RedeemedInstant"
   ): TypedContractEvent<
-    ExecutorRemovedEvent.InputTuple,
-    ExecutorRemovedEvent.OutputTuple,
-    ExecutorRemovedEvent.OutputObject
-  >;
-  getEvent(
-    key: "ExecutorRevoked"
-  ): TypedContractEvent<
-    ExecutorRevokedEvent.InputTuple,
-    ExecutorRevokedEvent.OutputTuple,
-    ExecutorRevokedEvent.OutputObject
-  >;
-  getEvent(
-    key: "SpendingLimitUpdated"
-  ): TypedContractEvent<
-    SpendingLimitUpdatedEvent.InputTuple,
-    SpendingLimitUpdatedEvent.OutputTuple,
-    SpendingLimitUpdatedEvent.OutputObject
+    RedeemedInstantEvent.InputTuple,
+    RedeemedInstantEvent.OutputTuple,
+    RedeemedInstantEvent.OutputObject
   >;
   getEvent(
     key: "WithdrawalClaimed"
@@ -790,78 +643,56 @@ export interface SharedAccountModule extends BaseContract {
     WithdrawalFulfilledEvent.OutputObject
   >;
   getEvent(
-    key: "WithdrawalRequested"
+    key: "WithdrawalQueued"
   ): TypedContractEvent<
-    WithdrawalRequestedEvent.InputTuple,
-    WithdrawalRequestedEvent.OutputTuple,
-    WithdrawalRequestedEvent.OutputObject
+    WithdrawalQueuedEvent.InputTuple,
+    WithdrawalQueuedEvent.OutputTuple,
+    WithdrawalQueuedEvent.OutputObject
   >;
 
   filters: {
-    "DeployedCapitalUpdated(uint256,uint256)": TypedContractEvent<
-      DeployedCapitalUpdatedEvent.InputTuple,
-      DeployedCapitalUpdatedEvent.OutputTuple,
-      DeployedCapitalUpdatedEvent.OutputObject
+    "CapitalDeployed(uint256,uint256)": TypedContractEvent<
+      CapitalDeployedEvent.InputTuple,
+      CapitalDeployedEvent.OutputTuple,
+      CapitalDeployedEvent.OutputObject
     >;
-    DeployedCapitalUpdated: TypedContractEvent<
-      DeployedCapitalUpdatedEvent.InputTuple,
-      DeployedCapitalUpdatedEvent.OutputTuple,
-      DeployedCapitalUpdatedEvent.OutputObject
-    >;
-
-    "Deposit(address,uint256,uint256,uint256)": TypedContractEvent<
-      DepositEvent.InputTuple,
-      DepositEvent.OutputTuple,
-      DepositEvent.OutputObject
-    >;
-    Deposit: TypedContractEvent<
-      DepositEvent.InputTuple,
-      DepositEvent.OutputTuple,
-      DepositEvent.OutputObject
+    CapitalDeployed: TypedContractEvent<
+      CapitalDeployedEvent.InputTuple,
+      CapitalDeployedEvent.OutputTuple,
+      CapitalDeployedEvent.OutputObject
     >;
 
-    "ExecutorAdded(address,uint256,uint256,uint256)": TypedContractEvent<
-      ExecutorAddedEvent.InputTuple,
-      ExecutorAddedEvent.OutputTuple,
-      ExecutorAddedEvent.OutputObject
+    "CapitalReturned(uint256,uint256)": TypedContractEvent<
+      CapitalReturnedEvent.InputTuple,
+      CapitalReturnedEvent.OutputTuple,
+      CapitalReturnedEvent.OutputObject
     >;
-    ExecutorAdded: TypedContractEvent<
-      ExecutorAddedEvent.InputTuple,
-      ExecutorAddedEvent.OutputTuple,
-      ExecutorAddedEvent.OutputObject
-    >;
-
-    "ExecutorRemoved(address)": TypedContractEvent<
-      ExecutorRemovedEvent.InputTuple,
-      ExecutorRemovedEvent.OutputTuple,
-      ExecutorRemovedEvent.OutputObject
-    >;
-    ExecutorRemoved: TypedContractEvent<
-      ExecutorRemovedEvent.InputTuple,
-      ExecutorRemovedEvent.OutputTuple,
-      ExecutorRemovedEvent.OutputObject
+    CapitalReturned: TypedContractEvent<
+      CapitalReturnedEvent.InputTuple,
+      CapitalReturnedEvent.OutputTuple,
+      CapitalReturnedEvent.OutputObject
     >;
 
-    "ExecutorRevoked(address)": TypedContractEvent<
-      ExecutorRevokedEvent.InputTuple,
-      ExecutorRevokedEvent.OutputTuple,
-      ExecutorRevokedEvent.OutputObject
+    "Deposited(address,uint256,uint256,uint256)": TypedContractEvent<
+      DepositedEvent.InputTuple,
+      DepositedEvent.OutputTuple,
+      DepositedEvent.OutputObject
     >;
-    ExecutorRevoked: TypedContractEvent<
-      ExecutorRevokedEvent.InputTuple,
-      ExecutorRevokedEvent.OutputTuple,
-      ExecutorRevokedEvent.OutputObject
+    Deposited: TypedContractEvent<
+      DepositedEvent.InputTuple,
+      DepositedEvent.OutputTuple,
+      DepositedEvent.OutputObject
     >;
 
-    "SpendingLimitUpdated(address,uint256,uint256,uint256)": TypedContractEvent<
-      SpendingLimitUpdatedEvent.InputTuple,
-      SpendingLimitUpdatedEvent.OutputTuple,
-      SpendingLimitUpdatedEvent.OutputObject
+    "RedeemedInstant(address,uint256,uint256,uint256)": TypedContractEvent<
+      RedeemedInstantEvent.InputTuple,
+      RedeemedInstantEvent.OutputTuple,
+      RedeemedInstantEvent.OutputObject
     >;
-    SpendingLimitUpdated: TypedContractEvent<
-      SpendingLimitUpdatedEvent.InputTuple,
-      SpendingLimitUpdatedEvent.OutputTuple,
-      SpendingLimitUpdatedEvent.OutputObject
+    RedeemedInstant: TypedContractEvent<
+      RedeemedInstantEvent.InputTuple,
+      RedeemedInstantEvent.OutputTuple,
+      RedeemedInstantEvent.OutputObject
     >;
 
     "WithdrawalClaimed(uint256,address,uint256)": TypedContractEvent<
@@ -886,15 +717,15 @@ export interface SharedAccountModule extends BaseContract {
       WithdrawalFulfilledEvent.OutputObject
     >;
 
-    "WithdrawalRequested(uint256,address,uint256)": TypedContractEvent<
-      WithdrawalRequestedEvent.InputTuple,
-      WithdrawalRequestedEvent.OutputTuple,
-      WithdrawalRequestedEvent.OutputObject
+    "WithdrawalQueued(uint256,address,uint256,uint256)": TypedContractEvent<
+      WithdrawalQueuedEvent.InputTuple,
+      WithdrawalQueuedEvent.OutputTuple,
+      WithdrawalQueuedEvent.OutputObject
     >;
-    WithdrawalRequested: TypedContractEvent<
-      WithdrawalRequestedEvent.InputTuple,
-      WithdrawalRequestedEvent.OutputTuple,
-      WithdrawalRequestedEvent.OutputObject
+    WithdrawalQueued: TypedContractEvent<
+      WithdrawalQueuedEvent.InputTuple,
+      WithdrawalQueuedEvent.OutputTuple,
+      WithdrawalQueuedEvent.OutputObject
     >;
   };
 }

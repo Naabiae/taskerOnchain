@@ -28,6 +28,7 @@ contract PooledAccount is BaseVault, SharedAccountModule {
     // ─── Events ───────────────────────────────────────────────────────────────
     event FeePercentageUpdated(uint256 oldFee, uint256 newFee);
     event FeeRecipientUpdated(address indexed oldRecipient, address indexed newRecipient);
+    event ManagerUpdated(address indexed oldManager, address indexed newManager);
     event PerformanceFeeExtracted(address indexed recipient, uint256 assetAmount, uint256 navAtExtraction);
     event CircuitBreakerTripped(uint256 currentNAV, uint256 hwm, uint256 drawdownBps);
     event CircuitBreakerReset(uint256 currentNAV);
@@ -72,8 +73,9 @@ contract PooledAccount is BaseVault, SharedAccountModule {
     function setManager(address _manager) external {
         if (msg.sender != manager) revert OnlyManager();
         if (_manager == address(0)) revert ZeroAddress();
+        address old = manager;
         manager = _manager;
-        emit ManagerSet(_manager);
+        emit ManagerUpdated(old, _manager);
     }
 
     function setFeePercentage(uint256 _feePercentage) external {
@@ -151,6 +153,12 @@ contract PooledAccount is BaseVault, SharedAccountModule {
             circuitBreakerTripped = true;
             emit CircuitBreakerTripped(nav, highWaterMark, drawdownBps);
         }
+    }
+
+    /// @notice Expose circuit breaker check externally (manager can force a check).
+    function checkAndTripCircuitBreaker() external {
+        if (msg.sender != manager) revert OnlyManager();
+        _checkCircuitBreaker();
     }
 
     function resetCircuitBreaker() external {

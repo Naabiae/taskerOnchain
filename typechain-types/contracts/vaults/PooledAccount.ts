@@ -96,6 +96,7 @@ export interface PooledAccountInterface extends Interface {
       | "balanceOf"
       | "balanceOfAssets"
       | "cancelAutomation"
+      | "checkAndTripCircuitBreaker"
       | "circuitBreakerTripped"
       | "claimWithdrawal"
       | "createAutomation"
@@ -115,14 +116,17 @@ export interface PooledAccountInterface extends Interface {
       | "getUserPosition"
       | "getUserRequests"
       | "highWaterMark"
+      | "initialPendingShares"
       | "lastFeeExtractionNAV"
       | "liquidAssets"
       | "manager"
       | "maxDrawdownBps"
       | "nextAutomationId"
       | "nonce"
+      | "pendingWithdrawalNAV"
+      | "pendingWithdrawalShares"
       | "realizedGains"
-      | "redeem"
+      | "requestWithdrawal"
       | "resetCircuitBreaker"
       | "setFeePercentage"
       | "setFeeRecipient"
@@ -154,15 +158,14 @@ export interface PooledAccountInterface extends Interface {
       | "ExecutorRevoked"
       | "FeePercentageUpdated"
       | "FeeRecipientUpdated"
-      | "ManagerSet"
+      | "ManagerUpdated"
       | "MaxDrawdownUpdated"
       | "PerformanceFeeExtracted"
-      | "Redeem"
       | "SpendingLimitUpdated"
       | "StrategyExecuted"
       | "WithdrawalClaimed"
       | "WithdrawalFulfilled"
-      | "WithdrawalQueued"
+      | "WithdrawalRequested"
   ): EventFragment;
 
   encodeFunctionData(functionFragment: "asset", values?: undefined): string;
@@ -177,6 +180,10 @@ export interface PooledAccountInterface extends Interface {
   encodeFunctionData(
     functionFragment: "cancelAutomation",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "checkAndTripCircuitBreaker",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "circuitBreakerTripped",
@@ -255,6 +262,10 @@ export interface PooledAccountInterface extends Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "initialPendingShares",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "lastFeeExtractionNAV",
     values?: undefined
   ): string;
@@ -273,11 +284,19 @@ export interface PooledAccountInterface extends Interface {
   ): string;
   encodeFunctionData(functionFragment: "nonce", values?: undefined): string;
   encodeFunctionData(
+    functionFragment: "pendingWithdrawalNAV",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "pendingWithdrawalShares",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "realizedGains",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "redeem",
+    functionFragment: "requestWithdrawal",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -348,6 +367,10 @@ export interface PooledAccountInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "checkAndTripCircuitBreaker",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "circuitBreakerTripped",
     data: BytesLike
   ): Result;
@@ -415,6 +438,10 @@ export interface PooledAccountInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "initialPendingShares",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "lastFeeExtractionNAV",
     data: BytesLike
   ): Result;
@@ -433,10 +460,21 @@ export interface PooledAccountInterface extends Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "nonce", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "pendingWithdrawalNAV",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "pendingWithdrawalShares",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "realizedGains",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "redeem", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "requestWithdrawal",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "resetCircuitBreaker",
     data: BytesLike
@@ -698,11 +736,12 @@ export namespace FeeRecipientUpdatedEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export namespace ManagerSetEvent {
-  export type InputTuple = [manager: AddressLike];
-  export type OutputTuple = [manager: string];
+export namespace ManagerUpdatedEvent {
+  export type InputTuple = [oldManager: AddressLike, newManager: AddressLike];
+  export type OutputTuple = [oldManager: string, newManager: string];
   export interface OutputObject {
-    manager: string;
+    oldManager: string;
+    newManager: string;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -738,24 +777,6 @@ export namespace PerformanceFeeExtractedEvent {
     recipient: string;
     assetAmount: bigint;
     navAtExtraction: bigint;
-  }
-  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
-  export type Filter = TypedDeferredTopicFilter<Event>;
-  export type Log = TypedEventLog<Event>;
-  export type LogDescription = TypedLogDescription<Event>;
-}
-
-export namespace RedeemEvent {
-  export type InputTuple = [
-    user: AddressLike,
-    shares: BigNumberish,
-    assets: BigNumberish
-  ];
-  export type OutputTuple = [user: string, shares: bigint, assets: bigint];
-  export interface OutputObject {
-    user: string;
-    shares: bigint;
-    assets: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -842,24 +863,17 @@ export namespace WithdrawalFulfilledEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export namespace WithdrawalQueuedEvent {
+export namespace WithdrawalRequestedEvent {
   export type InputTuple = [
     id: BigNumberish,
     user: AddressLike,
-    shares: BigNumberish,
-    lockedAssets: BigNumberish
+    shares: BigNumberish
   ];
-  export type OutputTuple = [
-    id: bigint,
-    user: string,
-    shares: bigint,
-    lockedAssets: bigint
-  ];
+  export type OutputTuple = [id: bigint, user: string, shares: bigint];
   export interface OutputObject {
     id: bigint;
     user: string;
     shares: bigint;
-    lockedAssets: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -921,6 +935,8 @@ export interface PooledAccount extends BaseContract {
     [void],
     "nonpayable"
   >;
+
+  checkAndTripCircuitBreaker: TypedContractMethod<[], [void], "nonpayable">;
 
   circuitBreakerTripped: TypedContractMethod<[], [boolean], "view">;
 
@@ -1000,7 +1016,7 @@ export interface PooledAccount extends BaseContract {
       [bigint, bigint, bigint] & {
         shares: bigint;
         currentValue: bigint;
-        pendingClaims: bigint;
+        pendingRequests: bigint;
       }
     ],
     "view"
@@ -1009,6 +1025,8 @@ export interface PooledAccount extends BaseContract {
   getUserRequests: TypedContractMethod<[user: AddressLike], [bigint[]], "view">;
 
   highWaterMark: TypedContractMethod<[], [bigint], "view">;
+
+  initialPendingShares: TypedContractMethod<[], [bigint], "view">;
 
   lastFeeExtractionNAV: TypedContractMethod<[], [bigint], "view">;
 
@@ -1022,9 +1040,17 @@ export interface PooledAccount extends BaseContract {
 
   nonce: TypedContractMethod<[], [bigint], "view">;
 
+  pendingWithdrawalNAV: TypedContractMethod<[], [bigint], "view">;
+
+  pendingWithdrawalShares: TypedContractMethod<[], [bigint], "view">;
+
   realizedGains: TypedContractMethod<[], [bigint], "view">;
 
-  redeem: TypedContractMethod<[shares: BigNumberish], [bigint], "nonpayable">;
+  requestWithdrawal: TypedContractMethod<
+    [shares: BigNumberish],
+    [bigint],
+    "nonpayable"
+  >;
 
   resetCircuitBreaker: TypedContractMethod<[], [void], "nonpayable">;
 
@@ -1106,6 +1132,9 @@ export interface PooledAccount extends BaseContract {
   getFunction(
     nameOrSignature: "cancelAutomation"
   ): TypedContractMethod<[automationId: BigNumberish], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "checkAndTripCircuitBreaker"
+  ): TypedContractMethod<[], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "circuitBreakerTripped"
   ): TypedContractMethod<[], [boolean], "view">;
@@ -1194,7 +1223,7 @@ export interface PooledAccount extends BaseContract {
       [bigint, bigint, bigint] & {
         shares: bigint;
         currentValue: bigint;
-        pendingClaims: bigint;
+        pendingRequests: bigint;
       }
     ],
     "view"
@@ -1204,6 +1233,9 @@ export interface PooledAccount extends BaseContract {
   ): TypedContractMethod<[user: AddressLike], [bigint[]], "view">;
   getFunction(
     nameOrSignature: "highWaterMark"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "initialPendingShares"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "lastFeeExtractionNAV"
@@ -1224,10 +1256,16 @@ export interface PooledAccount extends BaseContract {
     nameOrSignature: "nonce"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
+    nameOrSignature: "pendingWithdrawalNAV"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "pendingWithdrawalShares"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
     nameOrSignature: "realizedGains"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: "redeem"
+    nameOrSignature: "requestWithdrawal"
   ): TypedContractMethod<[shares: BigNumberish], [bigint], "nonpayable">;
   getFunction(
     nameOrSignature: "resetCircuitBreaker"
@@ -1376,11 +1414,11 @@ export interface PooledAccount extends BaseContract {
     FeeRecipientUpdatedEvent.OutputObject
   >;
   getEvent(
-    key: "ManagerSet"
+    key: "ManagerUpdated"
   ): TypedContractEvent<
-    ManagerSetEvent.InputTuple,
-    ManagerSetEvent.OutputTuple,
-    ManagerSetEvent.OutputObject
+    ManagerUpdatedEvent.InputTuple,
+    ManagerUpdatedEvent.OutputTuple,
+    ManagerUpdatedEvent.OutputObject
   >;
   getEvent(
     key: "MaxDrawdownUpdated"
@@ -1395,13 +1433,6 @@ export interface PooledAccount extends BaseContract {
     PerformanceFeeExtractedEvent.InputTuple,
     PerformanceFeeExtractedEvent.OutputTuple,
     PerformanceFeeExtractedEvent.OutputObject
-  >;
-  getEvent(
-    key: "Redeem"
-  ): TypedContractEvent<
-    RedeemEvent.InputTuple,
-    RedeemEvent.OutputTuple,
-    RedeemEvent.OutputObject
   >;
   getEvent(
     key: "SpendingLimitUpdated"
@@ -1432,11 +1463,11 @@ export interface PooledAccount extends BaseContract {
     WithdrawalFulfilledEvent.OutputObject
   >;
   getEvent(
-    key: "WithdrawalQueued"
+    key: "WithdrawalRequested"
   ): TypedContractEvent<
-    WithdrawalQueuedEvent.InputTuple,
-    WithdrawalQueuedEvent.OutputTuple,
-    WithdrawalQueuedEvent.OutputObject
+    WithdrawalRequestedEvent.InputTuple,
+    WithdrawalRequestedEvent.OutputTuple,
+    WithdrawalRequestedEvent.OutputObject
   >;
 
   filters: {
@@ -1583,15 +1614,15 @@ export interface PooledAccount extends BaseContract {
       FeeRecipientUpdatedEvent.OutputObject
     >;
 
-    "ManagerSet(address)": TypedContractEvent<
-      ManagerSetEvent.InputTuple,
-      ManagerSetEvent.OutputTuple,
-      ManagerSetEvent.OutputObject
+    "ManagerUpdated(address,address)": TypedContractEvent<
+      ManagerUpdatedEvent.InputTuple,
+      ManagerUpdatedEvent.OutputTuple,
+      ManagerUpdatedEvent.OutputObject
     >;
-    ManagerSet: TypedContractEvent<
-      ManagerSetEvent.InputTuple,
-      ManagerSetEvent.OutputTuple,
-      ManagerSetEvent.OutputObject
+    ManagerUpdated: TypedContractEvent<
+      ManagerUpdatedEvent.InputTuple,
+      ManagerUpdatedEvent.OutputTuple,
+      ManagerUpdatedEvent.OutputObject
     >;
 
     "MaxDrawdownUpdated(uint256,uint256)": TypedContractEvent<
@@ -1614,17 +1645,6 @@ export interface PooledAccount extends BaseContract {
       PerformanceFeeExtractedEvent.InputTuple,
       PerformanceFeeExtractedEvent.OutputTuple,
       PerformanceFeeExtractedEvent.OutputObject
-    >;
-
-    "Redeem(address,uint256,uint256)": TypedContractEvent<
-      RedeemEvent.InputTuple,
-      RedeemEvent.OutputTuple,
-      RedeemEvent.OutputObject
-    >;
-    Redeem: TypedContractEvent<
-      RedeemEvent.InputTuple,
-      RedeemEvent.OutputTuple,
-      RedeemEvent.OutputObject
     >;
 
     "SpendingLimitUpdated(address,uint256,uint256,uint256)": TypedContractEvent<
@@ -1671,15 +1691,15 @@ export interface PooledAccount extends BaseContract {
       WithdrawalFulfilledEvent.OutputObject
     >;
 
-    "WithdrawalQueued(uint256,address,uint256,uint256)": TypedContractEvent<
-      WithdrawalQueuedEvent.InputTuple,
-      WithdrawalQueuedEvent.OutputTuple,
-      WithdrawalQueuedEvent.OutputObject
+    "WithdrawalRequested(uint256,address,uint256)": TypedContractEvent<
+      WithdrawalRequestedEvent.InputTuple,
+      WithdrawalRequestedEvent.OutputTuple,
+      WithdrawalRequestedEvent.OutputObject
     >;
-    WithdrawalQueued: TypedContractEvent<
-      WithdrawalQueuedEvent.InputTuple,
-      WithdrawalQueuedEvent.OutputTuple,
-      WithdrawalQueuedEvent.OutputObject
+    WithdrawalRequested: TypedContractEvent<
+      WithdrawalRequestedEvent.InputTuple,
+      WithdrawalRequestedEvent.OutputTuple,
+      WithdrawalRequestedEvent.OutputObject
     >;
   };
 }
