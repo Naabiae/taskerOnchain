@@ -448,10 +448,10 @@ export interface GlobalRegistry extends BaseContract {
   >;
 
   tasks: TypedContractMethod<
-    [arg0: BigNumberish],
+    [taskId: BigNumberish],
     [
       [bigint, string, string, string, bigint, bigint, bigint] & {
-        taskId: bigint;
+        id: bigint;
         taskCore: string;
         taskVault: string;
         creator: string;
@@ -569,10 +569,10 @@ export interface GlobalRegistry extends BaseContract {
   getFunction(
     nameOrSignature: "tasks"
   ): TypedContractMethod<
-    [arg0: BigNumberish],
+    [taskId: BigNumberish],
     [
       [bigint, string, string, string, bigint, bigint, bigint] & {
-        taskId: bigint;
+        id: bigint;
         taskCore: string;
         taskVault: string;
         creator: string;

@@ -60,7 +60,7 @@ export interface TimeBasedTransferAdapterInterface extends Interface {
 
   encodeFunctionData(
     functionFragment: "canExecute",
-    values: [BytesLike]
+    values: [AddressLike, BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "decodeParams",
@@ -108,21 +108,21 @@ export interface TimeBasedTransferAdapterInterface extends Interface {
 export namespace ActionExecutedEvent {
   export type InputTuple = [
     vault: AddressLike,
-    protocol: AddressLike,
+    target: AddressLike,
     success: boolean,
-    result: BytesLike
+    data: BytesLike
   ];
   export type OutputTuple = [
     vault: string,
-    protocol: string,
+    target: string,
     success: boolean,
-    result: string
+    data: string
   ];
   export interface OutputObject {
     vault: string;
-    protocol: string;
+    target: string;
     success: boolean;
-    result: string;
+    data: string;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -174,7 +174,7 @@ export interface TimeBasedTransferAdapter extends BaseContract {
   ): Promise<this>;
 
   canExecute: TypedContractMethod<
-    [params: BytesLike],
+    [arg0: AddressLike, params: BytesLike],
     [[boolean, string] & { canExec: boolean; reason: string }],
     "view"
   >;
@@ -218,7 +218,7 @@ export interface TimeBasedTransferAdapter extends BaseContract {
   getFunction(
     nameOrSignature: "canExecute"
   ): TypedContractMethod<
-    [params: BytesLike],
+    [arg0: AddressLike, params: BytesLike],
     [[boolean, string] & { canExec: boolean; reason: string }],
     "view"
   >;

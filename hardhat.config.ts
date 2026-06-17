@@ -1,19 +1,14 @@
-import { HardhatUserConfig, vars } from 'hardhat/config';
+import { HardhatUserConfig } from 'hardhat/config';
 import '@nomicfoundation/hardhat-toolbox';
-import '@parity/hardhat-polkadot';
 import "@nomicfoundation/hardhat-verify";
-import 'hardhat-tracer'; // 👈 Add trace support (like foundry -vvvv)
-import path from 'path';
+import 'dotenv/config';
+import { configDotenv } from 'dotenv';
 
-// BSC mainnet fork config
-// Set BSC_FORK_URL env var to enable forking:
-//   BSC_FORK_URL=https://rpc.ankr.com/bsc/<key> npx hardhat test test/BscForkAdapters.test.ts
-const BSC_FORK_URL = process.env.BSC_FORK_URL || '';
-const BSC_FORK_BLOCK = process.env.BSC_FORK_BLOCK ? parseInt(process.env.BSC_FORK_BLOCK) : undefined;
+configDotenv();
 
-// Base mainnet fork config
-const BASE_FORK_URL = process.env.BASE_FORK_URL || '';
-const BASE_FORK_BLOCK = process.env.BASE_FORK_BLOCK ? parseInt(process.env.BASE_FORK_BLOCK) : undefined;
+const ARC_RPC = process.env.ARC_RPC || 'https://rpc.drpc.testnet.arc.network';
+const DEPLOYER_KEY = process.env.DEPLOYER_KEY || '0x5ad3af615c05ba41f877e6fe251039b5c66c3a858c7bf2c8d235fe1b9eabfd7f';
+const BASE_DEPLOYER_KEY = process.env.BASE_DEPLOYER_KEY || "";
 
 const config: HardhatUserConfig = {
     solidity: {
@@ -22,55 +17,73 @@ const config: HardhatUserConfig = {
             evmVersion: 'cancun',
             optimizer: {
                 enabled: true,
-                runs: 1, // Lower runs = smaller deployment size (trade-off: higher gas costs)
+                runs: 200,
             }
-        },
-    },
-    resolc: {
-        compilerSource: 'npm',
-        settings: {
-            optimizer: {
-              enabled: true,
-              parameters: 'z',
-              fallbackOz: true,
-              runs: 100,
-            },
         },
     },
     networks: {
         hardhat: {
-            // Fork Arc Testnet for local testing
-            forking: {
-                url: 'https://rpc.drpc.testnet.arc.network',
-            },
-            chainId: 5042002,
-        },
-        baseFork: {
-            url: 'http://127.0.0.1:8545',
-            timeout: 600_000,
-        },
-        // Connects to a running 'npx hardhat node --fork <BSC_RPC>' instance
-        // Hardhat fork nodes always report chainId 31337 internally — do not override
-        // timeout=600s: needed for MetaYieldVault deposit which chains many RPC calls
-        bscFork: {
-            url: 'http://127.0.0.1:8545',
-            timeout: 600_000,
-        },
-        etherum : {
-            url: "https://virtual.mainnet.eu.rpc.tenderly.co/82c86106-662e-4d7f-a974-c311987358ff",
-            accounts: vars.has('TEST_ACC_PRIVATE_KEY') ? [vars.get('TEST_ACC_PRIVATE_KEY')] : [],
-            chainId: 8
+            // Fork only when ARC_FORK=true to save gas in tests
+            ...(process.env.ARC_FORK === 'true' ? {
+                forking: { url: ARC_RPC },
+                chainId: 5042002,
+            } : {
+                chainId: 31337,
+            }),
         },
         arcTestnet: {
-            url: 'https://rpc.drpc.testnet.arc.network',
+            url: ARC_RPC,
             chainId: 5042002,
-            accounts: ['0x5ad3af615c05ba41f877e6fe251039b5c66c3a858c7bf2c8d235fe1b9eabfd7f'],
+            accounts: [DEPLOYER_KEY],
+            timeout: 120000,
+        },
+        // Alternative Arc RPCs
+        arcTestnetAlt: {
+            url: 'https://testnet.arc.network/rpc',
+            chainId: 5042002,
+            accounts: [DEPLOYER_KEY],
+            timeout: 120000,
+        },
+        // Base Sepolia Testnet
+        baseSepolia: {
+            url: process.env.BASE_SEPOLIA_RPC || 'https://sepolia.base.org',
+            chainId: 84532,
+            accounts: [BASE_DEPLOYER_KEY],
+            timeout: 120000,
+            gasPrice: 'auto',
+        },
+        // Base Mainnet (for future)
+        base: {
+            url: process.env.BASE_RPC || 'https://mainnet.base.org',
+            chainId: 8453,
+            accounts: [BASE_DEPLOYER_KEY],
+            timeout: 120000,
         },
     },
     etherscan: {
         apiKey: {
-            bsc: "3IQTM6FU96R1JRBMBEBD3I67SUFP2YV3I1",
+            arcTestnet: 'no-api-key-needed',
+            baseSepolia: process.env.BASESCAN_API_KEY || 'no-api-key-needed',
+            base: process.env.BASESCAN_API_KEY || 'no-api-key-needed',
         },
+        customChains: [
+            {
+                network: 'arcTestnet',
+                chainId: 5042002,
+                urls: {
+                    apiURL: 'https://testnet.arc.network/api',
+                    browserURL: 'https://testnet.arc.network',
+                },
+            },
+            {
+                network: 'baseSepolia',
+                chainId: 84532,
+                urls: {
+                    apiURL: 'https://api-sepolia.basescan.org/api',
+                    browserURL: 'https://sepolia.basescan.org',
+                },
+            },
+        ],
     },
 };
 

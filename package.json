@@ -1,27 +1,51 @@
 {
-  "name": "hardhat-example",
-  "version": "1.0.0",
-  "description": "",
+  "name": "uarc",
+  "version": "2.0.0",
+  "description": "Universal Automation on Arc — Onchain task automation with AI and x402 payment layer",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "hardhat test test/ArcAdapters.test.ts",
+    "test:x402": "hardhat test test/x402.test.ts",
+    "test:all": "hardhat test",
+    "compile": "hardhat compile",
+    "deploy:arc": "hardhat run scripts/deploy-arc-full.ts --network arcTestnet",
+    "txs:arc": "hardhat run scripts/run-59-txs.ts --network arcTestnet",
+    "deploy:and:run": "npm run deploy:arc && npm run txs:arc",
+    "start": "ts-node agent/server.ts",
+    "agent": "ts-node agent/server.ts",
+    "test:local": "ts-node agent/test-local.ts",
+    "clean": "hardhat clean"
   },
-  "keywords": [],
+  "keywords": [
+    "automation",
+    "arc",
+    "blockchain",
+    "x402",
+    "ai"
+  ],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
     "@nomicfoundation/hardhat-verify": "^2.0.14",
     "@openzeppelin/contracts-upgradeable": "^5.6.1",
-    "@parity/hardhat-polkadot": "^0.1.8-p0",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^22.15.3",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
     "fhenixjs": "^0.4.1",
     "hardhat": "^2.24.0",
     "hardhat-tracer": "^3.4.0",
-    "solc": "^0.8.28"
+    "solc": "^0.8.28",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
   },
   "dependencies": {
     "@fhenixprotocol/contracts": "^0.3.1",
     "@mistralai/mistralai": "^2.2.1",
-    "@nomicfoundation/hardhat-toolbox": "^6.0.0"
+    "@nomicfoundation/hardhat-toolbox": "^6.0.0",
+    "dotenv": "^17.4.2",
+    "mongoose": "^8.23.1"
   }
 }

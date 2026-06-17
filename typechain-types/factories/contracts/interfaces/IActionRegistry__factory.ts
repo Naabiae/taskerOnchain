@@ -157,6 +157,47 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "address",
+        name: "adapterAddr",
+        type: "address",
+      },
+    ],
+    name: "getAdapterByAddress",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "address",
+            name: "adapter",
+            type: "address",
+          },
+          {
+            internalType: "bool",
+            name: "isActive",
+            type: "bool",
+          },
+          {
+            internalType: "uint256",
+            name: "gasLimit",
+            type: "uint256",
+          },
+          {
+            internalType: "bool",
+            name: "requiresTokens",
+            type: "bool",
+          },
+        ],
+        internalType: "struct IActionRegistry.AdapterInfo",
+        name: "",
+        type: "tuple",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "bytes4",
         name: "selector",
         type: "bytes4",

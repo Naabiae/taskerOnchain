@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.28;
 
-import { IActionAdapter } from "../interfaces/IActionAdapter.sol";
+import { IStrategyAdapter } from "../interfaces/IStrategyAdapter.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { SafeERC20 } from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
@@ -22,7 +22,7 @@ interface IStorkOracle {
  * @title StorkPriceTransferAdapter
  * @dev Adapter to execute a token transfer based on Stork Oracle price on Arc Testnet
  */
-contract StorkPriceTransferAdapter is IActionAdapter {
+contract StorkPriceTransferAdapter is IStrategyAdapter {
     using SafeERC20 for IERC20;
 
     /**
@@ -65,7 +65,7 @@ contract StorkPriceTransferAdapter is IActionAdapter {
         return (true, abi.encode(amount));
     }
 
-    function canExecute(bytes calldata params) external view override returns (bool, string memory) {
+    function canExecute(address /*vault*/, bytes calldata params) external view override returns (bool, string memory) {
         (address storkOracle, , , int256 targetPrice, bool isBelow, ) = abi.decode(params, (address, address, uint256, int256, bool, address));
 
         (, int256 currentPrice, , , ) = IStorkOracle(storkOracle).latestRoundData();
@@ -90,11 +90,11 @@ contract StorkPriceTransferAdapter is IActionAdapter {
         amounts[0] = amount;
     }
 
-    function isProtocolSupported(address /*protocol*/) external pure override returns (bool) {
+    function isProtocolSupported(address /*protocol*/) external pure returns (bool) {
         return true;
     }
 
-    function name() external pure override returns (string memory) {
+    function name() external pure returns (string memory) {
         return "StorkPriceTransferAdapter";
     }
 

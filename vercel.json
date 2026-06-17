@@ -1,0 +1,24 @@
+{
+  "version": 2,
+  "installCommand": "npm install",
+  "builds": [
+    {
+      "src": "agent/server.ts",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": [
+          "frontend/**",
+          "deployments/**",
+          "agent/*.json",
+          "reference/TaskerFrontend/shared/**"
+        ]
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/agent/server.ts"
+    }
+  ]
+}

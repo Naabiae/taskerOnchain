@@ -83,6 +83,7 @@ export declare namespace ITaskCore {
 export interface TaskCoreInterface extends Interface {
   getFunction(
     nameOrSignature:
+      | "actionSetter"
       | "cancel"
       | "completeExecution"
       | "creator"
@@ -112,6 +113,10 @@ export interface TaskCoreInterface extends Interface {
       | "TaskStatusChanged"
   ): EventFragment;
 
+  encodeFunctionData(
+    functionFragment: "actionSetter",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "cancel", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "completeExecution",
@@ -167,6 +172,10 @@ export interface TaskCoreInterface extends Interface {
   ): string;
   encodeFunctionData(functionFragment: "vault", values?: undefined): string;
 
+  decodeFunctionResult(
+    functionFragment: "actionSetter",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "cancel", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "completeExecution",
@@ -361,6 +370,8 @@ export interface TaskCore extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
+  actionSetter: TypedContractMethod<[], [string], "view">;
+
   cancel: TypedContractMethod<[], [bigint], "nonpayable">;
 
   completeExecution: TypedContractMethod<
@@ -467,6 +478,9 @@ export interface TaskCore extends BaseContract {
     key: string | FunctionFragment
   ): T;
 
+  getFunction(
+    nameOrSignature: "actionSetter"
+  ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "cancel"
   ): TypedContractMethod<[], [bigint], "nonpayable">;

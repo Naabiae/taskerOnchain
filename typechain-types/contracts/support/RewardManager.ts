@@ -47,29 +47,31 @@ export declare namespace IRewardManager {
 export interface RewardManagerInterface extends Interface {
   getFunction(
     nameOrSignature:
+      | "BASE_REPUTATION_SCORE"
       | "BASIS_POINTS"
       | "MAX_PLATFORM_FEE"
+      | "MAX_REPUTATION_MULTIPLIER"
       | "calculateReward"
       | "collectFees"
       | "distributeReward"
       | "executorHub"
       | "gasReimbursementMultiplier"
+      | "getMaxRewardCost"
       | "getReputationMultiplier"
+      | "maxGasReimbursement"
       | "owner"
       | "platformFeePercentage"
       | "renounceOwnership"
       | "setExecutorHub"
       | "setGasReimbursementMultiplier"
+      | "setMaxGasReimbursement"
       | "setPlatformFee"
-      | "setTaskLogic"
-      | "taskLogic"
       | "totalFeesCollected"
       | "transferOwnership"
   ): FunctionFragment;
 
   getEvent(
     nameOrSignatureOrTopic:
-      | "Calcuated"
       | "OwnershipTransferred"
       | "PlatformFeeCollected"
       | "PlatformFeeUpdated"
@@ -77,11 +79,19 @@ export interface RewardManagerInterface extends Interface {
   ): EventFragment;
 
   encodeFunctionData(
+    functionFragment: "BASE_REPUTATION_SCORE",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "BASIS_POINTS",
     values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "MAX_PLATFORM_FEE",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "MAX_REPUTATION_MULTIPLIER",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -105,8 +115,16 @@ export interface RewardManagerInterface extends Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "getMaxRewardCost",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "getReputationMultiplier",
     values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "maxGasReimbursement",
+    values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
@@ -126,14 +144,13 @@ export interface RewardManagerInterface extends Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "setPlatformFee",
+    functionFragment: "setMaxGasReimbursement",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "setTaskLogic",
-    values: [AddressLike]
+    functionFragment: "setPlatformFee",
+    values: [BigNumberish]
   ): string;
-  encodeFunctionData(functionFragment: "taskLogic", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "totalFeesCollected",
     values?: undefined
@@ -144,11 +161,19 @@ export interface RewardManagerInterface extends Interface {
   ): string;
 
   decodeFunctionResult(
+    functionFragment: "BASE_REPUTATION_SCORE",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "BASIS_POINTS",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "MAX_PLATFORM_FEE",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "MAX_REPUTATION_MULTIPLIER",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -172,7 +197,15 @@ export interface RewardManagerInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "getMaxRewardCost",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getReputationMultiplier",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "maxGasReimbursement",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
@@ -193,14 +226,13 @@ export interface RewardManagerInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "setPlatformFee",
+    functionFragment: "setMaxGasReimbursement",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "setTaskLogic",
+    functionFragment: "setPlatformFee",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "taskLogic", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "totalFeesCollected",
     data: BytesLike
@@ -209,18 +241,6 @@ export interface RewardManagerInterface extends Interface {
     functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
-}
-
-export namespace CalcuatedEvent {
-  export type InputTuple = [calc: BigNumberish];
-  export type OutputTuple = [calc: bigint];
-  export interface OutputObject {
-    calc: bigint;
-  }
-  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
-  export type Filter = TypedDeferredTopicFilter<Event>;
-  export type Log = TypedEventLog<Event>;
-  export type LogDescription = TypedLogDescription<Event>;
 }
 
 export namespace OwnershipTransferredEvent {
@@ -264,21 +284,21 @@ export namespace PlatformFeeUpdatedEvent {
 
 export namespace RewardDistributedEvent {
   export type InputTuple = [
-    taskId: BigNumberish,
+    automationId: BigNumberish,
     executor: AddressLike,
     executorReward: BigNumberish,
     platformFee: BigNumberish,
     gasReimbursement: BigNumberish
   ];
   export type OutputTuple = [
-    taskId: bigint,
+    automationId: bigint,
     executor: string,
     executorReward: bigint,
     platformFee: bigint,
     gasReimbursement: bigint
   ];
   export interface OutputObject {
-    taskId: bigint;
+    automationId: bigint;
     executor: string;
     executorReward: bigint;
     platformFee: bigint;
@@ -333,9 +353,13 @@ export interface RewardManager extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
+  BASE_REPUTATION_SCORE: TypedContractMethod<[], [bigint], "view">;
+
   BASIS_POINTS: TypedContractMethod<[], [bigint], "view">;
 
   MAX_PLATFORM_FEE: TypedContractMethod<[], [bigint], "view">;
+
+  MAX_REPUTATION_MULTIPLIER: TypedContractMethod<[], [bigint], "view">;
 
   calculateReward: TypedContractMethod<
     [baseReward: BigNumberish, executor: AddressLike, gasUsed: BigNumberish],
@@ -364,11 +388,19 @@ export interface RewardManager extends BaseContract {
 
   gasReimbursementMultiplier: TypedContractMethod<[], [bigint], "view">;
 
-  getReputationMultiplier: TypedContractMethod<
-    [executor: AddressLike],
+  getMaxRewardCost: TypedContractMethod<
+    [baseReward: BigNumberish],
     [bigint],
     "view"
   >;
+
+  getReputationMultiplier: TypedContractMethod<
+    [arg0: AddressLike],
+    [bigint],
+    "view"
+  >;
+
+  maxGasReimbursement: TypedContractMethod<[], [bigint], "view">;
 
   owner: TypedContractMethod<[], [string], "view">;
 
@@ -388,19 +420,17 @@ export interface RewardManager extends BaseContract {
     "nonpayable"
   >;
 
+  setMaxGasReimbursement: TypedContractMethod<
+    [_maxGasReimbursement: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+
   setPlatformFee: TypedContractMethod<
     [feePercentage: BigNumberish],
     [void],
     "nonpayable"
   >;
-
-  setTaskLogic: TypedContractMethod<
-    [_taskLogic: AddressLike],
-    [void],
-    "nonpayable"
-  >;
-
-  taskLogic: TypedContractMethod<[], [string], "view">;
 
   totalFeesCollected: TypedContractMethod<[], [bigint], "view">;
 
@@ -415,10 +445,16 @@ export interface RewardManager extends BaseContract {
   ): T;
 
   getFunction(
+    nameOrSignature: "BASE_REPUTATION_SCORE"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
     nameOrSignature: "BASIS_POINTS"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "MAX_PLATFORM_FEE"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "MAX_REPUTATION_MULTIPLIER"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "calculateReward"
@@ -449,8 +485,14 @@ export interface RewardManager extends BaseContract {
     nameOrSignature: "gasReimbursementMultiplier"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
+    nameOrSignature: "getMaxRewardCost"
+  ): TypedContractMethod<[baseReward: BigNumberish], [bigint], "view">;
+  getFunction(
     nameOrSignature: "getReputationMultiplier"
-  ): TypedContractMethod<[executor: AddressLike], [bigint], "view">;
+  ): TypedContractMethod<[arg0: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "maxGasReimbursement"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "owner"
   ): TypedContractMethod<[], [string], "view">;
@@ -467,14 +509,15 @@ export interface RewardManager extends BaseContract {
     nameOrSignature: "setGasReimbursementMultiplier"
   ): TypedContractMethod<[_multiplier: BigNumberish], [void], "nonpayable">;
   getFunction(
+    nameOrSignature: "setMaxGasReimbursement"
+  ): TypedContractMethod<
+    [_maxGasReimbursement: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
     nameOrSignature: "setPlatformFee"
   ): TypedContractMethod<[feePercentage: BigNumberish], [void], "nonpayable">;
-  getFunction(
-    nameOrSignature: "setTaskLogic"
-  ): TypedContractMethod<[_taskLogic: AddressLike], [void], "nonpayable">;
-  getFunction(
-    nameOrSignature: "taskLogic"
-  ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "totalFeesCollected"
   ): TypedContractMethod<[], [bigint], "view">;
@@ -482,13 +525,6 @@ export interface RewardManager extends BaseContract {
     nameOrSignature: "transferOwnership"
   ): TypedContractMethod<[newOwner: AddressLike], [void], "nonpayable">;
 
-  getEvent(
-    key: "Calcuated"
-  ): TypedContractEvent<
-    CalcuatedEvent.InputTuple,
-    CalcuatedEvent.OutputTuple,
-    CalcuatedEvent.OutputObject
-  >;
   getEvent(
     key: "OwnershipTransferred"
   ): TypedContractEvent<
@@ -519,17 +555,6 @@ export interface RewardManager extends BaseContract {
   >;
 
   filters: {
-    "Calcuated(uint256)": TypedContractEvent<
-      CalcuatedEvent.InputTuple,
-      CalcuatedEvent.OutputTuple,
-      CalcuatedEvent.OutputObject
-    >;
-    Calcuated: TypedContractEvent<
-      CalcuatedEvent.InputTuple,
-      CalcuatedEvent.OutputTuple,
-      CalcuatedEvent.OutputObject
-    >;
-
     "OwnershipTransferred(address,address)": TypedContractEvent<
       OwnershipTransferredEvent.InputTuple,
       OwnershipTransferredEvent.OutputTuple,

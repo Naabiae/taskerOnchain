@@ -24,103 +24,149 @@ import type {
 } from "../../common";
 
 export declare namespace IExecutorHub {
+  export type TaskStruct = {
+    vault: AddressLike;
+    automationId: BigNumberish;
+    strategy: AddressLike;
+    params: BytesLike;
+    active: boolean;
+  };
+
+  export type TaskStructOutput = [
+    vault: string,
+    automationId: bigint,
+    strategy: string,
+    params: string,
+    active: boolean
+  ] & {
+    vault: string;
+    automationId: bigint;
+    strategy: string;
+    params: string;
+    active: boolean;
+  };
+
   export type ExecutorStruct = {
     addr: AddressLike;
-    stakedAmount: BigNumberish;
-    registeredAt: BigNumberish;
+    isActive: boolean;
     totalExecutions: BigNumberish;
     successfulExecutions: BigNumberish;
     failedExecutions: BigNumberish;
-    reputationScore: BigNumberish;
-    isActive: boolean;
-    isSlashed: boolean;
   };
 
   export type ExecutorStructOutput = [
     addr: string,
-    stakedAmount: bigint,
-    registeredAt: bigint,
+    isActive: boolean,
     totalExecutions: bigint,
     successfulExecutions: bigint,
-    failedExecutions: bigint,
-    reputationScore: bigint,
-    isActive: boolean,
-    isSlashed: boolean
+    failedExecutions: bigint
   ] & {
     addr: string;
-    stakedAmount: bigint;
-    registeredAt: bigint;
+    isActive: boolean;
     totalExecutions: bigint;
     successfulExecutions: bigint;
     failedExecutions: bigint;
-    reputationScore: bigint;
-    isActive: boolean;
-    isSlashed: boolean;
   };
 }
 
 export interface IExecutorHubInterface extends Interface {
   getFunction(
     nameOrSignature:
-      | "addStake"
+      | "addExecutor"
       | "canExecute"
-      | "executeTask"
+      | "executeAutomation"
+      | "executeAutomationBatch"
+      | "getExecutableTasks"
       | "getExecutor"
-      | "recordExecution"
-      | "registerExecutor"
-      | "slashExecutor"
-      | "unregisterExecutor"
-      | "withdrawStake"
+      | "getTaskCount"
+      | "getTasks"
+      | "getTasksByVault"
+      | "isExecutor"
+      | "registerTask"
+      | "removeExecutor"
+      | "removeTask"
+      | "updateTaskParams"
   ): FunctionFragment;
 
   getEvent(
     nameOrSignatureOrTopic:
-      | "ExecutionCompleted"
-      | "ExecutorRegistered"
-      | "ExecutorSlashed"
-      | "ExecutorUnregistered"
-      | "StakeAdded"
-      | "StakeWithdrawn"
+      | "AutomationExecuted"
+      | "ExecutorAdded"
+      | "ExecutorRemoved"
+      | "TaskParamsUpdated"
+      | "TaskRegistered"
+      | "TaskRemoved"
   ): EventFragment;
 
-  encodeFunctionData(functionFragment: "addStake", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "addExecutor",
+    values: [AddressLike]
+  ): string;
   encodeFunctionData(
     functionFragment: "canExecute",
-    values: [AddressLike]
+    values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "executeTask",
-    values: [BigNumberish]
+    functionFragment: "executeAutomation",
+    values: [AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "executeAutomationBatch",
+    values: [AddressLike[], BigNumberish[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getExecutableTasks",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "getExecutor",
     values: [AddressLike]
   ): string;
   encodeFunctionData(
-    functionFragment: "recordExecution",
-    values: [BigNumberish, AddressLike, boolean, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "registerExecutor",
+    functionFragment: "getTaskCount",
     values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "getTasks", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "slashExecutor",
-    values: [AddressLike, BigNumberish, string]
+    functionFragment: "getTasksByVault",
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
-    functionFragment: "unregisterExecutor",
-    values?: undefined
+    functionFragment: "isExecutor",
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
-    functionFragment: "withdrawStake",
+    functionFragment: "registerTask",
+    values: [BigNumberish, AddressLike, BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "removeExecutor",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "removeTask",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "updateTaskParams",
+    values: [BigNumberish, BytesLike]
   ): string;
 
-  decodeFunctionResult(functionFragment: "addStake", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "addExecutor",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "canExecute", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "executeTask",
+    functionFragment: "executeAutomation",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "executeAutomationBatch",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getExecutableTasks",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -128,40 +174,46 @@ export interface IExecutorHubInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "recordExecution",
+    functionFragment: "getTaskCount",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "getTasks", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getTasksByVault",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "isExecutor", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "registerTask",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "registerExecutor",
+    functionFragment: "removeExecutor",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "removeTask", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "slashExecutor",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "unregisterExecutor",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "withdrawStake",
+    functionFragment: "updateTaskParams",
     data: BytesLike
   ): Result;
 }
 
-export namespace ExecutionCompletedEvent {
+export namespace AutomationExecutedEvent {
   export type InputTuple = [
-    taskId: BigNumberish,
+    vault: AddressLike,
+    automationId: BigNumberish,
     executor: AddressLike,
     success: boolean
   ];
   export type OutputTuple = [
-    taskId: bigint,
+    vault: string,
+    automationId: bigint,
     executor: string,
     success: boolean
   ];
   export interface OutputObject {
-    taskId: bigint;
+    vault: string;
+    automationId: bigint;
     executor: string;
     success: boolean;
   }
@@ -171,38 +223,7 @@ export namespace ExecutionCompletedEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export namespace ExecutorRegisteredEvent {
-  export type InputTuple = [executor: AddressLike, stakeAmount: BigNumberish];
-  export type OutputTuple = [executor: string, stakeAmount: bigint];
-  export interface OutputObject {
-    executor: string;
-    stakeAmount: bigint;
-  }
-  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
-  export type Filter = TypedDeferredTopicFilter<Event>;
-  export type Log = TypedEventLog<Event>;
-  export type LogDescription = TypedLogDescription<Event>;
-}
-
-export namespace ExecutorSlashedEvent {
-  export type InputTuple = [
-    executor: AddressLike,
-    amount: BigNumberish,
-    reason: string
-  ];
-  export type OutputTuple = [executor: string, amount: bigint, reason: string];
-  export interface OutputObject {
-    executor: string;
-    amount: bigint;
-    reason: string;
-  }
-  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
-  export type Filter = TypedDeferredTopicFilter<Event>;
-  export type Log = TypedEventLog<Event>;
-  export type LogDescription = TypedLogDescription<Event>;
-}
-
-export namespace ExecutorUnregisteredEvent {
+export namespace ExecutorAddedEvent {
   export type InputTuple = [executor: AddressLike];
   export type OutputTuple = [executor: string];
   export interface OutputObject {
@@ -214,12 +235,11 @@ export namespace ExecutorUnregisteredEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export namespace StakeAddedEvent {
-  export type InputTuple = [executor: AddressLike, amount: BigNumberish];
-  export type OutputTuple = [executor: string, amount: bigint];
+export namespace ExecutorRemovedEvent {
+  export type InputTuple = [executor: AddressLike];
+  export type OutputTuple = [executor: string];
   export interface OutputObject {
     executor: string;
-    amount: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -227,12 +247,47 @@ export namespace StakeAddedEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export namespace StakeWithdrawnEvent {
-  export type InputTuple = [executor: AddressLike, amount: BigNumberish];
-  export type OutputTuple = [executor: string, amount: bigint];
+export namespace TaskParamsUpdatedEvent {
+  export type InputTuple = [vault: AddressLike, automationId: BigNumberish];
+  export type OutputTuple = [vault: string, automationId: bigint];
   export interface OutputObject {
-    executor: string;
-    amount: bigint;
+    vault: string;
+    automationId: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace TaskRegisteredEvent {
+  export type InputTuple = [
+    vault: AddressLike,
+    automationId: BigNumberish,
+    strategy: AddressLike
+  ];
+  export type OutputTuple = [
+    vault: string,
+    automationId: bigint,
+    strategy: string
+  ];
+  export interface OutputObject {
+    vault: string;
+    automationId: bigint;
+    strategy: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace TaskRemovedEvent {
+  export type InputTuple = [vault: AddressLike, automationId: BigNumberish];
+  export type OutputTuple = [vault: string, automationId: bigint];
+  export interface OutputObject {
+    vault: string;
+    automationId: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -283,45 +338,74 @@ export interface IExecutorHub extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
-  addStake: TypedContractMethod<[], [void], "payable">;
-
-  canExecute: TypedContractMethod<[executor: AddressLike], [boolean], "view">;
-
-  executeTask: TypedContractMethod<
-    [taskId: BigNumberish],
-    [boolean],
+  addExecutor: TypedContractMethod<
+    [executor: AddressLike],
+    [void],
     "nonpayable"
   >;
 
+  canExecute: TypedContractMethod<
+    [vault: AddressLike, automationId: BigNumberish],
+    [[boolean, string] & { canExec: boolean; reason: string }],
+    "view"
+  >;
+
+  executeAutomation: TypedContractMethod<
+    [vault: AddressLike, automationId: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+
+  executeAutomationBatch: TypedContractMethod<
+    [vaults: AddressLike[], automationIds: BigNumberish[]],
+    [void],
+    "nonpayable"
+  >;
+
+  getExecutableTasks: TypedContractMethod<
+    [],
+    [IExecutorHub.TaskStructOutput[]],
+    "view"
+  >;
+
   getExecutor: TypedContractMethod<
-    [executor: AddressLike],
+    [account: AddressLike],
     [IExecutorHub.ExecutorStructOutput],
     "view"
   >;
 
-  recordExecution: TypedContractMethod<
-    [
-      taskId: BigNumberish,
-      executor: AddressLike,
-      success: boolean,
-      gasUsed: BigNumberish
-    ],
+  getTaskCount: TypedContractMethod<[], [bigint], "view">;
+
+  getTasks: TypedContractMethod<[], [IExecutorHub.TaskStructOutput[]], "view">;
+
+  getTasksByVault: TypedContractMethod<
+    [vault: AddressLike],
+    [IExecutorHub.TaskStructOutput[]],
+    "view"
+  >;
+
+  isExecutor: TypedContractMethod<[account: AddressLike], [boolean], "view">;
+
+  registerTask: TypedContractMethod<
+    [automationId: BigNumberish, strategy: AddressLike, params: BytesLike],
     [void],
     "nonpayable"
   >;
 
-  registerExecutor: TypedContractMethod<[], [void], "payable">;
-
-  slashExecutor: TypedContractMethod<
-    [executor: AddressLike, amount: BigNumberish, reason: string],
+  removeExecutor: TypedContractMethod<
+    [executor: AddressLike],
     [void],
     "nonpayable"
   >;
 
-  unregisterExecutor: TypedContractMethod<[], [void], "nonpayable">;
+  removeTask: TypedContractMethod<
+    [automationId: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
 
-  withdrawStake: TypedContractMethod<
-    [amount: BigNumberish],
+  updateTaskParams: TypedContractMethod<
+    [automationId: BigNumberish, params: BytesLike],
     [void],
     "nonpayable"
   >;
@@ -331,158 +415,184 @@ export interface IExecutorHub extends BaseContract {
   ): T;
 
   getFunction(
-    nameOrSignature: "addStake"
-  ): TypedContractMethod<[], [void], "payable">;
+    nameOrSignature: "addExecutor"
+  ): TypedContractMethod<[executor: AddressLike], [void], "nonpayable">;
   getFunction(
     nameOrSignature: "canExecute"
-  ): TypedContractMethod<[executor: AddressLike], [boolean], "view">;
+  ): TypedContractMethod<
+    [vault: AddressLike, automationId: BigNumberish],
+    [[boolean, string] & { canExec: boolean; reason: string }],
+    "view"
+  >;
   getFunction(
-    nameOrSignature: "executeTask"
-  ): TypedContractMethod<[taskId: BigNumberish], [boolean], "nonpayable">;
+    nameOrSignature: "executeAutomation"
+  ): TypedContractMethod<
+    [vault: AddressLike, automationId: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "executeAutomationBatch"
+  ): TypedContractMethod<
+    [vaults: AddressLike[], automationIds: BigNumberish[]],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "getExecutableTasks"
+  ): TypedContractMethod<[], [IExecutorHub.TaskStructOutput[]], "view">;
   getFunction(
     nameOrSignature: "getExecutor"
   ): TypedContractMethod<
-    [executor: AddressLike],
+    [account: AddressLike],
     [IExecutorHub.ExecutorStructOutput],
     "view"
   >;
   getFunction(
-    nameOrSignature: "recordExecution"
+    nameOrSignature: "getTaskCount"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "getTasks"
+  ): TypedContractMethod<[], [IExecutorHub.TaskStructOutput[]], "view">;
+  getFunction(
+    nameOrSignature: "getTasksByVault"
   ): TypedContractMethod<
-    [
-      taskId: BigNumberish,
-      executor: AddressLike,
-      success: boolean,
-      gasUsed: BigNumberish
-    ],
+    [vault: AddressLike],
+    [IExecutorHub.TaskStructOutput[]],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "isExecutor"
+  ): TypedContractMethod<[account: AddressLike], [boolean], "view">;
+  getFunction(
+    nameOrSignature: "registerTask"
+  ): TypedContractMethod<
+    [automationId: BigNumberish, strategy: AddressLike, params: BytesLike],
     [void],
     "nonpayable"
   >;
   getFunction(
-    nameOrSignature: "registerExecutor"
-  ): TypedContractMethod<[], [void], "payable">;
+    nameOrSignature: "removeExecutor"
+  ): TypedContractMethod<[executor: AddressLike], [void], "nonpayable">;
   getFunction(
-    nameOrSignature: "slashExecutor"
+    nameOrSignature: "removeTask"
+  ): TypedContractMethod<[automationId: BigNumberish], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "updateTaskParams"
   ): TypedContractMethod<
-    [executor: AddressLike, amount: BigNumberish, reason: string],
+    [automationId: BigNumberish, params: BytesLike],
     [void],
     "nonpayable"
   >;
-  getFunction(
-    nameOrSignature: "unregisterExecutor"
-  ): TypedContractMethod<[], [void], "nonpayable">;
-  getFunction(
-    nameOrSignature: "withdrawStake"
-  ): TypedContractMethod<[amount: BigNumberish], [void], "nonpayable">;
 
   getEvent(
-    key: "ExecutionCompleted"
+    key: "AutomationExecuted"
   ): TypedContractEvent<
-    ExecutionCompletedEvent.InputTuple,
-    ExecutionCompletedEvent.OutputTuple,
-    ExecutionCompletedEvent.OutputObject
+    AutomationExecutedEvent.InputTuple,
+    AutomationExecutedEvent.OutputTuple,
+    AutomationExecutedEvent.OutputObject
   >;
   getEvent(
-    key: "ExecutorRegistered"
+    key: "ExecutorAdded"
   ): TypedContractEvent<
-    ExecutorRegisteredEvent.InputTuple,
-    ExecutorRegisteredEvent.OutputTuple,
-    ExecutorRegisteredEvent.OutputObject
+    ExecutorAddedEvent.InputTuple,
+    ExecutorAddedEvent.OutputTuple,
+    ExecutorAddedEvent.OutputObject
   >;
   getEvent(
-    key: "ExecutorSlashed"
+    key: "ExecutorRemoved"
   ): TypedContractEvent<
-    ExecutorSlashedEvent.InputTuple,
-    ExecutorSlashedEvent.OutputTuple,
-    ExecutorSlashedEvent.OutputObject
+    ExecutorRemovedEvent.InputTuple,
+    ExecutorRemovedEvent.OutputTuple,
+    ExecutorRemovedEvent.OutputObject
   >;
   getEvent(
-    key: "ExecutorUnregistered"
+    key: "TaskParamsUpdated"
   ): TypedContractEvent<
-    ExecutorUnregisteredEvent.InputTuple,
-    ExecutorUnregisteredEvent.OutputTuple,
-    ExecutorUnregisteredEvent.OutputObject
+    TaskParamsUpdatedEvent.InputTuple,
+    TaskParamsUpdatedEvent.OutputTuple,
+    TaskParamsUpdatedEvent.OutputObject
   >;
   getEvent(
-    key: "StakeAdded"
+    key: "TaskRegistered"
   ): TypedContractEvent<
-    StakeAddedEvent.InputTuple,
-    StakeAddedEvent.OutputTuple,
-    StakeAddedEvent.OutputObject
+    TaskRegisteredEvent.InputTuple,
+    TaskRegisteredEvent.OutputTuple,
+    TaskRegisteredEvent.OutputObject
   >;
   getEvent(
-    key: "StakeWithdrawn"
+    key: "TaskRemoved"
   ): TypedContractEvent<
-    StakeWithdrawnEvent.InputTuple,
-    StakeWithdrawnEvent.OutputTuple,
-    StakeWithdrawnEvent.OutputObject
+    TaskRemovedEvent.InputTuple,
+    TaskRemovedEvent.OutputTuple,
+    TaskRemovedEvent.OutputObject
   >;
 
   filters: {
-    "ExecutionCompleted(uint256,address,bool)": TypedContractEvent<
-      ExecutionCompletedEvent.InputTuple,
-      ExecutionCompletedEvent.OutputTuple,
-      ExecutionCompletedEvent.OutputObject
+    "AutomationExecuted(address,uint256,address,bool)": TypedContractEvent<
+      AutomationExecutedEvent.InputTuple,
+      AutomationExecutedEvent.OutputTuple,
+      AutomationExecutedEvent.OutputObject
     >;
-    ExecutionCompleted: TypedContractEvent<
-      ExecutionCompletedEvent.InputTuple,
-      ExecutionCompletedEvent.OutputTuple,
-      ExecutionCompletedEvent.OutputObject
-    >;
-
-    "ExecutorRegistered(address,uint256)": TypedContractEvent<
-      ExecutorRegisteredEvent.InputTuple,
-      ExecutorRegisteredEvent.OutputTuple,
-      ExecutorRegisteredEvent.OutputObject
-    >;
-    ExecutorRegistered: TypedContractEvent<
-      ExecutorRegisteredEvent.InputTuple,
-      ExecutorRegisteredEvent.OutputTuple,
-      ExecutorRegisteredEvent.OutputObject
+    AutomationExecuted: TypedContractEvent<
+      AutomationExecutedEvent.InputTuple,
+      AutomationExecutedEvent.OutputTuple,
+      AutomationExecutedEvent.OutputObject
     >;
 
-    "ExecutorSlashed(address,uint256,string)": TypedContractEvent<
-      ExecutorSlashedEvent.InputTuple,
-      ExecutorSlashedEvent.OutputTuple,
-      ExecutorSlashedEvent.OutputObject
+    "ExecutorAdded(address)": TypedContractEvent<
+      ExecutorAddedEvent.InputTuple,
+      ExecutorAddedEvent.OutputTuple,
+      ExecutorAddedEvent.OutputObject
     >;
-    ExecutorSlashed: TypedContractEvent<
-      ExecutorSlashedEvent.InputTuple,
-      ExecutorSlashedEvent.OutputTuple,
-      ExecutorSlashedEvent.OutputObject
-    >;
-
-    "ExecutorUnregistered(address)": TypedContractEvent<
-      ExecutorUnregisteredEvent.InputTuple,
-      ExecutorUnregisteredEvent.OutputTuple,
-      ExecutorUnregisteredEvent.OutputObject
-    >;
-    ExecutorUnregistered: TypedContractEvent<
-      ExecutorUnregisteredEvent.InputTuple,
-      ExecutorUnregisteredEvent.OutputTuple,
-      ExecutorUnregisteredEvent.OutputObject
+    ExecutorAdded: TypedContractEvent<
+      ExecutorAddedEvent.InputTuple,
+      ExecutorAddedEvent.OutputTuple,
+      ExecutorAddedEvent.OutputObject
     >;
 
-    "StakeAdded(address,uint256)": TypedContractEvent<
-      StakeAddedEvent.InputTuple,
-      StakeAddedEvent.OutputTuple,
-      StakeAddedEvent.OutputObject
+    "ExecutorRemoved(address)": TypedContractEvent<
+      ExecutorRemovedEvent.InputTuple,
+      ExecutorRemovedEvent.OutputTuple,
+      ExecutorRemovedEvent.OutputObject
     >;
-    StakeAdded: TypedContractEvent<
-      StakeAddedEvent.InputTuple,
-      StakeAddedEvent.OutputTuple,
-      StakeAddedEvent.OutputObject
+    ExecutorRemoved: TypedContractEvent<
+      ExecutorRemovedEvent.InputTuple,
+      ExecutorRemovedEvent.OutputTuple,
+      ExecutorRemovedEvent.OutputObject
     >;
 
-    "StakeWithdrawn(address,uint256)": TypedContractEvent<
-      StakeWithdrawnEvent.InputTuple,
-      StakeWithdrawnEvent.OutputTuple,
-      StakeWithdrawnEvent.OutputObject
+    "TaskParamsUpdated(address,uint256)": TypedContractEvent<
+      TaskParamsUpdatedEvent.InputTuple,
+      TaskParamsUpdatedEvent.OutputTuple,
+      TaskParamsUpdatedEvent.OutputObject
     >;
-    StakeWithdrawn: TypedContractEvent<
-      StakeWithdrawnEvent.InputTuple,
-      StakeWithdrawnEvent.OutputTuple,
-      StakeWithdrawnEvent.OutputObject
+    TaskParamsUpdated: TypedContractEvent<
+      TaskParamsUpdatedEvent.InputTuple,
+      TaskParamsUpdatedEvent.OutputTuple,
+      TaskParamsUpdatedEvent.OutputObject
+    >;
+
+    "TaskRegistered(address,uint256,address)": TypedContractEvent<
+      TaskRegisteredEvent.InputTuple,
+      TaskRegisteredEvent.OutputTuple,
+      TaskRegisteredEvent.OutputObject
+    >;
+    TaskRegistered: TypedContractEvent<
+      TaskRegisteredEvent.InputTuple,
+      TaskRegisteredEvent.OutputTuple,
+      TaskRegisteredEvent.OutputObject
+    >;
+
+    "TaskRemoved(address,uint256)": TypedContractEvent<
+      TaskRemovedEvent.InputTuple,
+      TaskRemovedEvent.OutputTuple,
+      TaskRemovedEvent.OutputObject
+    >;
+    TaskRemoved: TypedContractEvent<
+      TaskRemovedEvent.InputTuple,
+      TaskRemovedEvent.OutputTuple,
+      TaskRemovedEvent.OutputObject
     >;
   };
 }

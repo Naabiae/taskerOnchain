@@ -3,7 +3,12 @@ pragma solidity ^0.8.20;
 
 /**
  * @title IExecutorHub
- * @notice Interface for ExecutorHub contract that manages executor lifecycle
+ * @notice Interface for ExecutorHub — push-based task registry with admin-managed executors.
+ *
+ * @dev V5 Architecture: Vaults register tasks directly via cross-contract calls.
+ *      ExecutorHub maintains its own task list — no more polling vaults.
+ *      Executors query getTasks()/getExecutableTasks() to discover work,
+ *      then call executeAutomation() to trigger execution.
  */
 interface IExecutorHub {
 
@@ -11,60 +16,82 @@ interface IExecutorHub {
 
     struct Executor {
         address addr;
-        uint128 stakedAmount;
-        uint128 registeredAt;
+        bool isActive;
         uint256 totalExecutions;
         uint256 successfulExecutions;
         uint256 failedExecutions;
-        uint256 reputationScore;
-        bool isActive;
-        bool isSlashed;
+    }
+
+    struct Task {
+        address vault;
+        uint256 automationId;
+        address strategy;
+        bytes params;
+        bool active;
     }
 
     // ============ Events ============
 
-    event ExecutorRegistered(address indexed executor, uint256 stakeAmount);
-    event ExecutorUnregistered(address indexed executor);
-    event StakeAdded(address indexed executor, uint256 amount);
-    event StakeWithdrawn(address indexed executor, uint256 amount);
-    event ExecutionCompleted(uint256 indexed taskId, address indexed executor, bool success);
-    event ExecutorSlashed(address indexed executor, uint256 amount, string reason);
+    event ExecutorAdded(address indexed executor);
+    event ExecutorRemoved(address indexed executor);
+    event TaskRegistered(address indexed vault, uint256 indexed automationId, address strategy);
+    event TaskRemoved(address indexed vault, uint256 indexed automationId);
+    event TaskParamsUpdated(address indexed vault, uint256 indexed automationId);
+    event AutomationExecuted(
+        address indexed vault,
+        uint256 indexed automationId,
+        address indexed executor,
+        bool success
+    );
 
     // ============ Errors ============
 
-    error AlreadyRegistered();
-    error NotRegistered();
-    error InsufficientStake();
-    error ExecutorBlacklisted();
+    error NotExecutor();
+    error AlreadyExecutor();
+    error NotActiveExecutor();
+    error NotVault();
+    error TaskAlreadyRegistered();
+    error TaskNotFound();
 
-    // ============ Functions ============
+    // ============ Admin Functions ============
 
-    /// @notice Register as an executor
-    function registerExecutor() external payable;
+    function addExecutor(address executor) external;
+    function removeExecutor(address executor) external;
 
-    /// @notice Unregister and withdraw stake
-    function unregisterExecutor() external;
+    // ============ Vault-Called Functions (cross-contract) ============
 
-    /// @notice Add more stake
-    function addStake() external payable;
+    /// @notice Register a task — called by UserVault.createAutomation()
+    /// @dev msg.sender is used as the vault address (no spoofing possible)
+    function registerTask(uint256 automationId, address strategy, bytes calldata params) external;
 
-    /// @notice Withdraw stake (only when not active)
-    function withdrawStake(uint256 amount) external;
+    /// @notice Remove a task — called by UserVault.cancelAutomation() or on completion
+    /// @dev msg.sender is used as the vault address
+    function removeTask(uint256 automationId) external;
 
-    /// @notice Execute task (actions are fetched from TaskCore)
-    function executeTask(
-        uint256 taskId
-    ) external returns (bool success);
+    /// @notice Update task params — called by UserVault.updateAutomation()
+    /// @dev msg.sender is used as the vault address
+    function updateTaskParams(uint256 automationId, bytes calldata params) external;
 
-    /// @notice Record execution result (called by TaskLogic)
-    function recordExecution(uint256 taskId, address executor, bool success, uint256 gasUsed) external;
+    // ============ Executor Functions ============
 
-    /// @notice Slash executor for misbehavior
-    function slashExecutor(address executor, uint256 amount, string calldata reason) external;
+    function executeAutomation(address vault, uint256 automationId) external;
+    function executeAutomationBatch(address[] calldata vaults, uint256[] calldata automationIds) external;
 
-    /// @notice Check if executor can execute
-    function canExecute(address executor) external view returns (bool);
+    // ============ View Functions ============
 
-    /// @notice Get executor info
-    function getExecutor(address executor) external view returns (Executor memory);
+    /// @notice Check if a specific task is ready for execution
+    function canExecute(address vault, uint256 automationId) external view returns (bool canExec, string memory reason);
+
+    /// @notice Get all registered tasks (active only)
+    function getTasks() external view returns (Task[] memory);
+
+    /// @notice Get all tasks for a specific vault
+    function getTasksByVault(address vault) external view returns (Task[] memory);
+
+    /// @notice Get all tasks that are currently executable (canExecute returns true)
+    function getExecutableTasks() external view returns (Task[] memory);
+
+    function isExecutor(address account) external view returns (bool);
+    function getExecutor(address account) external view returns (Executor memory);
+    function getTaskCount() external view returns (uint256);
 }

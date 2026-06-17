@@ -1,0 +1,252 @@
+{
+  "network": "arcTestnet",
+  "chainId": "5042002",
+  "deployer": "0x535f007D418B4F95f47310c0D26F3b25B6A4DC50",
+  "deployedAt": "2026-04-26T10:41:24.838Z",
+  "transactions": [
+    {
+      "step": "Deploy MockUSDC",
+      "txHash": "0xf784397407f26bf607bd0898e9c8f84c74cfc2e2e6aadd679a9778df993f837c",
+      "contractAddress": "0xB9333915D23B6D6a1520b446Ec08F1e55238C1ea",
+      "blockNumber": 39115833,
+      "gasUsed": "557233"
+    },
+    {
+      "step": "Deploy MockEURO",
+      "txHash": "0x3cfdfc8e94bf489818df200bff56f927e131e459594b97ce7c7cce95ef613efd",
+      "contractAddress": "0x6A5e945dD1Ba5fee7B6556e27046D607570144A3",
+      "blockNumber": 39115835,
+      "gasUsed": "557233"
+    },
+    {
+      "step": "Mint 1M MockUSDC to deployer",
+      "txHash": "0x7b274d2e7026ece2dcef60d5e428f89ee0a66f5ee486e0f4be1e4dc480a5a7a4",
+      "blockNumber": 39115838,
+      "gasUsed": "68379"
+    },
+    {
+      "step": "Mint 1M MockEURO to deployer",
+      "txHash": "0xc59f64c4b6dedd66794b46cacb983c761726a0f5ae91e014544ef0f850b88596",
+      "blockNumber": 39115840,
+      "gasUsed": "68379"
+    },
+    {
+      "step": "Deploy MockTokenMessenger",
+      "txHash": "0xc6cf7243ea577c37c5021247a8cf3ace86073e0c48ec9769a690f1747e9bbb51",
+      "contractAddress": "0xF7b0bd6b8F3946433879401f4Ce26c4516c0EfAd",
+      "blockNumber": 39115843,
+      "gasUsed": "159515"
+    },
+    {
+      "step": "Deploy MockStorkOracle USDC/USD",
+      "txHash": "0x82a31c33ca2c09891c47ad0adef36f243e262778d2179b384f390c90c8a0bced",
+      "contractAddress": "0xf1f9FBCbEe0eB327458d3b22f62e11C0086046bb",
+      "blockNumber": 39115845,
+      "gasUsed": "423868"
+    },
+    {
+      "step": "Deploy MockStorkOracle EURO/USD",
+      "txHash": "0x2297e9acb6bce269a56e13d10692a699b3f8d54ce1ef8ae041f6c7df30feac30",
+      "contractAddress": "0xaA431964398fa21e4eFe4c739147ae64791Ed385",
+      "blockNumber": 39115847,
+      "gasUsed": "423868"
+    },
+    {
+      "step": "Deploy TaskCore Implementation",
+      "txHash": "0xb8b55ce9c55155283f2988940a1a18c39bc6a6048455d724af61367fb4def809",
+      "contractAddress": "0x74e5170B51A04d65f57eF821EB3b90106bE3B267",
+      "blockNumber": 39115850,
+      "gasUsed": "1493034"
+    },
+    {
+      "step": "Deploy TaskVault Implementation",
+      "txHash": "0x10a6dabe000cb0288f57c6aaac2c2df036d301ad972604a59efe1be96096473f",
+      "contractAddress": "0xdEE5F2ad4Ddb1a62ee1Ed30a859d9137CD0BbACE",
+      "blockNumber": 39115854,
+      "gasUsed": "1402303"
+    },
+    {
+      "step": "Deploy ActionRegistry",
+      "txHash": "0xef9a99c57a43d9096cea516ec2cc5f3f99084b2920b5a6949e69ac1011186649",
+      "contractAddress": "0xD04336F4C67Be09a96d90aD85C18EF9865923837",
+      "blockNumber": 39115857,
+      "gasUsed": "623543"
+    },
+    {
+      "step": "Deploy ExecutorHub",
+      "txHash": "0x105757b8b0ee4abca5892a15988b0675c7d4fb86c64922440beebdfab7b3535f",
+      "contractAddress": "0xb7AA0AE9E8D06732e84A6a7cEc1bd557676a8C6F",
+      "blockNumber": 39115859,
+      "gasUsed": "1597923"
+    },
+    {
+      "step": "Deploy GlobalRegistry",
+      "txHash": "0xc078a85cd3efe0343129847805b9ddda40eefa2f6d78f332851f413f5cc1fa9b",
+      "contractAddress": "0x756a9f9464C7694B0Ff5bB75d16F5B8Ce988fc8d",
+      "blockNumber": 39115861,
+      "gasUsed": "1576866"
+    },
+    {
+      "step": "Deploy RewardManager",
+      "txHash": "0x0c36410dea369c80f38ffb1239fd5a5b5682106ead79b6f9cb9ff1eb71b77178",
+      "contractAddress": "0x3490a5A3d98f5D5038FC72C3fC7A6a9D94972633",
+      "blockNumber": 39115864,
+      "gasUsed": "976149"
+    },
+    {
+      "step": "Deploy TaskLogicV2",
+      "txHash": "0x7aec2e314a84ac61b97c3331372e4388ada4cf3a918884f29787055a2541fbcb",
+      "contractAddress": "0x3412c3DcC729436CfA3db52b92660aAC98F048cF",
+      "blockNumber": 39115868,
+      "gasUsed": "1501104"
+    },
+    {
+      "step": "Deploy TaskFactory",
+      "txHash": "0x044a8ca8770b36cb1dea5ae9a46c2554f3226c54324633b65255a10659615d80",
+      "contractAddress": "0x76588f06eC7989408ED02AD82487B06222c5a882",
+      "blockNumber": 39115870,
+      "gasUsed": "2105759"
+    },
+    {
+      "step": "Deploy TimeBasedTransferAdapter",
+      "txHash": "0x6c760b2ce2957b5d9c6c1d9ddd095e6d04ede1a0e7c063fbd1023e64a1d80f33",
+      "contractAddress": "0x1d4198d0167caDCC2bA059a2F8B69A5a69aC3528",
+      "blockNumber": 39115873,
+      "gasUsed": "914233"
+    },
+    {
+      "step": "Deploy CCTPTransferAdapter",
+      "txHash": "0xbc7949d266fdc9f48af55936588d13ebbc2bd6220018f2285e60d6e9b04f4ef7",
+      "contractAddress": "0x917ba52e4c5f7A142091A56f84C667bCd3A5642D",
+      "blockNumber": 39115875,
+      "gasUsed": "661262"
+    },
+    {
+      "step": "Deploy StorkPriceTransferAdapter",
+      "txHash": "0xce4fbaec7e2cfc93b6afe8ddf2a81e55f0856536e6433c404a270fd62462fdab",
+      "contractAddress": "0xc956d136C7617b91126461fb1de0A1fBca5E0d56",
+      "blockNumber": 39115877,
+      "gasUsed": "685727"
+    },
+    {
+      "step": "TaskLogicV2.setActionRegistry",
+      "txHash": "0x883b43abd2e3a41800606481c64b936adfa48be4b92414a35df57d5223f0f8e1",
+      "blockNumber": 39115880,
+      "gasUsed": "46115"
+    },
+    {
+      "step": "TaskLogicV2.setRewardManager",
+      "txHash": "0x3df2ceacb11d10adb2d6997a27c257ae5a6ff023495a5581aeb2f6c593805e17",
+      "blockNumber": 39115884,
+      "gasUsed": "46139"
+    },
+    {
+      "step": "TaskLogicV2.setExecutorHub",
+      "txHash": "0x5f886b9f85ef9b1f5aceffdbeb93fae5c7b5b8939780d71441daa6db8aa100ae",
+      "blockNumber": 39115886,
+      "gasUsed": "46182"
+    },
+    {
+      "step": "TaskLogicV2.setTaskRegistry",
+      "txHash": "0xc74f776a256d9d2aa9327ad30baec0fdc1629bda045f6814fe71f50c56a4b12e",
+      "blockNumber": 39115888,
+      "gasUsed": "46160"
+    },
+    {
+      "step": "ExecutorHub.setTaskLogic",
+      "txHash": "0x31e6b50c4de7b01b30c19e3200b0a723a8b3219d574180f3d13a4c7f54e07410",
+      "blockNumber": 39115890,
+      "gasUsed": "46117"
+    },
+    {
+      "step": "ExecutorHub.setTaskRegistry",
+      "txHash": "0x953c7fb5212c16c65a96d8918a811d98a5b4fd6bffe24e1b873c951e2c65bc0a",
+      "blockNumber": 39115892,
+      "gasUsed": "46204"
+    },
+    {
+      "step": "RewardManager.setTaskLogic",
+      "txHash": "0x4c12ff605732557b82783a143ab23e28497c51d173c93a94ce9cd64298b2ddf8",
+      "blockNumber": 39115894,
+      "gasUsed": "46139"
+    },
+    {
+      "step": "RewardManager.setExecutorHub",
+      "txHash": "0x32993eab01dbaf1ff3ed4f9f780e3badccdf9540c4261bf84423aedb77a11538",
+      "blockNumber": 39115897,
+      "gasUsed": "46182"
+    },
+    {
+      "step": "RewardManager.setGasReimbursementMultiplier",
+      "txHash": "0x22da11099952d2daf10a701c8073e6d54c9322f7ff51b3eddeeec1adda9ce833",
+      "blockNumber": 39115899,
+      "gasUsed": "23891"
+    },
+    {
+      "step": "GlobalRegistry.authorizeFactory",
+      "txHash": "0xb2cb1282ff7f78186ee3333fcb4447c86addc5cb4997ae0a1cd98333f041370e",
+      "blockNumber": 39115902,
+      "gasUsed": "47356"
+    },
+    {
+      "step": "TaskFactory.setGlobalRegistry",
+      "txHash": "0x626c883404aa828457db171297f7b54a280c053f474799e46181ed1ded39c774",
+      "blockNumber": 39115904,
+      "gasUsed": "46105"
+    },
+    {
+      "step": "Register TimeBasedTransferAdapter",
+      "txHash": "0x67b2dded6d63d7237b96b16a920dafad9cd02b07ae39b300f61b4e05c47b0d61",
+      "blockNumber": 39115906,
+      "gasUsed": "159409"
+    },
+    {
+      "step": "Register CCTPTransferAdapter",
+      "txHash": "0x169e56005afba57e212ebb4a8f6d6b4b744bd31449ea282644e65f5367b38795",
+      "blockNumber": 39115909,
+      "gasUsed": "105309"
+    },
+    {
+      "step": "Register StorkPriceTransferAdapter",
+      "txHash": "0x88eeb0d0250796a2db1e904e98531a8094d28176a2b3e41c7db1655503aba227",
+      "blockNumber": 39115912,
+      "gasUsed": "105309"
+    },
+    {
+      "step": "Approve TimeBasedTransferAdapter protocol",
+      "txHash": "0xd3fd733beb03d66cfee7be43d05337e6ce9af71d3edd67e08651ab914db54c41",
+      "blockNumber": 39115914,
+      "gasUsed": "47327"
+    },
+    {
+      "step": "Approve CCTPTransferAdapter protocol",
+      "txHash": "0xf74abefddd074d515d199cd94629bac17307a113bbf14c8bba0c054bd5a423fa",
+      "blockNumber": 39115917,
+      "gasUsed": "47327"
+    },
+    {
+      "step": "Approve StorkPriceTransferAdapter protocol",
+      "txHash": "0xa0581b0d03b4ec81481c0b5ad3653454d12426630dad9e5cc482ee9dc3c4be64",
+      "blockNumber": 39115919,
+      "gasUsed": "47327"
+    }
+  ],
+  "contracts": {
+    "MockUSDC": "0xB9333915D23B6D6a1520b446Ec08F1e55238C1ea",
+    "MockEURO": "0x6A5e945dD1Ba5fee7B6556e27046D607570144A3",
+    "MockTokenMessenger": "0xF7b0bd6b8F3946433879401f4Ce26c4516c0EfAd",
+    "MockStorkOracleUSDC": "0xf1f9FBCbEe0eB327458d3b22f62e11C0086046bb",
+    "MockStorkOracleEURO": "0xaA431964398fa21e4eFe4c739147ae64791Ed385",
+    "TaskCoreImpl": "0x74e5170B51A04d65f57eF821EB3b90106bE3B267",
+    "TaskVaultImpl": "0xdEE5F2ad4Ddb1a62ee1Ed30a859d9137CD0BbACE",
+    "ActionRegistry": "0xD04336F4C67Be09a96d90aD85C18EF9865923837",
+    "ExecutorHub": "0xb7AA0AE9E8D06732e84A6a7cEc1bd557676a8C6F",
+    "GlobalRegistry": "0x756a9f9464C7694B0Ff5bB75d16F5B8Ce988fc8d",
+    "RewardManager": "0x3490a5A3d98f5D5038FC72C3fC7A6a9D94972633",
+    "TaskLogicV2": "0x3412c3DcC729436CfA3db52b92660aAC98F048cF",
+    "TaskFactory": "0x76588f06eC7989408ED02AD82487B06222c5a882",
+    "TimeBasedTransferAdapter": "0x1d4198d0167caDCC2bA059a2F8B69A5a69aC3528",
+    "CCTPTransferAdapter": "0x917ba52e4c5f7A142091A56f84C667bCd3A5642D",
+    "StorkPriceTransferAdapter": "0xc956d136C7617b91126461fb1de0A1fBca5E0d56"
+  }
+}

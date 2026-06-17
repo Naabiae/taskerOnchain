@@ -11,22 +11,32 @@ import type {
 const _abi = [
   {
     inputs: [],
-    name: "AlreadyRegistered",
+    name: "AlreadyExecutor",
     type: "error",
   },
   {
     inputs: [],
-    name: "ExecutorBlacklisted",
+    name: "NotActiveExecutor",
     type: "error",
   },
   {
     inputs: [],
-    name: "InsufficientStake",
+    name: "NotExecutor",
     type: "error",
   },
   {
     inputs: [],
-    name: "NotRegistered",
+    name: "NotVault",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "TaskAlreadyRegistered",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "TaskNotFound",
     type: "error",
   },
   {
@@ -34,8 +44,14 @@ const _abi = [
     inputs: [
       {
         indexed: true,
+        internalType: "address",
+        name: "vault",
+        type: "address",
+      },
+      {
+        indexed: true,
         internalType: "uint256",
-        name: "taskId",
+        name: "automationId",
         type: "uint256",
       },
       {
@@ -51,7 +67,7 @@ const _abi = [
         type: "bool",
       },
     ],
-    name: "ExecutionCompleted",
+    name: "AutomationExecuted",
     type: "event",
   },
   {
@@ -63,14 +79,40 @@ const _abi = [
         name: "executor",
         type: "address",
       },
+    ],
+    name: "ExecutorAdded",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
       {
-        indexed: false,
+        indexed: true,
+        internalType: "address",
+        name: "executor",
+        type: "address",
+      },
+    ],
+    name: "ExecutorRemoved",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "vault",
+        type: "address",
+      },
+      {
+        indexed: true,
         internalType: "uint256",
-        name: "stakeAmount",
+        name: "automationId",
         type: "uint256",
       },
     ],
-    name: "ExecutorRegistered",
+    name: "TaskParamsUpdated",
     type: "event",
   },
   {
@@ -79,23 +121,23 @@ const _abi = [
       {
         indexed: true,
         internalType: "address",
-        name: "executor",
+        name: "vault",
         type: "address",
       },
       {
-        indexed: false,
+        indexed: true,
         internalType: "uint256",
-        name: "amount",
+        name: "automationId",
         type: "uint256",
       },
       {
         indexed: false,
-        internalType: "string",
-        name: "reason",
-        type: "string",
+        internalType: "address",
+        name: "strategy",
+        type: "address",
       },
     ],
-    name: "ExecutorSlashed",
+    name: "TaskRegistered",
     type: "event",
   },
   {
@@ -104,72 +146,56 @@ const _abi = [
       {
         indexed: true,
         internalType: "address",
-        name: "executor",
+        name: "vault",
         type: "address",
       },
-    ],
-    name: "ExecutorUnregistered",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
       {
         indexed: true,
-        internalType: "address",
-        name: "executor",
-        type: "address",
-      },
-      {
-        indexed: false,
         internalType: "uint256",
-        name: "amount",
+        name: "automationId",
         type: "uint256",
       },
     ],
-    name: "StakeAdded",
+    name: "TaskRemoved",
     type: "event",
   },
   {
-    anonymous: false,
     inputs: [
       {
-        indexed: true,
         internalType: "address",
         name: "executor",
         type: "address",
       },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "amount",
-        type: "uint256",
-      },
     ],
-    name: "StakeWithdrawn",
-    type: "event",
-  },
-  {
-    inputs: [],
-    name: "addStake",
+    name: "addExecutor",
     outputs: [],
-    stateMutability: "payable",
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
     inputs: [
       {
         internalType: "address",
-        name: "executor",
+        name: "vault",
         type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "automationId",
+        type: "uint256",
       },
     ],
     name: "canExecute",
     outputs: [
       {
         internalType: "bool",
-        name: "",
+        name: "canExec",
         type: "bool",
+      },
+      {
+        internalType: "string",
+        name: "reason",
+        type: "string",
       },
     ],
     stateMutability: "view",
@@ -178,27 +204,84 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "address",
+        name: "vault",
+        type: "address",
+      },
+      {
         internalType: "uint256",
-        name: "taskId",
+        name: "automationId",
         type: "uint256",
       },
     ],
-    name: "executeTask",
-    outputs: [
-      {
-        internalType: "bool",
-        name: "success",
-        type: "bool",
-      },
-    ],
+    name: "executeAutomation",
+    outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
     inputs: [
       {
+        internalType: "address[]",
+        name: "vaults",
+        type: "address[]",
+      },
+      {
+        internalType: "uint256[]",
+        name: "automationIds",
+        type: "uint256[]",
+      },
+    ],
+    name: "executeAutomationBatch",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getExecutableTasks",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "address",
+            name: "vault",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "automationId",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "strategy",
+            type: "address",
+          },
+          {
+            internalType: "bytes",
+            name: "params",
+            type: "bytes",
+          },
+          {
+            internalType: "bool",
+            name: "active",
+            type: "bool",
+          },
+        ],
+        internalType: "struct IExecutorHub.Task[]",
+        name: "",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "address",
-        name: "executor",
+        name: "account",
         type: "address",
       },
     ],
@@ -212,14 +295,9 @@ const _abi = [
             type: "address",
           },
           {
-            internalType: "uint128",
-            name: "stakedAmount",
-            type: "uint128",
-          },
-          {
-            internalType: "uint128",
-            name: "registeredAt",
-            type: "uint128",
+            internalType: "bool",
+            name: "isActive",
+            type: "bool",
           },
           {
             internalType: "uint256",
@@ -236,21 +314,6 @@ const _abi = [
             name: "failedExecutions",
             type: "uint256",
           },
-          {
-            internalType: "uint256",
-            name: "reputationScore",
-            type: "uint256",
-          },
-          {
-            internalType: "bool",
-            name: "isActive",
-            type: "bool",
-          },
-          {
-            internalType: "bool",
-            name: "isSlashed",
-            type: "bool",
-          },
         ],
         internalType: "struct IExecutorHub.Executor",
         name: "",
@@ -261,38 +324,144 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [
+    inputs: [],
+    name: "getTaskCount",
+    outputs: [
       {
         internalType: "uint256",
-        name: "taskId",
+        name: "",
         type: "uint256",
       },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getTasks",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "address",
+            name: "vault",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "automationId",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "strategy",
+            type: "address",
+          },
+          {
+            internalType: "bytes",
+            name: "params",
+            type: "bytes",
+          },
+          {
+            internalType: "bool",
+            name: "active",
+            type: "bool",
+          },
+        ],
+        internalType: "struct IExecutorHub.Task[]",
+        name: "",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
       {
         internalType: "address",
-        name: "executor",
+        name: "vault",
         type: "address",
       },
+    ],
+    name: "getTasksByVault",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "address",
+            name: "vault",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "automationId",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "strategy",
+            type: "address",
+          },
+          {
+            internalType: "bytes",
+            name: "params",
+            type: "bytes",
+          },
+          {
+            internalType: "bool",
+            name: "active",
+            type: "bool",
+          },
+        ],
+        internalType: "struct IExecutorHub.Task[]",
+        name: "",
+        type: "tuple[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+    ],
+    name: "isExecutor",
+    outputs: [
       {
         internalType: "bool",
-        name: "success",
+        name: "",
         type: "bool",
       },
-      {
-        internalType: "uint256",
-        name: "gasUsed",
-        type: "uint256",
-      },
     ],
-    name: "recordExecution",
-    outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "view",
     type: "function",
   },
   {
-    inputs: [],
-    name: "registerExecutor",
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "automationId",
+        type: "uint256",
+      },
+      {
+        internalType: "address",
+        name: "strategy",
+        type: "address",
+      },
+      {
+        internalType: "bytes",
+        name: "params",
+        type: "bytes",
+      },
+    ],
+    name: "registerTask",
     outputs: [],
-    stateMutability: "payable",
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -302,25 +471,8 @@ const _abi = [
         name: "executor",
         type: "address",
       },
-      {
-        internalType: "uint256",
-        name: "amount",
-        type: "uint256",
-      },
-      {
-        internalType: "string",
-        name: "reason",
-        type: "string",
-      },
     ],
-    name: "slashExecutor",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "unregisterExecutor",
+    name: "removeExecutor",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -329,11 +481,29 @@ const _abi = [
     inputs: [
       {
         internalType: "uint256",
-        name: "amount",
+        name: "automationId",
         type: "uint256",
       },
     ],
-    name: "withdrawStake",
+    name: "removeTask",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "automationId",
+        type: "uint256",
+      },
+      {
+        internalType: "bytes",
+        name: "params",
+        type: "bytes",
+      },
+    ],
+    name: "updateTaskParams",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

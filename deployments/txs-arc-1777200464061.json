@@ -1,0 +1,448 @@
+{
+  "network": "5042002",
+  "deployer": "0x535f007D418B4F95f47310c0D26F3b25B6A4DC50",
+  "totalTxs": 55,
+  "generatedAt": "2026-04-26T10:47:44.061Z",
+  "transactions": [
+    {
+      "txIndex": 1,
+      "type": "TimedUSDC",
+      "txHash": "0x1f78a48401e74e7213ff4b1479b03f75f875aee4cf20f118aa22ad82e2158b78",
+      "blockNumber": 39116539,
+      "gasUsed": "1173261",
+      "description": "Transfer 1.0 USDC after 2026-04-26T10:51:37.000Z"
+    },
+    {
+      "txIndex": 2,
+      "type": "TimedUSDC",
+      "txHash": "0x6abca6274c41eaa27fe1977964046f3dbcb0b69285c3347d7673d8b25722a7be",
+      "blockNumber": 39116541,
+      "gasUsed": "1227061",
+      "description": "Transfer 1.5 USDC after 2026-04-26T10:52:37.000Z"
+    },
+    {
+      "txIndex": 3,
+      "type": "TimedUSDC",
+      "txHash": "0xa1921c871ad5c2f164a29be864782ed17b665122b9cec2f467f566b993bb709b",
+      "blockNumber": 39116543,
+      "gasUsed": "1227061",
+      "description": "Transfer 2.0 USDC after 2026-04-26T10:53:37.000Z"
+    },
+    {
+      "txIndex": 4,
+      "type": "TimedUSDC",
+      "txHash": "0xc2f4ff9028612a9d5989f288b99bfae4dc3f6ed9e08396c38b48cd73ee5faea4",
+      "blockNumber": 39116544,
+      "gasUsed": "1227061",
+      "description": "Transfer 2.5 USDC after 2026-04-26T10:54:37.000Z"
+    },
+    {
+      "txIndex": 5,
+      "type": "TimedUSDC",
+      "txHash": "0x7d2c02148ba23d2a7b0f0a8b90e0f27c4c7c077398846fb998834a7a26f5df0d",
+      "blockNumber": 39116547,
+      "gasUsed": "1227061",
+      "description": "Transfer 3.0 USDC after 2026-04-26T10:55:37.000Z"
+    },
+    {
+      "txIndex": 6,
+      "type": "TimedUSDC",
+      "txHash": "0x358ae8f2505d9953ca0f6f83a35da0e9573178071b6d8e847312c6dd9159f6c6",
+      "blockNumber": 39116549,
+      "gasUsed": "1227061",
+      "description": "Transfer 3.5 USDC after 2026-04-26T10:56:37.000Z"
+    },
+    {
+      "txIndex": 7,
+      "type": "TimedUSDC",
+      "txHash": "0x33b044b95ef801975aa9a7fc3822195e4f7c136c39b3ae83ecc618e54dff3cef",
+      "blockNumber": 39116551,
+      "gasUsed": "1227037",
+      "description": "Transfer 4.0 USDC after 2026-04-26T10:57:37.000Z"
+    },
+    {
+      "txIndex": 8,
+      "type": "TimedUSDC",
+      "txHash": "0xbb65d4c9e2608c8badc6bf40213d43e30bcdb944d25c2f462081576ab9c04b5b",
+      "blockNumber": 39116553,
+      "gasUsed": "1227061",
+      "description": "Transfer 4.5 USDC after 2026-04-26T10:58:37.000Z"
+    },
+    {
+      "txIndex": 9,
+      "type": "TimedUSDC",
+      "txHash": "0x97beedddb786314f129a601149471a0f2a4b6b5aff984abc245a7bd3b9af89cf",
+      "blockNumber": 39116555,
+      "gasUsed": "1227061",
+      "description": "Transfer 5.0 USDC after 2026-04-26T10:59:37.000Z"
+    },
+    {
+      "txIndex": 10,
+      "type": "TimedUSDC",
+      "txHash": "0x23c7b54ae7aded0e43b26ce761bb8f209640ff4075fe7b050eacef5d0156663f",
+      "blockNumber": 39116557,
+      "gasUsed": "1227061",
+      "description": "Transfer 5.5 USDC after 2026-04-26T11:00:37.000Z"
+    },
+    {
+      "txIndex": 11,
+      "type": "TimedUSDC",
+      "txHash": "0xf1070537dccc45baf7d206854c27300e0bb4452a2c7fa113a5d523bcba306a73",
+      "blockNumber": 39116560,
+      "gasUsed": "1227061",
+      "description": "Transfer 6.0 USDC after 2026-04-26T11:01:37.000Z"
+    },
+    {
+      "txIndex": 12,
+      "type": "TimedUSDC",
+      "txHash": "0xc90d95951470eac5e64959889187e635b44bbd518ab477a7a0fabce1f5382018",
+      "blockNumber": 39116563,
+      "gasUsed": "1227061",
+      "description": "Transfer 6.5 USDC after 2026-04-26T11:02:37.000Z"
+    },
+    {
+      "txIndex": 13,
+      "type": "TimedUSDC",
+      "txHash": "0x7024cc038aa5c357d3d2764a6473ebc94bc632143b8458a06cda2c23d552e1f6",
+      "blockNumber": 39116565,
+      "gasUsed": "1227061",
+      "description": "Transfer 7.0 USDC after 2026-04-26T11:03:37.000Z"
+    },
+    {
+      "txIndex": 14,
+      "type": "TimedUSDC",
+      "txHash": "0x7795eb24e316021a099f9747258091b29fedab1dc6cfeaf1b0beb9b97d55bbcd",
+      "blockNumber": 39116567,
+      "gasUsed": "1227061",
+      "description": "Transfer 7.5 USDC after 2026-04-26T11:04:37.000Z"
+    },
+    {
+      "txIndex": 15,
+      "type": "TimedUSDC",
+      "txHash": "0xdc42499f4fbd43c9de05ea11ea3d56c324aebc4dd13154fed8135a95b0870d19",
+      "blockNumber": 39116570,
+      "gasUsed": "1227037",
+      "description": "Transfer 8.0 USDC after 2026-04-26T11:05:37.000Z"
+    },
+    {
+      "txIndex": 16,
+      "type": "TimedEURO",
+      "txHash": "0x19923d4f509d98994b909349a4ad3ea9339785f69f98fa24753dce9bc11c5f0e",
+      "blockNumber": 39116573,
+      "gasUsed": "1227061",
+      "description": "Transfer 1.0 EURO after 2026-04-26T10:56:37.000Z"
+    },
+    {
+      "txIndex": 17,
+      "type": "TimedEURO",
+      "txHash": "0xee180270c3fc8400f75f7b08c3f79d7d2032a93bb3504950be587b4ad0e6bde6",
+      "blockNumber": 39116575,
+      "gasUsed": "1227061",
+      "description": "Transfer 1.5 EURO after 2026-04-26T10:57:37.000Z"
+    },
+    {
+      "txIndex": 18,
+      "type": "TimedEURO",
+      "txHash": "0x82f053780de5f7ac62fa4d9a700f9fa4aaaf128f1907d1666aa5589524409b20",
+      "blockNumber": 39116577,
+      "gasUsed": "1227061",
+      "description": "Transfer 2.0 EURO after 2026-04-26T10:58:37.000Z"
+    },
+    {
+      "txIndex": 19,
+      "type": "TimedEURO",
+      "txHash": "0x0d67168764f87611d65f40c2e653c070a88b1c448c71a6ec2818f33c83c38ee1",
+      "blockNumber": 39116579,
+      "gasUsed": "1227061",
+      "description": "Transfer 2.5 EURO after 2026-04-26T10:59:37.000Z"
+    },
+    {
+      "txIndex": 20,
+      "type": "TimedEURO",
+      "txHash": "0x22b346e2339dc8b21d9d260a458b1f2ea1439deff3f8b27fd060497ba342c004",
+      "blockNumber": 39116582,
+      "gasUsed": "1227061",
+      "description": "Transfer 3.0 EURO after 2026-04-26T11:00:37.000Z"
+    },
+    {
+      "txIndex": 21,
+      "type": "TimedEURO",
+      "txHash": "0x357ef66e237b02f9169b27b9b42b70ea68927d2d4f41121f5becb743c8d4e235",
+      "blockNumber": 39116584,
+      "gasUsed": "1227061",
+      "description": "Transfer 3.5 EURO after 2026-04-26T11:01:37.000Z"
+    },
+    {
+      "txIndex": 22,
+      "type": "TimedEURO",
+      "txHash": "0x6f64f32c7db3e39cfda3399cbb682ada3ab6d3e310001b51dd5b6e846d37e890",
+      "blockNumber": 39116587,
+      "gasUsed": "1227037",
+      "description": "Transfer 4.0 EURO after 2026-04-26T11:02:37.000Z"
+    },
+    {
+      "txIndex": 23,
+      "type": "TimedEURO",
+      "txHash": "0xd917e53896b18c5bec53648ecebe4fa8f7f5fd470f2a253261bfe3263e3d4904",
+      "blockNumber": 39116589,
+      "gasUsed": "1227061",
+      "description": "Transfer 4.5 EURO after 2026-04-26T11:03:37.000Z"
+    },
+    {
+      "txIndex": 24,
+      "type": "TimedEURO",
+      "txHash": "0xc779355ac74596eca246878b99241e9785745ce31a3952e5aef780f183d263ed",
+      "blockNumber": 39116591,
+      "gasUsed": "1227061",
+      "description": "Transfer 5.0 EURO after 2026-04-26T11:04:37.000Z"
+    },
+    {
+      "txIndex": 25,
+      "type": "TimedEURO",
+      "txHash": "0x96102211babbf712209188501a3be30c6de2082e0225bd13feff50777fc89045",
+      "blockNumber": 39116592,
+      "gasUsed": "1227061",
+      "description": "Transfer 5.5 EURO after 2026-04-26T11:05:37.000Z"
+    },
+    {
+      "txIndex": 26,
+      "type": "TimedEURO",
+      "txHash": "0xc73968eca0413bdc21c81621f85fb5b369e9eddfc1321ff2917bbae3f7553506",
+      "blockNumber": 39116594,
+      "gasUsed": "1227061",
+      "description": "Transfer 6.0 EURO after 2026-04-26T11:06:37.000Z"
+    },
+    {
+      "txIndex": 27,
+      "type": "TimedEURO",
+      "txHash": "0xf99e6ba0371fcc1c92a610c172bf8e033e42d65d5f3eab84e7a8ad869fce2523",
+      "blockNumber": 39116597,
+      "gasUsed": "1227061",
+      "description": "Transfer 6.5 EURO after 2026-04-26T11:07:37.000Z"
+    },
+    {
+      "txIndex": 28,
+      "type": "TimedEURO",
+      "txHash": "0x763cdfcac346ec655b785b297c759d8aaf629fde4f2c4e546bd7429cfc63ed2f",
+      "blockNumber": 39116599,
+      "gasUsed": "1227061",
+      "description": "Transfer 7.0 EURO after 2026-04-26T11:08:37.000Z"
+    },
+    {
+      "txIndex": 29,
+      "type": "TimedEURO",
+      "txHash": "0xd9f35c90ce16860c31524ef36bb785ebc06cb16e812ddee9a23c5a73feedee79",
+      "blockNumber": 39116602,
+      "gasUsed": "1227061",
+      "description": "Transfer 7.5 EURO after 2026-04-26T11:09:37.000Z"
+    },
+    {
+      "txIndex": 30,
+      "type": "TimedEURO",
+      "txHash": "0x25926f61fe87b5b92c64e8c63373dd0c9afcb12ec223e82a27a7d7e2d800b2d7",
+      "blockNumber": 39116604,
+      "gasUsed": "1227037",
+      "description": "Transfer 8.0 EURO after 2026-04-26T11:10:37.000Z"
+    },
+    {
+      "txIndex": 31,
+      "type": "CCTPBridge",
+      "txHash": "0xfc18f62b8d337d84b0242ceafd9d0f5ec20d85f4f93eed30d08fca0e165a8e58",
+      "blockNumber": 39116606,
+      "gasUsed": "1250388",
+      "description": "Bridge 5.0 USDC to Ethereum"
+    },
+    {
+      "txIndex": 32,
+      "type": "CCTPBridge",
+      "txHash": "0x05690c4acd332cab37a7d4df95006592b9a77acfc04c8459530a77e1a392fb91",
+      "blockNumber": 39116608,
+      "gasUsed": "1270300",
+      "description": "Bridge 6.0 USDC to Avalanche"
+    },
+    {
+      "txIndex": 33,
+      "type": "CCTPBridge",
+      "txHash": "0xad8dd38147b9cdac1e838fb2ef4605a5e124e535de500cc524ed9084db48809e",
+      "blockNumber": 39116610,
+      "gasUsed": "1270300",
+      "description": "Bridge 7.0 USDC to OP Mainnet"
+    },
+    {
+      "txIndex": 34,
+      "type": "CCTPBridge",
+      "txHash": "0x3c8ae20d3d5215cccc0eefec065f8a88e727425be92c15fb505ba5dfa8fca292",
+      "blockNumber": 39116613,
+      "gasUsed": "1250364",
+      "description": "Bridge 8.0 USDC to Ethereum"
+    },
+    {
+      "txIndex": 35,
+      "type": "CCTPBridge",
+      "txHash": "0x270ebe7b313f6fb66e443babfd67fbaec00261290412b0078525c61f7e34acb5",
+      "blockNumber": 39116615,
+      "gasUsed": "1270300",
+      "description": "Bridge 9.0 USDC to Avalanche"
+    },
+    {
+      "txIndex": 36,
+      "type": "CCTPBridge",
+      "txHash": "0x8ffcf919e2a7ca9e11db0c7b2762756fdf15f5253878757198e742741f59f0da",
+      "blockNumber": 39116618,
+      "gasUsed": "1270300",
+      "description": "Bridge 10.0 USDC to OP Mainnet"
+    },
+    {
+      "txIndex": 37,
+      "type": "CCTPBridge",
+      "txHash": "0x6a50f34523a394534f7c9aab5e8b084cabdaa2bed3e72665451bf8c8b7c597fb",
+      "blockNumber": 39116620,
+      "gasUsed": "1250388",
+      "description": "Bridge 11.0 USDC to Ethereum"
+    },
+    {
+      "txIndex": 38,
+      "type": "CCTPBridge",
+      "txHash": "0xd59eff17de67d47930c243aa2d2cc30b8801f21b41866f13476084066f769d8e",
+      "blockNumber": 39116622,
+      "gasUsed": "1270276",
+      "description": "Bridge 12.0 USDC to Avalanche"
+    },
+    {
+      "txIndex": 39,
+      "type": "CCTPBridge",
+      "txHash": "0xca8c07216be1c6be1deb093be79c6f68ebf151782d27eedd2c60d94692b3d394",
+      "blockNumber": 39116624,
+      "gasUsed": "1270300",
+      "description": "Bridge 13.0 USDC to OP Mainnet"
+    },
+    {
+      "txIndex": 40,
+      "type": "CCTPBridge",
+      "txHash": "0xdfd14e01eb1d0f00190c0395e4d8536f91f1aa59f0fe620fef2a94df356707c8",
+      "blockNumber": 39116627,
+      "gasUsed": "1250388",
+      "description": "Bridge 14.0 USDC to Ethereum"
+    },
+    {
+      "txIndex": 41,
+      "type": "StorkUSDC",
+      "txHash": "0xffb4a3e2594eee11ef01576d50212877a8fa6c0e106a603b99c9dc8d335d6e76",
+      "blockNumber": 39116633,
+      "gasUsed": "1270406",
+      "description": "Transfer 2.0 USDC when USDC price < $0.99"
+    },
+    {
+      "txIndex": 42,
+      "type": "StorkUSDC",
+      "txHash": "0x875f2c2c3f22c4c3c366ac085054d1b64ec185b3bc97d239cd027b14e2b23926",
+      "blockNumber": 39116635,
+      "gasUsed": "1250494",
+      "description": "Transfer 3.0 USDC when USDC price >= $0.95"
+    },
+    {
+      "txIndex": 43,
+      "type": "StorkUSDC",
+      "txHash": "0xbffd5acf5124f16ca9f66c4b884fdb529aef4f2d2eee14e18a24cbc786660d64",
+      "blockNumber": 39116637,
+      "gasUsed": "1270382",
+      "description": "Transfer 4.0 USDC when USDC price < $0.99"
+    },
+    {
+      "txIndex": 44,
+      "type": "StorkUSDC",
+      "txHash": "0x93c864b50d52a7e89d590a82e743708c473b26e41e97dd8e78214a3fab39baa0",
+      "blockNumber": 39116639,
+      "gasUsed": "1250494",
+      "description": "Transfer 5.0 USDC when USDC price >= $0.95"
+    },
+    {
+      "txIndex": 45,
+      "type": "StorkUSDC",
+      "txHash": "0xdc533273131f7df55b996c1e8a3054b35d53131a48ee4d9a8059e87ee1d038dd",
+      "blockNumber": 39116641,
+      "gasUsed": "1270406",
+      "description": "Transfer 6.0 USDC when USDC price < $0.99"
+    },
+    {
+      "txIndex": 46,
+      "type": "StorkUSDC",
+      "txHash": "0x317d2cb37d51ca155b8883747390f083b4fe0fa8a3805fb224c3d6fc4b29aa84",
+      "blockNumber": 39116644,
+      "gasUsed": "1250494",
+      "description": "Transfer 7.0 USDC when USDC price >= $0.95"
+    },
+    {
+      "txIndex": 47,
+      "type": "StorkUSDC",
+      "txHash": "0xbb2e6e4c182634fd05b227b7288cc8067eaac6abfe03f3b81058c533d0563fbd",
+      "blockNumber": 39116646,
+      "gasUsed": "1270382",
+      "description": "Transfer 8.0 USDC when USDC price < $0.99"
+    },
+    {
+      "txIndex": 48,
+      "type": "StorkUSDC",
+      "txHash": "0x052b83f44fcbc5425885f6accdd25d9a3b7cd1815833d946e3bb0d55d5223cf7",
+      "blockNumber": 39116648,
+      "gasUsed": "1250494",
+      "description": "Transfer 9.0 USDC when USDC price >= $0.95"
+    },
+    {
+      "txIndex": 49,
+      "type": "StorkUSDC",
+      "txHash": "0x56cf9d516914d2f7697dcf00a8ef23debb54b0f9043fd698444542f58d1da989",
+      "blockNumber": 39116651,
+      "gasUsed": "1270406",
+      "description": "Transfer 10.0 USDC when USDC price < $0.99"
+    },
+    {
+      "txIndex": 50,
+      "type": "StorkUSDC",
+      "txHash": "0xaf2a79a17fd2995d9edf595a175b53b2a6940eda59240f21ab7869b27a2b3f91",
+      "blockNumber": 39116653,
+      "gasUsed": "1250494",
+      "description": "Transfer 11.0 USDC when USDC price >= $0.95"
+    },
+    {
+      "txIndex": 51,
+      "type": "StorkEURO",
+      "txHash": "0x48836f51ae9868a3e7b7d30afd2117eb07d95b0fc89882d77d14ed277c578c8f",
+      "blockNumber": 39116658,
+      "gasUsed": "1250494",
+      "description": "Transfer 3.0 EURO when price >= $1.05"
+    },
+    {
+      "txIndex": 52,
+      "type": "StorkEURO",
+      "txHash": "0xc43dd10473da62b009e5d24703a09b76343d48e736845b4bc7ca81bc7a4454a1",
+      "blockNumber": 39116660,
+      "gasUsed": "1250470",
+      "description": "Transfer 4.0 EURO when price >= $1.05"
+    },
+    {
+      "txIndex": 53,
+      "type": "StorkEURO",
+      "txHash": "0xbef20721a10e7fc50d1e1fb4c19a525da032d0e293c67b014171c1f2048f558c",
+      "blockNumber": 39116663,
+      "gasUsed": "1250494",
+      "description": "Transfer 5.0 EURO when price >= $1.05"
+    },
+    {
+      "txIndex": 54,
+      "type": "StorkEURO",
+      "txHash": "0x99d036b90e420ab6889dc6dcbdeb14569a1a5f85f19ccac5ff6e7e54ba6ca4a3",
+      "blockNumber": 39116665,
+      "gasUsed": "1250494",
+      "description": "Transfer 6.0 EURO when price >= $1.05"
+    },
+    {
+      "txIndex": 55,
+      "type": "StorkEURO",
+      "txHash": "0x0b7c411814462024bb6a88d5e1157341552c9e5e73ed05958d5d231036734dcf",
+      "blockNumber": 39116667,
+      "gasUsed": "1250494",
+      "description": "Transfer 7.0 EURO when price >= $1.05"
+    }
+  ]
+}

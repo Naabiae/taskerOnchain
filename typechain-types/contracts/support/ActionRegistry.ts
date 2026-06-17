@@ -51,6 +51,7 @@ export interface ActionRegistryInterface extends Interface {
       | "batchApproveProtocols"
       | "deactivateAdapter"
       | "getAdapter"
+      | "getAdapterByAddress"
       | "isActionAllowed"
       | "isProtocolApproved"
       | "owner"
@@ -84,6 +85,10 @@ export interface ActionRegistryInterface extends Interface {
   encodeFunctionData(
     functionFragment: "getAdapter",
     values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getAdapterByAddress",
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: "isActionAllowed",
@@ -124,6 +129,10 @@ export interface ActionRegistryInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getAdapter", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getAdapterByAddress",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "isActionAllowed",
     data: BytesLike
@@ -280,6 +289,12 @@ export interface ActionRegistry extends BaseContract {
     "view"
   >;
 
+  getAdapterByAddress: TypedContractMethod<
+    [adapterAddr: AddressLike],
+    [IActionRegistry.AdapterInfoStructOutput],
+    "view"
+  >;
+
   isActionAllowed: TypedContractMethod<
     [selector: BytesLike, protocol: AddressLike],
     [boolean],
@@ -336,6 +351,13 @@ export interface ActionRegistry extends BaseContract {
     nameOrSignature: "getAdapter"
   ): TypedContractMethod<
     [selector: BytesLike],
+    [IActionRegistry.AdapterInfoStructOutput],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "getAdapterByAddress"
+  ): TypedContractMethod<
+    [adapterAddr: AddressLike],
     [IActionRegistry.AdapterInfoStructOutput],
     "view"
   >;

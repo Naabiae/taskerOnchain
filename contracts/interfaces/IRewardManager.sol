@@ -3,7 +3,8 @@ pragma solidity ^0.8.20;
 
 /**
  * @title IRewardManager
- * @notice Interface for RewardManager contract that handles reward distribution
+ * @notice Interface for RewardManager — handles executor reward distribution
+ * @dev V3: Works with UserVault instead of TaskVault. Called by ExecutorHub.
  */
 interface IRewardManager {
 
@@ -19,7 +20,7 @@ interface IRewardManager {
     // ============ Events ============
 
     event RewardDistributed(
-        uint256 indexed taskId,
+        uint256 indexed automationId,
         address indexed executor,
         uint256 executorReward,
         uint256 platformFee,
@@ -31,7 +32,7 @@ interface IRewardManager {
 
     // ============ Errors ============
 
-    error OnlyTaskLogic();
+    error OnlyExecutorHub();
     error InvalidFeePercentage();
     error InsufficientVaultBalance();
 
@@ -44,7 +45,7 @@ interface IRewardManager {
         uint256 gasUsed
     ) external view returns (RewardCalculation memory);
 
-    /// @notice Distribute reward (called by TaskLogic)
+    /// @notice Distribute reward (called by ExecutorHub after automation execution)
     function distributeReward(
         address vault,
         address executor,
@@ -59,11 +60,11 @@ interface IRewardManager {
     function setPlatformFee(uint256 feePercentage) external;
 
     /// @notice Get platform fee percentage
-    function platformFeePercentage() external view returns (uint256);
+    function getPlatformFeePercentage() external view returns (uint256);
 
     /// @notice Get total fees collected
     function totalFeesCollected() external view returns (uint256);
 
-    /// @notice Get reputation multiplier for executor
-    function getReputationMultiplier(address executor) external view returns (uint256);
+    /// @notice Get the global cap for gas reimbursement per execution
+    function getMaxGasReimbursement() external view returns (uint256);
 }

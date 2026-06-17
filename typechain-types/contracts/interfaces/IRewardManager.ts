@@ -50,8 +50,8 @@ export interface IRewardManagerInterface extends Interface {
       | "calculateReward"
       | "collectFees"
       | "distributeReward"
-      | "getReputationMultiplier"
-      | "platformFeePercentage"
+      | "getMaxGasReimbursement"
+      | "getPlatformFeePercentage"
       | "setPlatformFee"
       | "totalFeesCollected"
   ): FunctionFragment;
@@ -76,11 +76,11 @@ export interface IRewardManagerInterface extends Interface {
     values: [AddressLike, AddressLike, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "getReputationMultiplier",
-    values: [AddressLike]
+    functionFragment: "getMaxGasReimbursement",
+    values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "platformFeePercentage",
+    functionFragment: "getPlatformFeePercentage",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -105,11 +105,11 @@ export interface IRewardManagerInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getReputationMultiplier",
+    functionFragment: "getMaxGasReimbursement",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "platformFeePercentage",
+    functionFragment: "getPlatformFeePercentage",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -150,21 +150,21 @@ export namespace PlatformFeeUpdatedEvent {
 
 export namespace RewardDistributedEvent {
   export type InputTuple = [
-    taskId: BigNumberish,
+    automationId: BigNumberish,
     executor: AddressLike,
     executorReward: BigNumberish,
     platformFee: BigNumberish,
     gasReimbursement: BigNumberish
   ];
   export type OutputTuple = [
-    taskId: bigint,
+    automationId: bigint,
     executor: string,
     executorReward: bigint,
     platformFee: bigint,
     gasReimbursement: bigint
   ];
   export interface OutputObject {
-    taskId: bigint;
+    automationId: bigint;
     executor: string;
     executorReward: bigint;
     platformFee: bigint;
@@ -242,13 +242,9 @@ export interface IRewardManager extends BaseContract {
     "nonpayable"
   >;
 
-  getReputationMultiplier: TypedContractMethod<
-    [executor: AddressLike],
-    [bigint],
-    "view"
-  >;
+  getMaxGasReimbursement: TypedContractMethod<[], [bigint], "view">;
 
-  platformFeePercentage: TypedContractMethod<[], [bigint], "view">;
+  getPlatformFeePercentage: TypedContractMethod<[], [bigint], "view">;
 
   setPlatformFee: TypedContractMethod<
     [feePercentage: BigNumberish],
@@ -285,10 +281,10 @@ export interface IRewardManager extends BaseContract {
     "nonpayable"
   >;
   getFunction(
-    nameOrSignature: "getReputationMultiplier"
-  ): TypedContractMethod<[executor: AddressLike], [bigint], "view">;
+    nameOrSignature: "getMaxGasReimbursement"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: "platformFeePercentage"
+    nameOrSignature: "getPlatformFeePercentage"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "setPlatformFee"

@@ -21,7 +21,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "OnlyTaskLogic",
+    name: "OnlyExecutorHub",
     type: "error",
   },
   {
@@ -68,7 +68,7 @@ const _abi = [
       {
         indexed: true,
         internalType: "uint256",
-        name: "taskId",
+        name: "automationId",
         type: "uint256",
       },
       {
@@ -204,14 +204,8 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [
-      {
-        internalType: "address",
-        name: "executor",
-        type: "address",
-      },
-    ],
-    name: "getReputationMultiplier",
+    inputs: [],
+    name: "getMaxGasReimbursement",
     outputs: [
       {
         internalType: "uint256",
@@ -224,7 +218,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "platformFeePercentage",
+    name: "getPlatformFeePercentage",
     outputs: [
       {
         internalType: "uint256",

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.28;
 
-import "../interfaces/IActionAdapter.sol";
+import "../interfaces/IStrategyAdapter.sol";
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 
 /**
@@ -18,7 +18,7 @@ import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
  * ✅ REFACTORED: Now uses clean 4-parameter structure with getTokenRequirements()
  * No longer needs 6-parameter Uniswap workaround!
  */
-contract TimeBasedTransferAdapter is IActionAdapter {
+contract TimeBasedTransferAdapter is IStrategyAdapter {
     /**
      * @notice Clean parameter structure for time-based transfers
      * @dev No more fake/ignored fields - just what we actually need!
@@ -32,7 +32,7 @@ contract TimeBasedTransferAdapter is IActionAdapter {
 
     /**
      * @notice Get token requirements for this transfer
-     * @dev Implements IActionAdapter.getTokenRequirements() - tells TaskLogicV2 what tokens/amounts we need
+     * @dev Implements IStrategyAdapter.getTokenRequirements() - tells vault what tokens/amounts we need
      * @param params ABI-encoded TransferParams
      * @return tokens Array with single token address
      * @return amounts Array with single amount value
@@ -59,7 +59,7 @@ contract TimeBasedTransferAdapter is IActionAdapter {
      * @return canExec True if current time >= executeAfter
      * @return reason Human-readable reason
      */
-    function canExecute(bytes calldata params)
+    function canExecute(address /*vault*/, bytes calldata params)
         external
         view
         override
@@ -99,7 +99,7 @@ contract TimeBasedTransferAdapter is IActionAdapter {
         returns (bool success, bytes memory result)
     {
         // Step 1: Check time condition
-        (bool conditionMet, string memory reason) = this.canExecute(params);
+        (bool conditionMet, string memory reason) = this.canExecute(address(this), params);
         if (!conditionMet) {
             return (false, bytes(reason));
         }
@@ -163,17 +163,17 @@ contract TimeBasedTransferAdapter is IActionAdapter {
     }
 
 
-    /// @inheritdoc IActionAdapter
-    function isProtocolSupported(address protocol) external view override returns (bool) {
+    /// @notice Check if a protocol is supported
+    function isProtocolSupported(address protocol) external view returns (bool) {
         return true;
     }
 
-    /// @inheritdoc IActionAdapter
-    function name() external pure override returns (string memory) {
+    /// @notice Adapter name for identification
+    function name() external pure returns (string memory) {
         return "TimeBasedTransferAdapter";
     }
 
-    /// @inheritdoc IActionAdapter
+    /// @inheritdoc IStrategyAdapter
     /// @notice Validate parameters during task creation
     /// @dev Catches encoding errors early instead of at execution time
     function validateParams(bytes calldata params)

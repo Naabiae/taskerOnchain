@@ -1,0 +1,268 @@
+{
+  "network": "baseSepolia",
+  "chainId": "84532",
+  "deployer": "0x10c4712dB66B56782ACD2739673889A37c5DB604",
+  "deployedAt": "2026-04-28T02:19:55.028Z",
+  "explorer": "https://sepolia.basescan.org",
+  "transactions": [
+    {
+      "step": "Deploy MockUSDC",
+      "txHash": "0x39331cbc8a91ed830fc176a57b7e3b932465bfc1e5ea25c56af843ddd5bf328c",
+      "contractAddress": "0x02224E1B9d23fcDC8b9E7B97B4857C31FAB56d25",
+      "blockNumber": 40787225,
+      "gasUsed": "557245"
+    },
+    {
+      "step": "Deploy MockUSDT",
+      "txHash": "0xe1482e8e56da9af9a3b2e80b39daa953889f9ca6f3796e9c8de021b622661e5c",
+      "contractAddress": "0x3aE209C971a96E25D18E20196BFcb54dB530d7fA",
+      "blockNumber": 40787226,
+      "gasUsed": "557245"
+    },
+    {
+      "step": "Mint 10M MockUSDC to deployer",
+      "txHash": "0xa18ae254a6e9580140ccfd420bea8df3986a84e259cc1a562ec8a5d2cbb2275d",
+      "blockNumber": 40787227,
+      "gasUsed": "68403"
+    },
+    {
+      "step": "Mint 10M MockUSDT to deployer",
+      "txHash": "0xe32da9372df9aaf8f7aa5d63846496984fc4c3b8fc0913f57d27b2f1675dc16b",
+      "blockNumber": 40787228,
+      "gasUsed": "68403"
+    },
+    {
+      "step": "Deploy TaskCore Implementation",
+      "txHash": "0xa4f08752c9bf9550f271c4c286bfdf2179dcc7ae8d411df21ec249f23cfd6e0b",
+      "contractAddress": "0x40c1d8643f911646E7A0FDDbb1E2B15B11bE9e02",
+      "blockNumber": 40787229,
+      "gasUsed": "1493034"
+    },
+    {
+      "step": "Deploy TaskVault Implementation",
+      "txHash": "0x81d73699999a76e1205f8a4538a1d29d535e31d90cadf04d8fe10354b83a08a8",
+      "contractAddress": "0x75C1f0A292562981f977E22c54896Ab557d79052",
+      "blockNumber": 40787230,
+      "gasUsed": "1402303"
+    },
+    {
+      "step": "Deploy ActionRegistry",
+      "txHash": "0x7f2be4fe11645ce19ec92a130ef7ba4c9fa3eb9f4a448920bc82b07451c2d698",
+      "contractAddress": "0xB8476A9D97950DF7c664E63735FD5b3cd88f3147",
+      "blockNumber": 40787231,
+      "gasUsed": "623555"
+    },
+    {
+      "step": "Deploy ExecutorHub",
+      "txHash": "0x8bcc5b1465bd7962d5b58dc763613b420f390d83eb1026522aa8e6361bbcfad1",
+      "contractAddress": "0x8CbfB3eadD0BF43945a8a8a4Fe6C06A9fA69F191",
+      "blockNumber": 40787232,
+      "gasUsed": "1597935"
+    },
+    {
+      "step": "Deploy GlobalRegistry",
+      "txHash": "0xc48499b148247c9d43063dac3ff2685f3d8e9c2b05d8ce13c045a9af6b261d21",
+      "contractAddress": "0x69D457Da9539a21E8D344448427079F2e3c24be4",
+      "blockNumber": 40787233,
+      "gasUsed": "1576878"
+    },
+    {
+      "step": "Deploy RewardManager",
+      "txHash": "0x6b29d0db39e3965705c2f4aaf9903ad1cd6178031b4acd96552c3782bd002212",
+      "contractAddress": "0xbC97c345e5B497d816dE12Fc9f8912bf3E67Fa2C",
+      "blockNumber": 40787235,
+      "gasUsed": "1078681"
+    },
+    {
+      "step": "Deploy TaskLogicV2",
+      "txHash": "0xf6ce6eae51f1cadd1fad9d19aea847f990ae4acd1423b401056669c62ee8ad6b",
+      "contractAddress": "0x3bfAfE085977a630298A88288f6c95801d3fd5E2",
+      "blockNumber": 40787236,
+      "gasUsed": "1680410"
+    },
+    {
+      "step": "Deploy TaskFactory",
+      "txHash": "0xe8c3ef2383a91b085339ba52737f1e3195fc01983350e15b4592b8c12e0fecc1",
+      "contractAddress": "0xd633745b7427Cf13b540c6D88FF2cAd33F75340d",
+      "blockNumber": 40787237,
+      "gasUsed": "2139891"
+    },
+    {
+      "step": "Deploy RecurringTransferAdapter",
+      "txHash": "0x1edb6850ce69670f037756e7bbcdec207abf46a73d39f7a723e7c44cf6306db5",
+      "contractAddress": "0x17e7bA6d4939f7e826ca9aE06C76177E25691A61",
+      "blockNumber": 40787238,
+      "gasUsed": "1413058"
+    },
+    {
+      "step": "Deploy TimeBasedTransferAdapter",
+      "txHash": "0x4ccbe53bc768854987952954581a82c11b49ad8633d52a280ff4f6f112a5e73d",
+      "contractAddress": "0x055c10a0371AA486e0e5E1fe6A18407b14e2d192",
+      "blockNumber": 40787239,
+      "gasUsed": "914233"
+    },
+    {
+      "step": "TaskLogicV2.setActionRegistry",
+      "txHash": "0x4ee48ec5c7257b641c6a09e24c46cefafb8217d08eee9a4f89b7e2b75a56db1b",
+      "blockNumber": 40787240,
+      "gasUsed": "46115"
+    },
+    {
+      "step": "TaskLogicV2.setRewardManager",
+      "txHash": "0x1db5da6293989f2132eab5b250544a0970378d8803e60742b6458f840d6f2ac7",
+      "blockNumber": 40787241,
+      "gasUsed": "46139"
+    },
+    {
+      "step": "TaskLogicV2.setExecutorHub",
+      "txHash": "0xfdf20c49aee06327039cf2036347a198556cdf7fb6a09ab028b381d4267688ff",
+      "blockNumber": 40787242,
+      "gasUsed": "46182"
+    },
+    {
+      "step": "TaskLogicV2.setTaskRegistry",
+      "txHash": "0x940079fe983c8d6c0f2200a23aeb818dae6d1ec211e401a88e0fd2aa8611c5df",
+      "blockNumber": 40787243,
+      "gasUsed": "46160"
+    },
+    {
+      "step": "ExecutorHub.setTaskLogic",
+      "txHash": "0xcc6c185de1d0d99b43b6a3dcc75f3c3bc0707dd2f81c10f7f925ece680c5d900",
+      "blockNumber": 40787244,
+      "gasUsed": "46117"
+    },
+    {
+      "step": "ExecutorHub.setTaskRegistry",
+      "txHash": "0x7daeb3bef084bb8b96be5d832e481b70b5a3e583da23c977a312dc30a9613191",
+      "blockNumber": 40787245,
+      "gasUsed": "46204"
+    },
+    {
+      "step": "RewardManager.setTaskLogic",
+      "txHash": "0x1f18e585ff72ddb2c69bed3f25c49aeb7bef4d92e4735c0905a711b150e81e48",
+      "blockNumber": 40787246,
+      "gasUsed": "46139"
+    },
+    {
+      "step": "RewardManager.setExecutorHub",
+      "txHash": "0xab4b70488f85a297524b6036f6e69cda1048464deffb3e5fd849448e5d86430a",
+      "blockNumber": 40787247,
+      "gasUsed": "46226"
+    },
+    {
+      "step": "RewardManager.setGasReimbursementMultiplier(0)",
+      "txHash": "0x6c7b023f6cd110a0f6e1c5ef4599010a3c143c6a79a38b530c37c2cc6cf585d5",
+      "blockNumber": 40787248,
+      "gasUsed": "23913"
+    },
+    {
+      "step": "GlobalRegistry.authorizeFactory",
+      "txHash": "0x80aad48da156a727f708d4f571960689a56b028bce6a26db6e23a2e047cf0a4a",
+      "blockNumber": 40787249,
+      "gasUsed": "47356"
+    },
+    {
+      "step": "TaskFactory.setGlobalRegistry",
+      "txHash": "0x54675cdc80b0b008bc1bb6a28d627864e5c1a3b832765c6cb7e42ce8f9465c8c",
+      "blockNumber": 40787250,
+      "gasUsed": "46105"
+    },
+    {
+      "step": "Register RecurringTransferAdapter",
+      "txHash": "0x46a938b48f8301f29d659348ad4aaf53a73fa4abd6757f1c29b29d1d299bbf3d",
+      "blockNumber": 40787251,
+      "gasUsed": "159409"
+    },
+    {
+      "step": "Register TimeBasedTransferAdapter",
+      "txHash": "0x6c27ec0fcbaba3af0aef73e12bcc4ba0ddbccda0ce78fd3b65448f10a826e76c",
+      "blockNumber": 40787252,
+      "gasUsed": "105309"
+    },
+    {
+      "step": "Approve RecurringTransferAdapter protocol",
+      "txHash": "0xb8c1c9f7bbd93414812a0f404baeffe937fe6c39537e2401ac3ff13defe1c5d3",
+      "blockNumber": 40787253,
+      "gasUsed": "47327"
+    },
+    {
+      "step": "Approve TimeBasedTransferAdapter protocol",
+      "txHash": "0x2c175b976984d5d229bf64bc414431845deb88af74d7ff091935519fcb70d3b6",
+      "blockNumber": 40787254,
+      "gasUsed": "47327"
+    },
+    {
+      "step": "Deploy UniswapV3DCAAdapter",
+      "txHash": "0x1dfbce788358cdfb00f74c2c2716cb612176b73d9360ff0b320d3d4dc6ec5b79",
+      "contractAddress": "0x6E5E28e08448409c63F8256908F81999B6DA4DBb",
+      "blockNumber": 41202301,
+      "gasUsed": "1195175"
+    },
+    {
+      "step": "Deploy UniswapV3LimitOrderAdapter",
+      "txHash": "0x4f34a6fa4b4dcaf58afa0339c5a674e4bb5e8b0ebb553df2b05def4e3d460f76",
+      "contractAddress": "0xa4f7E608840AE51F19718909405c7d5A8C36BcCc",
+      "blockNumber": 41202302,
+      "gasUsed": "1720455"
+    },
+    {
+      "step": "Register UniswapV3DCAAdapter",
+      "txHash": "0x0906d9d1ed2a0786f38b860b166690f8721a71dcb86fd78bf828b3e38b1931fd",
+      "blockNumber": 41202304,
+      "gasUsed": "105309"
+    },
+    {
+      "step": "Register UniswapV3LimitOrderAdapter",
+      "txHash": "0xd49dbe174f365f30fd9553aa72b5ff508627cad151122ad7a3cb8976eb629c00",
+      "blockNumber": 41202336,
+      "gasUsed": "105309"
+    },
+    {
+      "step": "Approve UniswapV3DCAAdapter protocol",
+      "txHash": "0x8639028b6a23a64218928e9d665b83dea7f1876484f3c2ef7a37eb5a02641422",
+      "blockNumber": 41202337,
+      "gasUsed": "47327"
+    },
+    {
+      "step": "Approve UniswapV3LimitOrderAdapter protocol",
+      "txHash": "0x0d69d2deb44c03273a55f86b36536acd38e4f5e5fd72f5d8b4ffa262336253a8",
+      "blockNumber": 41202338,
+      "gasUsed": "47327"
+    },
+    {
+      "step": "Deploy UniswapV3LimitOrderAdapter",
+      "txHash": "0xfed301f1dbd8a12253a7db5c3a384c52014fbff396d9112050851f387d1e399d",
+      "contractAddress": "0x504f73A97E2b7c34e98C3006cB7f237F864a67B0",
+      "blockNumber": 41202893,
+      "gasUsed": "1775151"
+    },
+    {
+      "step": "Register UniswapV3LimitOrderAdapter",
+      "txHash": "0xb7d0ed88c67adae2f73de4383559d437cdce970ef9ba8269c108591f1cadf193",
+      "blockNumber": 41202895,
+      "gasUsed": "102509"
+    },
+    {
+      "step": "Approve UniswapV3LimitOrderAdapter protocol",
+      "txHash": "0xa972d94604059309d290162186be9f7e3543bc79496a0a8f5cce39cdbcac798e",
+      "blockNumber": 41202897,
+      "gasUsed": "47327"
+    }
+  ],
+  "contracts": {
+    "MockUSDC": "0x02224E1B9d23fcDC8b9E7B97B4857C31FAB56d25",
+    "MockUSDT": "0x3aE209C971a96E25D18E20196BFcb54dB530d7fA",
+    "TaskCoreImpl": "0x40c1d8643f911646E7A0FDDbb1E2B15B11bE9e02",
+    "TaskVaultImpl": "0x75C1f0A292562981f977E22c54896Ab557d79052",
+    "ActionRegistry": "0xB8476A9D97950DF7c664E63735FD5b3cd88f3147",
+    "ExecutorHub": "0x8CbfB3eadD0BF43945a8a8a4Fe6C06A9fA69F191",
+    "GlobalRegistry": "0x69D457Da9539a21E8D344448427079F2e3c24be4",
+    "RewardManager": "0xbC97c345e5B497d816dE12Fc9f8912bf3E67Fa2C",
+    "TaskLogicV2": "0x3bfAfE085977a630298A88288f6c95801d3fd5E2",
+    "TaskFactory": "0xd633745b7427Cf13b540c6D88FF2cAd33F75340d",
+    "RecurringTransferAdapter": "0x17e7bA6d4939f7e826ca9aE06C76177E25691A61",
+    "TimeBasedTransferAdapter": "0x055c10a0371AA486e0e5E1fe6A18407b14e2d192",
+    "UniswapV3DCAAdapter": "0x6E5E28e08448409c63F8256908F81999B6DA4DBb",
+    "UniswapV3LimitOrderAdapter": "0x504f73A97E2b7c34e98C3006cB7f237F864a67B0"
+  }
+}

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.28;
 
-import { IActionAdapter } from "../interfaces/IActionAdapter.sol";
+import { IStrategyAdapter } from "../interfaces/IStrategyAdapter.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { SafeERC20 } from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
@@ -18,7 +18,7 @@ interface ITokenMessenger {
  * @title CCTPTransferAdapter
  * @dev Adapter to execute a time-based or immediate cross-chain bridge using Circle CCTP
  */
-contract CCTPTransferAdapter is IActionAdapter {
+contract CCTPTransferAdapter is IStrategyAdapter {
     using SafeERC20 for IERC20;
 
     /**
@@ -58,12 +58,17 @@ contract CCTPTransferAdapter is IActionAdapter {
             token
         );
 
+        (bool okClear,) = address(IERC20(token)).call(abi.encodeWithSignature("approve(address,uint256)", cctpMessenger, 0));
+        if (!okClear) {
+            // ignore
+        }
+
         emit ActionExecuted(vault, cctpMessenger, true, abi.encode(nonce));
 
         return (true, abi.encode(nonce));
     }
 
-    function canExecute(bytes calldata params) external view override returns (bool, string memory) {
+    function canExecute(address /*vault*/, bytes calldata params) external view override returns (bool, string memory) {
         (,, , , , uint256 executeAfter) = abi.decode(params, (address, address, uint256, uint32, bytes32, uint256));
         if (block.timestamp < executeAfter) {
             return (false, "Time not reached");
@@ -79,11 +84,11 @@ contract CCTPTransferAdapter is IActionAdapter {
         amounts[0] = amount;
     }
 
-    function isProtocolSupported(address /*protocol*/) external pure override returns (bool) {
+    function isProtocolSupported(address /*protocol*/) external pure returns (bool) {
         return true; // We don't limit protocols natively
     }
 
-    function name() external pure override returns (string memory) {
+    function name() external pure returns (string memory) {
         return "CCTPTransferAdapter";
     }
 

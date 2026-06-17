@@ -3,292 +3,247 @@ pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import "../interfaces/IExecutorHub.sol";
-import "../interfaces/ITaskLogic.sol";
-import "../interfaces/ITaskCore.sol";
 
-/**
- * @title ExecutorHub
- * @notice Manages executor registration and execution coordination
- * @dev TESTNET: Simplified for free, open execution. Registration is free, no commit-reveal.
- * Production version will have staking, reputation, and anti-bot mechanisms.
- */
-contract ExecutorHub is IExecutorHub, Ownable, ReentrancyGuard {
+contract ExecutorHub is Ownable, ReentrancyGuard {
 
-    // ============ State Variables ============
+    // ─────────────────────────────────────────────────────────────────────────
+    // Types
+    // ─────────────────────────────────────────────────────────────────────────
+
+    struct Executor {
+        address addr;
+        bool isActive;
+        uint256 totalExecutions;
+        uint256 successfulExecutions;
+        uint256 failedExecutions;
+    }
+
+    struct Task {
+        address vault;
+        uint256 automationId;
+        address strategy;
+        bytes params;
+        bool active;
+    }
+
+    struct TaskKey {
+        address vault;
+        uint256 automationId;
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // State
+    // ─────────────────────────────────────────────────────────────────────────
 
     mapping(address => Executor) public executors;
+    address[] public executorList;
+    mapping(address => uint256) public executorIndex;
 
-    address public taskLogic;
-    address public taskRegistry;
+    mapping(address => mapping(uint256 => Task)) private _tasks;
+    TaskKey[] private _taskKeys;
+    mapping(address => mapping(uint256 => uint256)) private _taskIndex;
 
-    uint256 public minStakeAmount = 0.1 ether;
+    address public rewardManager;
+    uint256 public baseRewardPerExecution = 0.0001 ether;
 
-    uint256 public totalExecutors;
+    // ─────────────────────────────────────────────────────────────────────────
+    // Events
+    // ─────────────────────────────────────────────────────────────────────────
 
-    // ============ Constructor ============
+    event ExecutorAdded(address indexed executor);
+    event ExecutorRemoved(address indexed executor);
+    event TaskRegistered(address indexed vault, uint256 automationId, address strategy);
+    event TaskRemoved(address indexed vault, uint256 automationId);
+    event AutomationExecuted(address indexed vault, uint256 automationId, address indexed executor, bool success);
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Errors
+    // ─────────────────────────────────────────────────────────────────────────
+
+    error InvalidExecutor();
+    error NotExecutor();
+    error AlreadyExecutor();
+    error NotActiveExecutor();
+    error TaskAlreadyRegistered();
+    error TaskNotFound();
+    error InvalidVault();
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Modifiers
+    // ─────────────────────────────────────────────────────────────────────────
+
+    modifier onlyExecutor() {
+        if (!executors[msg.sender].isActive) revert NotExecutor();
+        _;
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Constructor
+    // ─────────────────────────────────────────────────────────────────────────
 
     constructor(address _owner) Ownable(_owner) {}
 
-    // ============ Modifiers ============
+    // ─────────────────────────────────────────────────────────────────────────
+    // Executor Management (Admin)
+    // ─────────────────────────────────────────────────────────────────────────
 
-    modifier onlyRegistered() {
-        if (!executors[msg.sender].isActive) revert NotRegistered();
-        _;
-    }
+    function addExecutor(address executor) external onlyOwner {
+        if (executor == address(0)) revert InvalidExecutor();
+        if (executors[executor].isActive) revert AlreadyExecutor();
 
-    modifier notBlacklisted() {
-        if (executors[msg.sender].isSlashed) revert ExecutorBlacklisted();
-        _;
-    }
-
-    modifier onlyTaskLogic() {
-        require(msg.sender == taskLogic, "Only task logic");
-        _;
-    }
-
-    // ============ Registration Functions ============
-
-    /// @inheritdoc IExecutorHub
-    /// @dev TESTNET: Free registration, no stake required
-    function registerExecutor() external payable {
-        if (executors[msg.sender].isActive) revert AlreadyRegistered();
-        if (executors[msg.sender].isSlashed) revert ExecutorBlacklisted();
-
-        // If previously registered, don't reset reputation
-        if (executors[msg.sender].registeredAt != 0) {
-            executors[msg.sender].isActive = true;
-            executors[msg.sender].stakedAmount += uint128(msg.value);
-            totalExecutors++;
-            emit ExecutorRegistered(msg.sender, msg.value);
-            return;
-        }
-
-        // TESTNET: No minimum stake requirement
-        // Production: uncomment to require stake
-        // if (msg.value < minStakeAmount) revert InsufficientStake();
-
-        executors[msg.sender] = Executor({
-            addr: msg.sender,
-            stakedAmount: uint128(msg.value), // Optional: 0 on testnet
-            registeredAt: uint128(block.timestamp),
+        executors[executor] = Executor({
+            addr: executor,
+            isActive: true,
             totalExecutions: 0,
             successfulExecutions: 0,
-            failedExecutions: 0,
-            reputationScore: 5000, // Start at 50%
-            isActive: true,
-            isSlashed: false
+            failedExecutions: 0
         });
 
-        totalExecutors++;
+        executorIndex[executor] = executorList.length;
+        executorList.push(executor);
 
-        emit ExecutorRegistered(msg.sender, msg.value);
+        emit ExecutorAdded(executor);
     }
 
-    /// @inheritdoc IExecutorHub
-    function unregisterExecutor() external onlyRegistered nonReentrant {
-        Executor storage executor = executors[msg.sender];
+    function removeExecutor(address executor) external onlyOwner {
+        if (!executors[executor].isActive) revert NotActiveExecutor();
 
-        uint256 stakeAmount = executor.stakedAmount;
-        executor.isActive = false;
-        executor.stakedAmount = 0;
+        executors[executor].isActive = false;
 
-        // Return stake
-        (bool success, ) = msg.sender.call{value: stakeAmount}("");
-        require(success, "Transfer failed");
+        uint256 index = executorIndex[executor];
+        uint256 lastIndex = executorList.length - 1;
+        if (index != lastIndex) {
+            address lastExecutor = executorList[lastIndex];
+            executorList[index] = lastExecutor;
+            executorIndex[lastExecutor] = index;
+        }
+        executorList.pop();
+        delete executorIndex[executor];
 
-        totalExecutors--;
-
-        emit ExecutorUnregistered(msg.sender);
+        emit ExecutorRemoved(executor);
     }
 
-    /// @inheritdoc IExecutorHub
-    function addStake() external payable onlyRegistered {
-        require(msg.value > 0, "Zero stake");
-
-        Executor storage executor = executors[msg.sender];
-        executor.stakedAmount += uint128(msg.value);
-
-        emit StakeAdded(msg.sender, msg.value);
+    function setRewardManager(address _rewardManager) external onlyOwner {
+        if (_rewardManager == address(0)) revert("Invalid reward manager");
+        rewardManager = _rewardManager;
     }
 
-    /// @inheritdoc IExecutorHub
-    function withdrawStake(uint256 amount) external onlyRegistered nonReentrant {
-        Executor storage executor = executors[msg.sender];
+    // ─────────────────────────────────────────────────────────────────────────
+    // Task Management (Called by Vault)
+    // ─────────────────────────────────────────────────────────────────────────
 
-        require(amount > 0, "Zero amount");
-        require(executor.stakedAmount >= amount, "Insufficient stake");
+    function registerTask(uint256 automationId, address strategy, bytes calldata params) external {
+        address vault = msg.sender;
 
-        uint256 remaining = executor.stakedAmount - amount;
-        require(remaining >= minStakeAmount || remaining == 0, "Below minimum");
+        if (_taskIndex[vault][automationId] != 0) revert TaskAlreadyRegistered();
 
-        executor.stakedAmount -= uint128(amount);
-
-        (bool success, ) = msg.sender.call{value: amount}("");
-        require(success, "Transfer failed");
-
-        emit StakeWithdrawn(msg.sender, amount);
-    }
-
-    // ============ Execution Functions ============
-
-    /// @inheritdoc IExecutorHub
-    /// @dev Execute task with actions stored on-chain
-    /// TaskLogic will fetch actions from TaskCore
-    function executeTask(
-        uint256 taskId
-    ) external nonReentrant returns (bool success) {
-        // TESTNET: No registration requirement (for maximum flexibility)
-        // Production: Uncomment to require registration
-        // if (!executors[msg.sender].isActive) revert NotRegistered();
-
-        // TESTNET: No blacklist check
-        // Production: Uncomment to check blacklist
-        // if (executors[msg.sender].isSlashed) revert ExecutorBlacklisted();
-
-        // EARLY VALIDATION: Check task is executable before attempting execution
-        // This prevents unlimited execution attempts and provides early failure
-        require(taskRegistry != address(0), "Task registry not set");
-
-        (address taskCore, ) = _getTaskAddresses(taskId);
-        require(taskCore != address(0), "Task not found");
-        require(ITaskCore(taskCore).isExecutable(), "Task not executable");
-
-        // Execute task directly via TaskLogic
-        // Actions are now fetched from TaskCore instead of passed as proof
-        ITaskLogic.ExecutionParams memory params = ITaskLogic.ExecutionParams({
-            taskId: taskId,
-            executor: msg.sender,
-            seed: bytes32(0), // No seed needed on testnet
-            actionsProof: bytes("") // Actions now fetched from TaskCore
+        _tasks[vault][automationId] = Task({
+            vault: vault,
+            automationId: automationId,
+            strategy: strategy,
+            params: params,
+            active: true
         });
 
-        ITaskLogic.ExecutionResult memory result = ITaskLogic(taskLogic).executeTask(params);
+        _taskIndex[vault][automationId] = _taskKeys.length + 1;
+        _taskKeys.push(TaskKey({ vault: vault, automationId: automationId }));
 
-        // Track execution if executor is registered
-        if (executors[msg.sender].isActive) {
-            Executor storage executor = executors[msg.sender];
-            executor.totalExecutions++;
+        emit TaskRegistered(vault, automationId, strategy);
+    }
 
-            if (result.success) {
-                executor.successfulExecutions++;
-                _updateReputation(msg.sender, true);
-            } else {
-                executor.failedExecutions++;
-                _updateReputation(msg.sender, false);
-            }
+    function removeTask(uint256 automationId) external {
+        address vault = msg.sender;
+
+        if (_taskIndex[vault][automationId] == 0) revert TaskNotFound();
+
+        _tasks[vault][automationId].active = false;
+
+        uint256 index = _taskIndex[vault][automationId] - 1;
+        uint256 lastIndex = _taskKeys.length - 1;
+
+        if (index != lastIndex) {
+            TaskKey memory lastKey = _taskKeys[lastIndex];
+            _taskKeys[index] = lastKey;
+            _taskIndex[lastKey.vault][lastKey.automationId] = index + 1;
+        }
+        _taskKeys.pop();
+
+        delete _taskIndex[vault][automationId];
+        delete _tasks[vault][automationId];
+
+        emit TaskRemoved(vault, automationId);
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Executor Calls
+    // ─────────────────────────────────────────────────────────────────────────
+
+    function executeAutomation(address vault, uint256 automationId)
+        external
+        onlyExecutor
+        nonReentrant
+    {
+        if (vault == address(0)) revert InvalidVault();
+
+        Executor storage executor = executors[msg.sender];
+        executor.totalExecutions++;
+
+        bool success = IVault(vault).triggerAutomation(automationId);
+
+        if (success) {
+            executor.successfulExecutions++;
+        } else {
+            executor.failedExecutions++;
         }
 
-        emit ExecutionCompleted(taskId, msg.sender, result.success);
-
-        return result.success;
-    }
-
-    /// @inheritdoc IExecutorHub
-    function recordExecution(uint256 taskId, address executor, bool success, uint256 gasUsed)
-        external
-        onlyTaskLogic
-    {
-        // Additional tracking can be done here
-        // This is called by TaskLogic after execution
-    }
-
-    // ============ Admin Functions ============
-
-    /// @inheritdoc IExecutorHub
-    function slashExecutor(address executor, uint256 amount, string calldata reason)
-        external
-        onlyOwner
-    {
-        Executor storage exec = executors[executor];
-        require(exec.isActive, "Not active");
-        require(exec.stakedAmount >= amount, "Insufficient stake");
-
-        exec.stakedAmount -= uint128(amount);
-        exec.isSlashed = true;
-
-        // Send slashed amount to owner (could go to insurance pool)
-        (bool success, ) = owner().call{value: amount}("");
-        require(success, "Transfer failed");
-
-        emit ExecutorSlashed(executor, amount, reason);
-    }
-
-    function setMinStakeAmount(uint256 _minStake) external onlyOwner {
-        require(_minStake > 0, "Invalid stake");
-        minStakeAmount = _minStake;
-    }
-
-    function setTaskLogic(address _taskLogic) external onlyOwner {
-        require(_taskLogic != address(0), "Invalid logic");
-        taskLogic = _taskLogic;
-    }
-
-    function setTaskRegistry(address _taskRegistry) external onlyOwner {
-        require(_taskRegistry != address(0), "Invalid registry");
-        taskRegistry = _taskRegistry;
-    }
-
-    // ============ View Functions ============
-
-    /// @inheritdoc IExecutorHub
-    /// @dev TESTNET: Anyone can execute (no checks)
-    /// Production: Check registration, reputation, and staking
-    function canExecute(address) external pure returns (bool) {
-        // TESTNET: Everyone can execute, no restrictions
-        // Production version would check:
-        // - Executor storage exec = executors[executor];
-        // - return exec.isActive && !exec.isSlashed && exec.stakedAmount >= minStakeAmount;
-        return true;
-    }
-
-    /// @inheritdoc IExecutorHub
-    function getExecutor(address executor) external view returns (Executor memory) {
-        return executors[executor];
-    }
-
-    // ============ Internal Functions ============
-
-    /// @notice Get task addresses from global registry
-    /// @param taskId Task identifier
-    /// @return taskCore Address of TaskCore
-    /// @return taskVault Address of TaskVault
-    function _getTaskAddresses(uint256 taskId)
-        internal
-        view
-        returns (address taskCore, address taskVault)
-    {
-        require(taskRegistry != address(0), "Registry not set");
-
-        (bool success, bytes memory data) = taskRegistry.staticcall(
-            abi.encodeWithSignature("getTaskAddresses(uint256)", taskId)
-        );
-
-        if (!success || data.length == 0) {
-            return (address(0), address(0));
+        // Notify reward manager about execution
+        if (rewardManager != address(0)) {
+            try IRewardManager(rewardManager).distributeReward(
+                vault,
+                msg.sender,
+                baseRewardPerExecution,
+                0 // gasUsed - can be enhanced to track actual gas
+            ) {} catch {}
         }
 
-        (taskCore, taskVault) = abi.decode(data, (address, address));
+        emit AutomationExecuted(vault, automationId, msg.sender, success);
     }
 
-    function _updateReputation(address executor, bool) internal {
-        Executor storage exec = executors[executor];
+    // ─────────────────────────────────────────────────────────────────────────
+    // Views
+    // ─────────────────────────────────────────────────────────────────────────
 
-        if (exec.totalExecutions == 0) return;
-
-        // Calculate success rate (0-10000)
-        uint256 successRate = (exec.successfulExecutions * 10000) / exec.totalExecutions;
-
-        // Simple reputation: 70% success rate + 30% volume bonus
-        uint256 volumeBonus = _calculateVolumeBonus(exec.totalExecutions);
-        exec.reputationScore = (successRate * 70 + volumeBonus * 30) / 100;
+    function getTasks() external view returns (Task[] memory) {
+        Task[] memory result = new Task[](_taskKeys.length);
+        for (uint256 i = 0; i < _taskKeys.length; i++) {
+            TaskKey memory key = _taskKeys[i];
+            result[i] = _tasks[key.vault][key.automationId];
+        }
+        return result;
     }
 
-    function _calculateVolumeBonus(uint256 totalTasks) internal pure returns (uint256) {
-        if (totalTasks >= 2000) return 10000;
-        if (totalTasks >= 500) return 7500;
-        if (totalTasks >= 100) return 5000;
-        if (totalTasks >= 10) return 2500;
-        return 1000;
+    function getExecutor(address account) external view returns (Executor memory) {
+        return executors[account];
     }
+
+    function isExecutor(address account) external view returns (bool) {
+        return executors[account].isActive;
+    }
+
+    function getAllExecutors() external view returns (address[] memory) {
+        return executorList;
+    }
+}
+
+interface IVault {
+    function triggerAutomation(uint256 id) external returns (bool);
+}
+
+interface IRewardManager {
+    function distributeReward(
+        address vault,
+        address executor,
+        uint256 baseReward,
+        uint256 gasUsed
+    ) external returns (uint256);
 }
